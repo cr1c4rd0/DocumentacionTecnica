@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.14 – Backoffice y Reglas de Negocio</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #4E342E, #795548);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #4E342E; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #4E342E; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.14</div>
+    <h1>Backoffice y Reglas de Negocio</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.14.1: Panel de reglas de negocio</span><span class="hu-pill">HU 2.14.2: Registro de clics y navegación</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.14.1 — Panel de reglas de negocio</h3><p>Admin configura reglas (whitelist, blacklist, filtros dinámicos) que el motor aplica en la próxima inferencia sin redeploy.</p></div><div class="hu-card"><h3>HU 2.14.2 — Registro de clics y navegación</h3><p>Sistema captura de forma trazable todos los eventos de interacción del usuario (views, clics, filtros) respetando consentimiento.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU2141["HU 2.14.1 — Panel de reglas de negocio"]
+      A1([Administrador]) --> B1[Accede al panel\nde backoffice]
+      B1 --> C1[Crea / edita regla:\ntipo, condición, acción, ámbito]
+      C1 --> D1{¿Tipo de regla?}
+      D1 -->|Whitelist| E1[Solo estos servicios\nson elegibles]
+      D1 -->|Blacklist| F1[Excluir estos servicios\nde recomendaciones]
+      D1 -->|Filtro dinámico| G1[Condiciones por segmento,\nusuario o atributo de servicio]
+      E1 --> H1[Sistema valida compatibilidad\ny conflictos entre reglas]
+      F1 --> H1
+      G1 --> H1
+      H1 --> I1{¿Conflictos?}
+      I1 -->|Sí| J1[Alerta al administrador]
+      J1 --> C1
+      I1 -->|No| K1[Admin activa regla]
+      K1 --> L1[Hot-reload sin redeploy\ncaché invalidado]
+      L1 --> M1[Registra policy_version_id\nauditoría de cambios]
+      M1 --> N1([Motor aplica regla\nen próxima inferencia])
+    end
+    subgraph HU2142["HU 2.14.2 — Registro de clics y navegación"]
+      A2([Usuario interactúa\ncon Recomendador]) --> B2{¿Consentimiento\notorgado?}
+      B2 -->|No| C2[No captura eventos\nrespeta privacidad]
+      B2 -->|Sí| D2[UI captura evento:\ntipo, timestamp, contexto]
+      D2 --> E2[SDK envía evento al\nbackend de forma asíncrona]
+      E2 --> F2[Backend valida y almacena\nen base de datos / data lake]
+      F2 --> G2{¿Evento exitoso?}
+      G2 -->|No| H2[Reintento con backoff\nlog de error]
+      H2 --> E2
+      G2 -->|Sí| I2[Disponible para análisis\ny entrenamiento ML]
+      I2 --> J2([Analista consulta dashboard\no exporta datos])
+    end
+    N1 -.->|Reglas afectan| HU2142
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#4E342E', primaryTextColor: '#fff',
+        primaryBorderColor: '#795548', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

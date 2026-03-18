@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.5 – Resolución de Identidad Omnicanal</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #00695C, #00897B);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #00695C; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #00695C; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.5</div>
+    <h1>Resolución de Identidad Omnicanal</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.5.1: Resolución de identidad omnicanal</span><span class="hu-pill">HU 2.5.2: Identificación mínima y progresiva</span><span class="hu-pill">HU 2.5.3: Respeta mis preferencias</span><span class="hu-pill">HU 2.5.4: Preferencias y privacidad en UI</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.5.1 — Resolución de identidad omnicanal</h3><p>El sistema unifica la identidad del usuario a través de canales (email, teléfono, IDs, cookies) generando un ID unificado con trazabilidad.</p></div><div class="hu-card"><h3>HU 2.5.2 — Identificación mínima y progresiva</h3><p>Cuando no se puede identificar al usuario, el sistema activa perfilamiento mínimo (2 preguntas) para generar recomendaciones iniciales.</p></div><div class="hu-card"><h3>HU 2.5.3 — Respeta mis preferencias</h3><p>El motor respeta las preferencias de comunicación y contenido del usuario, excluyendo servicios no deseados.</p></div><div class="hu-card"><h3>HU 2.5.4 — Preferencias y privacidad en UI</h3><p>La UI permite al usuario gestionar sus preferencias de privacidad, consentimiento y canales de comunicación.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU251["HU 2.5.1 — Resolución de identidad omnicanal"]
+      A1([Usuario accede al\nsistema CCB]) --> B1[Sistema captura identificadores\nemail, teléfono, CC/NIT, cookies, social login]
+      B1 --> C1{¿Consentimiento\notorgado?}
+      C1 -->|No| D1[Solicita consentimiento\nde uso de caché]
+      D1 --> C1
+      C1 -->|Sí| E1[Aplica reglas de matching\ndeterminístico y probabilístico]
+      E1 --> F1{¿Identidad\nresuelta?}
+      F1 -->|Sí| G1[Genera ID unificado\nclient_unified_id]
+      G1 --> H1[Persiste en identity graph\nomnicanal]
+      H1 --> I1([Perfil consistente habilitado\npara recomendaciones Top-5])
+      F1 -->|No| HU252
+    end
+    subgraph HU252["HU 2.5.2 — Identificación mínima y progresiva"]
+      A2([Usuario no identificado]) --> B2[Sistema activa\nperfilamiento mínimo]
+      B2 --> C2[Lanza 2 preguntas de\ncontexto al usuario]
+      C2 --> D2[Usuario responde\nnecesidad y categoría]
+      D2 --> E2[Sistema genera\nrecomendaciones Top-5 iniciales]
+      E2 --> F2[Recolecta interacciones\nprogresivas]
+      F2 --> G2{¿Datos suficientes\npara identificar?}
+      G2 -->|Sí| I1
+      G2 -->|No| H2([Mantiene perfil anónimo\ncon recomendaciones básicas])
+    end
+    subgraph HU253["HU 2.5.3 — Respeta mis preferencias"]
+      A3([Sistema / Motor]) --> B3[Carga preferencias\ndel usuario]
+      B3 --> C3[Filtra servicios\nnot_interested]
+      C3 --> D3[Respeta frecuencia\nde comunicación]
+      D3 --> E3[Excluye canales\nno deseados]
+      E3 --> F3([Recomendaciones respetan\npreferencias del usuario])
+    end
+    subgraph HU254["HU 2.5.4 — Preferencias y privacidad en UI"]
+      A4([Usuario]) --> B4[Accede a configuración\nde privacidad en UI]
+      B4 --> C4[Define preferencias:\ncanales, temas, frecuencia]
+      C4 --> D4[Gestiona consentimientos\nGDPR / Habeas Data]
+      D4 --> E4[Sistema persiste y aplica\npreferencias en tiempo real]
+      E4 --> F4([Experiencia personalizada\nrespetando privacidad])
+    end
+    I1 --> HU253
+    HU253 --> HU254
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#00695C', primaryTextColor: '#fff',
+        primaryBorderColor: '#00897B', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

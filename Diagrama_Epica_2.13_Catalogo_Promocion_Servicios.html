@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.13 – Catálogo y Promoción de Servicios</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #AD1457, #E91E63);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #AD1457; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #AD1457; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.13</div>
+    <h1>Catálogo y Promoción de Servicios</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.13.1: Clasificación de servicios</span><span class="hu-pill">HU 2.13.2: Notificación de disponibilidad futura</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.13.1 — Clasificación de servicios</h3><p>Cada servicio se muestra con etiquetas de categoría y estado de disponibilidad (Disponible, Próximamente, Cerrado, etc.).</p></div><div class="hu-card"><h3>HU 2.13.2 — Notificación de disponibilidad futura</h3><p>Usuario se suscribe para recibir alerta cuando un servicio 'Sin programación actual' abra su inscripción.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU2131["HU 2.13.1 — Clasificación de servicios"]
+      A1([Catálogo de servicios]) --> B1[Sistema asigna categoría\nAsesoría · Capacitación · Acceso a Mercado · etc.]
+      B1 --> C1[Sistema asigna estado\nde disponibilidad]
+      C1 --> D1{¿Estado del servicio?}
+      D1 -->|Disponible permanente| E1[Etiqueta verde: DISPONIBLE]
+      D1 -->|Próximamente| F1[Etiqueta azul: PRÓXIMAMENTE\ncon fecha de apertura]
+      D1 -->|Sin programación| G1[Etiqueta gris: SIN PROGRAMACIÓN]
+      D1 -->|Cerrado| H1[Etiqueta roja: CERRADO]
+      D1 -->|Bajo demanda| I1[Etiqueta naranja: BAJO DEMANDA]
+      E1 --> J1([Usuario ve servicio con\ncategoría y estado claros])
+      F1 --> J1
+      G1 --> J1
+      H1 --> J1
+      I1 --> J1
+      J1 --> K1{¿Sin categoría?}
+      K1 -->|Sí| L1[Marca como SIN CLASIFICAR\nno se oculta]
+      K1 -->|No| M1[Usuario puede filtrar\npor categoría en catálogo]
+    end
+    subgraph HU2132["HU 2.13.2 — Notificación de disponibilidad futura"]
+      A2([Usuario ve servicio\nSIN PROGRAMACIÓN ACTUAL]) --> B2[Ve botón: Notifícame cuando\nesté disponible]
+      B2 --> C2[Usuario hace clic\ny confirma canal]
+      C2 --> D2{¿Consentimiento\yprivacidad OK?}
+      D2 -->|No| E2[Solicita aceptación\nde política de privacidad]
+      E2 --> D2
+      D2 -->|Sí| F2[Sistema registra suscripción\nuser_id, service_id, canal, timestamp]
+      F2 --> G2[Verifica deduplicación\nuna suscripción por usuario]
+      G2 --> H2([Usuario suscrito\nconfirmación inmediata])
+      H2 --> I2{¿Admin abre el servicio?}
+      I2 -->|Sí| J2[Sistema activa notificación\nautomática a suscriptores]
+      J2 --> K2[Envía por canal preferido:\nemail · SMS · push]
+      K2 --> L2([Usuario notificado\npuede inscribirse])
+      L2 --> M2[Sistema registra métricas:\nsuscripciones, envíos, clics post-notificación]
+    end
+    G1 --> HU2132
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#AD1457', primaryTextColor: '#fff',
+        primaryBorderColor: '#E91E63', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

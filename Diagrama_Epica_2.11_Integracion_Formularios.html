@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.11 – Integración con Formularios de Servicios</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #00796B, #00ACC1);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #00796B; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #00796B; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.11</div>
+    <h1>Integración con Formularios de Servicios</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.11.1: Redirección al formulario correcto</span><span class="hu-pill">HU 2.11.2: Registro del resultado de inscripción</span><span class="hu-pill">HU 2.11.3: Atribución y ventana de conversión parametrizable</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.11.1 — Redirección al formulario correcto</h3><p>Al hacer clic en CTA de una recomendación, el sistema genera deep link con contexto y redirige al formulario correcto en ≤500ms.</p></div><div class="hu-card"><h3>HU 2.11.2 — Registro del resultado de inscripción</h3><p>El sistema captura el estado final del intento de inscripción vía webhook/callback para atribuir conversiones.</p></div><div class="hu-card"><h3>HU 2.11.3 — Atribución y ventana de conversión parametrizable</h3><p>Admin configura ventanas de conversión y modelos de atribución (first_click, last_click, linear, time_decay) sin redeploy.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU2111["HU 2.11.1 — Redirección al formulario correcto"]
+      A1([Usuario hace clic en CTA\nde recomendación]) --> B1[Sistema valida\nelegibilidad / requisitos]
+      B1 --> C1{¿Elegible?}
+      C1 -->|No| D1[Muestra información\nde requisitos faltantes]
+      C1 -->|Sí| E1[Construye deep link\nservice_id, user_context, segment_id, recommendation_id]
+      E1 --> F1[Valida URL destino\ny seguridad de parámetros]
+      F1 --> G1{¿URL válida?}
+      G1 -->|No| H1[Fallback al portal\ngenérico de servicios]
+      G1 -->|Sí| I1[Redirige en ≤ 500ms\ncon contexto pre-rellenado]
+      I1 --> J1([Usuario ve formulario correcto\npre-cargado con sus datos])
+      J1 --> K1[Sistema registra:\nredirect_click, URL destino, timestamp]
+    end
+    subgraph HU2112["HU 2.11.2 — Registro del resultado de inscripción"]
+      A2([Usuario interactúa\ncon formulario]) --> B2[Usuario completa o cancela]
+      B2 --> C2[Sistema de formularios\nenvía webhook / callback]
+      C2 --> D2{¿Estado recibido?}
+      D2 -->|Completado| E2[Estado: inscripción_completada]
+      D2 -->|Incompleto| F2[Estado: inscripción_incompleta]
+      D2 -->|Cancelado| G2[Estado: cancelado]
+      D2 -->|Error técnico| H2[Estado: error_técnico]
+      E2 --> I2[Recomendador consolida\nconversión con idempotency key]
+      F2 --> I2
+      G2 --> I2
+      H2 --> J2[Reintento automático\npor reintentos con backoff]
+      J2 --> I2
+      I2 --> K2([Señal de conversión\nregistrada y trazable])
+    end
+    subgraph HU2113["HU 2.11.3 — Atribución y ventana de conversión"]
+      A3([Admin de negocio]) --> B3[Accede al panel\nde configuración de atribución]
+      B3 --> C3[Define ventana de conversión\nhoras o días]
+      C3 --> D3[Selecciona modelo de atribución:\nfirst_click · last_click · linear · time_decay]
+      D3 --> E3[Aplica filtros adicionales\nsolo servicios de pago, etc.]
+      E3 --> F3[Sistema genera policy_version_id\ny aplica retrospectivamente]
+      F3 --> G3[Recalcula métricas\nen ≤ 30min batch]
+      G3 --> H3([Admin ve métricas actualizadas\nbajo nuevo modelo])
+    end
+    K1 --> HU2112
+    K2 --> HU2113
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#00796B', primaryTextColor: '#fff',
+        primaryBorderColor: '#00ACC1', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

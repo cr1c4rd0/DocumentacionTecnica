@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.9 – Lógica Explicativa</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #4527A0, #7B1FA2);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #4527A0; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #4527A0; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.9</div>
+    <h1>Lógica Explicativa</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.9.1: Explicación por recomendación</span><span class="hu-pill">HU 2.9.2: Reporte de segmentos</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.9.1 — Explicación por recomendación</h3><p>El admin ve qué variables/reglas y fuentes influyeron en cada recomendación con trazabilidad de IDs de modelo y versión.</p></div><div class="hu-card"><h3>HU 2.9.2 — Reporte de segmentos</h3><p>Dashboard segmentado con métricas por grupo (volumen, tasa aceptación, conversión, distribución de servicios) con exportación.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU291["HU 2.9.1 — Explicación por recomendación"]
+      A1([Administrador]) --> B1[Selecciona grupo, horizonte\ny contexto de análisis]
+      B1 --> C1[Sistema consulta\nCRM, formularios y logs]
+      C1 --> D1[Construye explicación por recomendación:\nvariables influyentes, reglas, fuentes]
+      D1 --> E1[Persiste artefactos originales\nde la inferencia]
+      E1 --> F1[Adjunta IDs de trazabilidad:\nmodel_run_id, prompt_version_id, policy_version_id]
+      F1 --> G1[Presenta explicación en UI\nen ≤ 3s p95]
+      G1 --> H1{¿Tipo de\nexplicabilidad?}
+      H1 -->|Reglas determinísticas| I1[Muestra regla aplicada\ncon condición exacta]
+      H1 -->|ML| J1[Muestra features relevantes\ncon contribución al score]
+      H1 -->|Híbrido| K1[Combina reglas + features]
+      I1 --> L1([Explicación trazable\ny auditable])
+      J1 --> L1
+      K1 --> L1
+    end
+    subgraph HU292["HU 2.9.2 — Reporte de segmentos"]
+      A2([Analista / Líder de negocio]) --> B2[Selecciona rango de fechas\ny criterio de segmentación]
+      B2 --> C2[Sistema consulta\nCRM, formularios, transacciones]
+      C2 --> D2[Calcula métricas por segmento:\nvolumen, recomendaciones, tasa aceptación, conversión]
+      D2 --> E2{¿Muestra\nsuficiente?}
+      E2 -->|No| F2[Marca advertencia\nmuestra insuficiente]
+      E2 -->|Sí| G2[Renderiza tabla y\nvisualizaciones en ≤ 5s p95]
+      F2 --> G2
+      G2 --> H2[Muestra fecha de corte\ny versión de reglas / modelo]
+      H2 --> I2{¿Datos\nincompletos?}
+      I2 -->|Sí| J2[Indica No calculado\ncon causa explicada]
+      I2 -->|No| K2[Habilita exportación\nCSV / Excel con metadatos]
+      J2 --> K2
+      K2 --> L2([Reporte segmentado\ndisponible para decisiones])
+    end
+    L1 -.->|Alimenta reportes| HU292
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#4527A0', primaryTextColor: '#fff',
+        primaryBorderColor: '#7B1FA2', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

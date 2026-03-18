@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.10 – Prueba Social</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #F57F17, #FB8C00);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #F57F17; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #F57F17; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.10</div>
+    <h1>Prueba Social</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.10.1: Módulo de reseñas y calificaciones</span><span class="hu-pill">HU 2.10.2: Moderación básica de contenido</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.10.1 — Módulo de reseñas y calificaciones</h3><p>Muestra rating promedio y reseñas de otros empresarios por servicio, con lazy load, estados de confiabilidad y fallbacks.</p></div><div class="hu-card"><h3>HU 2.10.2 — Moderación básica de contenido</h3><p>Flujo automático y humano para moderar reseñas: filtros de spam, PII y lenguaje ofensivo antes de publicar.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU2101["HU 2.10.1 — Módulo de reseñas y calificaciones"]
+      A1([Usuario ve detalle\nde servicio]) --> B1[UI solicita rating\ny reseñas del servicio]
+      B1 --> C1{¿Hay reseñas\ndisponibles?}
+      C1 -->|No| D1[Muestra fallback:\nAún no hay reseñas · Invita a ser el primero]
+      C1 -->|Sí| E1[Calcula rating promedio\ncon 1 decimal]
+      E1 --> F1[Muestra distribución\nde estrellas por nivel]
+      F1 --> G1[Lista reseñas verificadas\ncon peso diferencial]
+      G1 --> H1{¿Muchas reseñas?}
+      H1 -->|Sí| I1[Aplica lazy load\nen ≤ 2s p95]
+      H1 -->|No| J1[Muestra todas directamente]
+      I1 --> K1([Usuario ve reseñas\ny rating del servicio])
+      J1 --> K1
+    end
+    subgraph HU2102["HU 2.10.2 — Moderación básica de contenido"]
+      A2([Usuario envía\nreseña / comentario]) --> B2[Motor de moderación\nautomática]
+      B2 --> C2[Evalúa: spam, PII,\nlenguaje ofensivo]
+      C2 --> D2{¿Confianza del\nfiltro automático?}
+      D2 -->|Alta - OK| E2[Reseña aprobada\nautomáticamente]
+      D2 -->|Alta - Rechazo| F2[Reseña rechazada\nautomáticamente]
+      D2 -->|Baja / Ambigua| G2[Envía a revisión\nhumana del equipo CCB]
+      G2 --> H2[Revisor humano\naprueba o rechaza]
+      H2 --> E2
+      H2 --> F2
+      E2 --> I2[Estado: publicada\nen sistema]
+      F2 --> J2[Estado: archivada\ncon motivo anónimo]
+      I2 --> K2([Reseña visible\npara otros usuarios])
+      J2 --> L2[Notificación\nal usuario remitente]
+      K2 --> M2[Sistema registra:\ntasa aprobación, tiempo, moderador]
+    end
+    K1 -.->|Nuevas reseñas pasan por| HU2102
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#F57F17', primaryTextColor: '#fff',
+        primaryBorderColor: '#FB8C00', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

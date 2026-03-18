@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.7 – Reglas de Exclusión</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #B71C1C, #E53935);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #B71C1C; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #B71C1C; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.7</div>
+    <h1>Reglas de Exclusión</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.7.1: Exclusión de servicios ya consumidos</span><span class="hu-pill">HU 2.7.2: Exclusión por descarte explícito</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.7.1 — Exclusión de servicios ya consumidos</h3><p>El motor excluye servicios que el usuario ya ha tomado, validando contra historial de transacciones y registro de consumos.</p></div><div class="hu-card"><h3>HU 2.7.2 — Exclusión por descarte explícito</h3><p>Si el usuario descarta una recomendación, el sistema la oculta por una ventana temporal configurable con control del usuario.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU271["HU 2.7.1 — Exclusión de servicios ya consumidos"]
+      A1([Motor genera candidatos\nde recomendación]) --> B1[Consulta historial\nde consumo del usuario]
+      B1 --> C1[Verifica cada servicio\ncontra transacciones]
+      C1 --> D1{¿Ya fue\nconsumido?}
+      D1 -->|Sí| E1[Marca como TAKEN\ny excluye de lista]
+      E1 --> F1[Registra motivo\nexclusion_reason: taken]
+      D1 -->|No| G1[Mantiene en\ncandidatos elegibles]
+      F1 --> H1[Consolida lista\nsin servicios repetidos]
+      G1 --> H1
+      H1 --> I1([Lista depurada\nsin servicios ya tomados])
+    end
+    subgraph HU272["HU 2.7.2 — Exclusión por descarte explícito"]
+      A2([Usuario ve recomendación]) --> B2[Usuario hace clic en\nhide / dismiss]
+      B2 --> C2[Sistema registra\ndescarte explícito]
+      C2 --> D2[Aplica ventana temporal\nt_days configurable]
+      D2 --> E2[Servicio oculto\ndurante ventana]
+      E2 --> F2{¿Venció\nla ventana?}
+      F2 -->|No| G2[Servicio sigue excluido\nde recomendaciones]
+      F2 -->|Sí| H2[Servicio vuelve\na candidatos elegibles]
+      H2 --> I2{¿Usuario cambia\nde opinión manualmente?}
+      I2 -->|Sí| J2[Usuario reactiva\nel servicio desde UI]
+      J2 --> H2
+      I2 -->|No| K2([Flujo normal\nde recomendación])
+      G2 --> L2[Registra en logs\nexclusion_reason: declined]
+      L2 --> K2
+    end
+    I1 --> HU272
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#B71C1C', primaryTextColor: '#fff',
+        primaryBorderColor: '#E53935', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.3 – Gestión de Promoción de Servicios</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #2E7D32, #43A047);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #2E7D32; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #2E7D32; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.3</div>
+    <h1>Gestión de Promoción de Servicios</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.3.1: Resalta lo gratuito</span><span class="hu-pill">HU 2.3.2: Negocio puede destacar servicios</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.3.1 — Resalta lo gratuito</h3><p>El sistema identifica y destaca servicios gratuitos en recomendaciones, mostrando etiqueta 'Gratuito' de forma prominente.</p></div><div class="hu-card"><h3>HU 2.3.2 — Negocio puede destacar servicios</h3><p>Los admins seleccionan servicios para promover estratégicamente, definiendo período, intensidad y midiendo el impacto.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU231["HU 2.3.1 — Resalta lo gratuito"]
+      A1([Sistema / Admin]) --> B1[Identifica servicios gratuitos\nen catálogo]
+      B1 --> C1[Marca con indicador\n'sin_costo = true']
+      C1 --> D1[Motor aplica boost\nde visibilidad a gratuitos]
+      D1 --> E1[UI muestra etiqueta\nGRATUITO prominente]
+      E1 --> F1([Usuario ve servicio gratuito\ndestacado en recomendación])
+      F1 --> G1[Sistema recolecta\nmétricas de clics]
+      G1 --> H1{¿Engagement\nadecuado?}
+      H1 -->|No| I1[Admin ajusta\nintensidad del boost]
+      I1 --> D1
+      H1 -->|Sí| J1([Mantener configuración])
+    end
+    subgraph HU232["HU 2.3.2 — Negocio puede destacar servicios"]
+      A2([Admin / Product Manager]) --> B2[Accede al panel de\ngestión de servicios]
+      B2 --> C2[Selecciona servicio\na destacar]
+      C2 --> D2[Define período de\nvigencia de la promoción]
+      D2 --> E2[Establece nivel de boost\nintensidad de promoción]
+      E2 --> F2[Sistema aplica boost\nal score del servicio]
+      F2 --> G2[Servicio destacado\naparece con mayor prominencia]
+      G2 --> H2([Usuario ve servicio\npromocionado])
+      H2 --> I2[Sistema registra impacto\nconversiones, clics]
+      I2 --> J2{¿Admin desea\nmodificar?}
+      J2 -->|Sí| C2
+      J2 -->|No / Expiró| K2[Sistema desactiva boost\nal vencer vigencia]
+      K2 --> L2([Fin campaña])
+    end
+    J1 -.->|Aplica misma lógica| HU232
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#2E7D32', primaryTextColor: '#fff',
+        primaryBorderColor: '#43A047', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>

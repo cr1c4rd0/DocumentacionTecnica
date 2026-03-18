@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Épica 2.2 – Panel de Administración y Explicabilidad</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+    .header {
+      background: linear-gradient(135deg, #6A1B9A, #9C27B0);
+      color: white; padding: 28px 40px;
+    }
+    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
+    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
+    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .hu-pill {
+      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
+    .diagram-card {
+      background: white; border-radius: 12px; padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #6A1B9A; }
+    .hu-card h3 { font-size: 13px; font-weight: 700; color: #6A1B9A; margin-bottom: 6px; }
+    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="epica-tag">Diagrama de Proceso · Épica 2.2</div>
+    <h1>Panel de Administración y Explicabilidad</h1>
+    <div class="hu-list">
+      <span class="hu-pill">HU 2.2.1: Explicar por qué se recomienda (negocio)</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hu-cards">
+      <div class="hu-card"><h3>HU 2.2.1 — Explicar por qué se recomienda (negocio)</h3><p>Los administradores ven explicaciones trazables sobre por qué el motor sugiere ciertos servicios, con desglose de factores y scores.</p></div>
+    </div>
+    <div class="diagram-card">
+      <h2>Diagrama de Flujo Integrado</h2>
+      <div class="mermaid">
+flowchart TD
+    subgraph HU221["HU 2.2.1 — Explicar por qué se recomienda"]
+      A1([Administrador de negocio]) --> B1[Accede al Panel\nde Explicabilidad]
+      B1 --> C1[Selecciona cliente / usuario\na inspeccionar]
+      C1 --> D1[Sistema consulta\nrecomendaciones generadas]
+      D1 --> E1[Carga componentes del score\nfactores, pesos, segmento]
+      E1 --> F1[Muestra explicación legible\nen lenguaje de negocio]
+      F1 --> G1{¿Admin desea ajustar\nparámetros?}
+      G1 -->|Sí| H1[Modifica parámetros\nen panel]
+      H1 --> I1[Sistema recalcula impacto\nen recomendaciones]
+      I1 --> F1
+      G1 -->|No| J1[Exporta o guarda\nla explicación]
+      J1 --> K1[Sistema registra auditoría\nde la consulta]
+      K1 --> L1([Fin: Recomendación\ntrazable y auditada])
+    end
+    subgraph ACTORES["Actores y sistemas involucrados"]
+      direction LR
+      P1([Administrador]) -.->|Consulta| P2[Panel Admin]
+      P2 -.->|Solicita| P3[Motor de\nRecomendación]
+      P3 -.->|Datos| P4[Base de datos\nde usuarios]
+      P3 -.->|Logs| P5[Sistema de auditoría]
+    end
+      </div>
+    </div>
+  </div>
+  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#6A1B9A', primaryTextColor: '#fff',
+        primaryBorderColor: '#9C27B0', lineColor: '#666',
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+      flowchart: { curve: 'basis', padding: 20 }
+    });
+  </script>
+</body>
+</html>
