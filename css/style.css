@@ -12,7 +12,7 @@
    en cada <div class="hero"> para que el gradiente sea único
    por épica. Ambas variantes dependen de esta regla base. */
 .hero {
-  background: linear-gradient(135deg, var(--hero-start, #0D47A1), var(--hero-end, #1565C0));
+  background: linear-gradient(135deg, var(--hero-start, #B5002B), var(--hero-end, #DD0034));
 }
 
 
