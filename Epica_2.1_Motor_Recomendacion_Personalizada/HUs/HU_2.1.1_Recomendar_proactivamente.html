@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.1.1 – Recomendar proactivamente</title>
+  <title>HU 2.1.1 – Recomiéndame proactivamente lo que sí me sirve</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
@@ -24,12 +24,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #1565C0; --hero-end: #1E88E5;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.1.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Recomendar proactivamente</h1>
+      <h1 class="fw-bold fs-3 mb-1">Recomiéndame proactivamente lo que sí me sirve</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.1 · Motor de Recomendación Personalizada · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
@@ -37,7 +39,7 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario (cliente CCB identificado o seudonimizado en dev).</p>
+              <p class="mb-0">usuario (cliente CCB <strong>identificado o seudonimizado</strong> en dev).</p>
             </div>
           </div>
           <div class="col-md-4">
@@ -51,87 +53,346 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">descubrir con rapidez opciones pertinentes y no perder tiempo con ofertas irrelevantes o
-                repetidas.</p>
+              <p class="mb-0">descubrir con rapidez opciones pertinentes y no perder tiempo con ofertas
+                irrelevantes o repetidas.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 –
+          Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ol class="mb-0">
-          <li>Pertinencia y filtros básicos activos
-            <ul class="mb-0">
-              <li>El motor no debe recomendar:
-                <ul class="mb-0">
-                  <li>servicios <strong>ya tomados</strong> por el usuario</li>
-                  <li>servicios <strong>explícitamente descartados</strong></li>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Pertinencia y filtros básicos activos</strong>
+            <ul class="mt-1">
+              <li>El motor <strong>no debe recomendar</strong>:
+                <ol type="1" class="mt-1">
+                  <li>servicios <strong>ya tomados</strong> por el usuario;</li>
+                  <li>servicios <strong>explícitamente descartados</strong>;</li>
                   <li>servicios <strong>fuera de elegibilidad</strong> (p. ej., segmento o estado del cliente).</li>
-                </ul>
+                </ol>
               </li>
-              <li>Se registra motivo de exclusión por ítem (e.g., taken, declined, not_eligible).</li>
+              <li>Se registra motivo de exclusión por ítem (e.g., <code>taken</code>, <code>declined</code>,
+                <code>not_eligible</code>).</li>
             </ul>
           </li>
-          <li>Parametrización de variables de recomendación
-            <ul class="mb-0">
-              <li>Existen parámetros configurables (vía archivo YAML/JSON en repo o tabla de configuración) para
-                ponderar <strong>historial, perfil, segmento, rol, intereses, popularidad, novedad y reglas de
-                  negocio</strong> (listas
-                blancas/negras, campañas).</li>
-              <li>Cambios de parámetros quedan auditados (versión + timestamp) y aplican sin redeploy del modelo
-                (feature flag o config hot-reload).</li>
+
+          <li class="mb-3">
+            <strong>Parametrización de variables de recomendación</strong>
+            <ul class="mt-1">
+              <li>Existen parámetros configurables (vía archivo <code>YAML/JSON</code> en repo o tabla de configuración)
+                para ponderar <strong>historial, perfil, segmento, rol, intereses, popularidad, novedad y reglas de
+                  negocio</strong> (listas blancas/negras, campañas).</li>
+              <li>Cambios de parámetros quedan auditados (versión + timestamp) y aplican <strong>sin redeploy del
+                  modelo</strong> (feature flag o config hot-reload).</li>
             </ul>
           </li>
-          <li>Salida estructurada y explicable (sin UI pública)
-            <ul class="mb-0">
-              <li>El API/servicio devuelve máx. 5 recomendaciones con: service_id, nombre, score, razones[]
-                (explicaciones
-                legibles), restricciones, estado_disponibilidad.</li>
-              <li>Cada recomendación incluye al menos una razón trazable (p. ej., “similitud con servicios contratados
-                por
-                tu segmento”, “afinidad a tu interés formalización”).</li>
+
+          <li class="mb-3">
+            <strong>Salida estructurada y explicable</strong> <span class="text-muted small">(sin UI pública)</span>
+            <ul class="mt-1">
+              <li>El API/servicio devuelve <strong>máx. 5 recomendaciones</strong> con:
+                <code>service_id</code>, <code>nombre</code>, <code>score</code>, <code>razones[]</code>
+                (explicaciones legibles), <code>restricciones</code>, <code>estado_disponibilidad</code>.
+              </li>
+              <li>Cada recomendación incluye al menos una razón trazable (p. ej., <em>"similitud con servicios
+                  contratados por tu segmento"</em>, <em>"afinidad a tu interés 'formalización'"</em>).</li>
             </ul>
           </li>
-          <li>Medición sin umbrales (E1)
-            <ul class="mb-0">
-              <li>Se generan y almacenan métricas offline: coverage, diversity (intra-lista), novelty, y
-                precisión/recall en set de prueba etiquetado; no se exige valor mínimo, solo reporte reproducible.</li>
-              <li>Se mide latencia p95 del endpoint (inferir + reglas), sin exigir tope en E1; se reporta.</li>
+
+          <li class="mb-3">
+            <strong>Medición sin umbrales</strong> <span class="text-muted small">(E1)</span>
+            <ul class="mt-1">
+              <li>Se generan y almacenan métricas offline: <strong>coverage, diversity</strong> (intra-lista),
+                <strong>novelty</strong>, y <strong>precisión/recall</strong> en set de prueba etiquetado;
+                no se exige valor mínimo, solo reporte reproducible.
+              </li>
+              <li>Se mide <strong>latencia p95</strong> del endpoint (inferir + reglas), sin exigir tope en E1;
+                se reporta.</li>
             </ul>
           </li>
-          <li>Trazabilidad y reproducibilidad
-            <ul class="mb-0">
-              <li>Logging por request: user_key_pseudo, features_hash, topK, candidatos, reglas_aplicadas, reasons,
-                latencia_ms, version_modelo, version_config.</li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad y reproducibilidad</strong>
+            <ul class="mt-1">
+              <li>Logging por request: <code>user_key_pseudo</code>, <code>features_hash</code>, <code>topK</code>,
+                <code>candidatos</code>, <code>reglas_aplicadas</code>, <code>reasons</code>,
+                <code>latencia_ms</code>, <code>version_modelo</code>, <code>version_config</code>.
+              </li>
               <li>Script/notebook de reproducibilidad: vuelve a generar recomendaciones para un lote de
-                user_key_pseudo y produce CSV con campos clave.</li>
-            </ul>
-          </li>
-          <li>Privacidad & Ética (alineado con T. y Ley 1581)
-            <ul class="mb-0">
-              <li>En E1, los datos personales se usan seudonimizados o mockeados; no se persiste PII.</li>
-              <li>Se respetan flags de no seguimiento/consentimiento (si los hay en dev).</li>
-              <li>Se documenta riesgo de sesgo y reglas de mitigación básicas (p. ej., diversidad mínima por categoría).
+                <code>user_key_pseudo</code> y produce CSV con campos clave.
               </li>
             </ul>
           </li>
+
+          <li class="mb-3">
+            <strong>Privacidad &amp; Ética</strong> <span class="text-muted small">(alineado con T. y Ley 1581)</span>
+            <ul class="mt-1">
+              <li>En E1, los datos personales se usan <strong>seudonimizados o mockeados</strong>; no se persiste PII.
+              </li>
+              <li>Se respetan flags de no seguimiento/consentimiento (si los hay en dev).</li>
+              <li>Se documenta <strong>riesgo de sesgo</strong> y reglas de mitigación básicas
+                (p. ej., diversidad mínima por categoría).</li>
+            </ul>
+          </li>
+
         </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>API REST /recommendations/{userId}</li>
-          <li>Score ponderado multi-factor</li>
-          <li>Integración con feature store</li>
-          <li>Cache de resultados con TTL configurable</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Motor de Ranking Híbrido</div>
+              <ul class="mb-0 small">
+                <li>Contenido (embeddings / TF-IDF) + reglas de negocio (hard filters, boosting) + señal
+                  popularity/recency.</li>
+                <li>Opcional: similar users/services (vecindarios) con datos seudonimizados.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Feature Store</div>
+              <ul class="mb-0 small">
+                <li>Tabla/Delta con: perfil, segmento, rol, intereses (explícitos/derivados).</li>
+                <li>Histórico de servicios <code>taken</code> / <code>declined</code>, ventanas temporales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Integraciones (dev/mocks)</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics</strong> (perfil, segmento, rol) — mock o dataset seudonimizado.</li>
+                <li><strong>SIREP</strong> (transacciones/servicios tomados) — mock/extracto dev.</li>
+                <li><strong>Catálogo de Servicios</strong> (maestro con reglas de elegibilidad, vigencia, campaña).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Servicio de Recomendación &amp; Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>API REST/Graph: Python/Node + librería vectorial (FAISS/pgvector) + reglas (Motor DSL/YAML).</li>
+                <li>Observabilidad básica: logs estructurados (JSON), export a CSV/Parquet.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 –
+          Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PUNTO DE INICIO</div>
+              <p class="mb-0 small">Disparador proactivo (cron o evento <em>"nuevo usuario/estado cambia"</em>)
+                o llamado on-demand desde un sandbox client (sin front público).</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">INPUTS MÍNIMOS</div>
+              <p class="mb-0 small"><code>user_key_pseudo</code>, <code>canal</code>,
+                <code>contexto_intencion</code> (opcional), <code>k</code> (top-N),
+                <code>config_version</code> (opcional).
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">FUENTES</div>
+              <ul class="mb-0 small ps-3">
+                <li>CRM Dynamics (dev): perfil, segmento, rol.</li>
+                <li>SIREP (dev): services_taken[], services_declined[], fechas.</li>
+                <li>Catálogo: reglas de elegibilidad, tags, focos estratégicos.</li>
+                <li>Señales: popularidad por segmento, novedad, campañas activas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Candidatos:</strong> filtra por elegibilidad (segmento / rol / vigencia).</li>
+          <li><strong>Features:</strong> extrae/compone (perfil, histórico, intereses/keywords).</li>
+          <li><strong>Scoring:</strong> similitud contenido + boosts (campaña/novedad) − penalizaciones
+            (tomado/declinado).</li>
+          <li><strong>Diversidad:</strong> re-rank para no saturar una sola categoría (p. ej., MMR).</li>
+          <li><strong>Explicabilidad:</strong> genera <code>razones[]</code> (plantillas con señales ponderadas).</li>
+          <li><strong>Salida:</strong> JSON con top-K + metadatos y debug (si <code>debug=true</code>).</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Ejemplo de Respuesta</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key_pseudo": "u_9f3a",
+  "topK": [
+    {
+      "service_id": "S-134",
+      "nombre": "Asesoría Formalización",
+      "score": 0.82,
+      "razones": [
+        "Alta afinidad con tu interés en formalización",
+        "Segmento MiPyme con baja adopción previa: beneficio potencial alto"
+      ],
+      "restricciones": ["Disponible para MiPyme formalizable"],
+      "campaña": "Q1-Form"
+    }
+  ],
+  "meta": {
+    "version_modelo": "rec-0.3.1",
+    "version_config": "rules-2025.12.10",
+    "latencia_ms": 245
+  }
+}</pre>
+        <p class="text-muted small mt-2 mb-0">
+          <em>Propósito: entregar una lista relevante, explicable, filtrada y lista para experimentar,
+            sin exponer PII.</em>
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">E1 sin front
+          público</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Validación E1 (sandbox / notebook)</div>
+              <ul class="mb-0 small">
+                <li>Lista ordenada con nombre del servicio.</li>
+                <li>Razones en bullet points por ítem.</li>
+                <li>Badges de contexto: <code>campaña</code>, <code>novedad</code>, <code>elegibilidad</code>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Futuro Front (referencia)</div>
+              <ul class="mb-0 small">
+                <li>Tarjetas con <em>"Por qué te lo recomendamos"</em>.</li>
+                <li>CTA simulado en E1 para validación de flujo.</li>
+                <li>Diseño accesible y sin exposición de PII.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Filtro "ya tomado"</strong></td>
+                <td>Si <code>S-200</code> está en <code>services_taken[]</code>, no aparece en top-K.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Explícitamente "declinado"</strong></td>
+                <td>Ítem excluido y registrado con <code>reason=declined</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Cambio de pesos en config</strong></td>
+                <td>Cambia orden del top-K; log de versión actualizado con nuevo <code>version_config</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Explicabilidad</strong></td>
+                <td>Cada ítem retorna ≥ 1 razón distinta y trazable.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Métricas offline</strong></td>
+                <td>Script produce CSV con <code>coverage / diversity / novelty / precision / recall</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Feature Store</dt>
+          <dd class="col-sm-9">Repositorio/tablas con variables de usuario/servicio listas para inferencia.</dd>
+
+          <dt class="col-sm-3">Re-rank</dt>
+          <dd class="col-sm-9">Reordenamiento posterior al scoring para optimizar diversidad/negocio.</dd>
+
+          <dt class="col-sm-3">MMR</dt>
+          <dd class="col-sm-9">Maximal Marginal Relevance — técnica que balancea relevancia y diversidad.</dd>
+
+          <dt class="col-sm-3">Coverage</dt>
+          <dd class="col-sm-9">% de usuarios con al menos 1 recomendación válida.</dd>
+
+          <dt class="col-sm-3">Diversity (intra-list)</dt>
+          <dd class="col-sm-9">Disimilitud entre ítems recomendados en una lista.</dd>
+
+          <dt class="col-sm-3">Novelty</dt>
+          <dd class="col-sm-9">Grado de "no-obviedad" (no repetir lo popular/tomado).</dd>
+
+          <dt class="col-sm-3 mb-0">Seudonimización</dt>
+          <dd class="col-sm-9 mb-0">Sustitución de PII por una clave no reversible utilizada en dev.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Nota de alcance E1:</strong> Se mide todo (relevancia / latencia / diversidad), se dejan evidencias
+      reproducibles, se garantiza explicabilidad y filtros. No se exige front productivo ni umbrales de KPI aún.
     </div>
 
   </div>
