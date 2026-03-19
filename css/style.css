@@ -1,0 +1,106 @@
+/* ============================================================
+   CCB Sistema Recomendador — Estilos Globales
+   Compartido por: Indice_Diagramas_Epicas.html y todos
+   los Diagrama_Epica_*.html
+   ============================================================ */
+
+
+/* --- Compartidos (índice + épicas) --- */
+
+/* Hero section: el índice usa colores fijos; las épicas usan
+   variables CSS (--hero-start, --hero-end) definidas inline
+   en cada <div class="hero"> para que el gradiente sea único
+   por épica. Ambas variantes dependen de esta regla base. */
+.hero {
+  background: linear-gradient(135deg, var(--hero-start, #0D47A1), var(--hero-end, #1565C0));
+}
+
+
+/* --- Solo épicas (Diagrama_Epica_*.html) --- */
+
+/* Contenedor del diagrama Mermaid: centrado y con scroll horizontal
+   en pantallas pequeñas */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+/* Nodos Mermaid con popover: cursor y transición de opacidad al hover */
+.mermaid svg g.node {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.mermaid svg g.node:hover {
+  opacity: 0.8;
+}
+
+/* Leyenda de colores debajo del diagrama */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #dee2e6;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Tarjetas de Historia de Usuario: borde izquierdo y título
+   coloreados con la variable --accent definida inline en cada card */
+.hu-card-accent {
+  border-left: 4px solid var(--accent);
+}
+
+.hu-card-accent h3 {
+  color: var(--accent);
+}
+
+
+/* --- Solo índice (Indice_Diagramas_Epicas.html) --- */
+
+/* Tarjeta enlace de épica: borde superior coloreado con --color
+   definido inline, con animación de hover */
+.card-epica {
+  border-top: 4px solid var(--color);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-epica:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14) !important;
+  color: inherit;
+}
+
+/* Etiqueta del número de épica en cada tarjeta */
+.epica-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Badge de Historia de Usuario en el índice */
+.hu-badge {
+  font-size: 10.5px;
+  font-weight: 400;
+  background: #f1f3f6 !important;
+  color: #555 !important;
+}
