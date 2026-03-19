@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HU 2.5.2 – Identificación mínima y progresiva</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/bootstrap-loader.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-dark shadow-sm" style="background: #00695C;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.5_Resolucion_Identidad_Omnicanal.html">← Épica 2.5</a>
+        <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-white py-4 px-4" style="--hero-start: #00695C; --hero-end: #00897B;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.5.2</div>
+      <h1 class="fw-bold fs-3 mb-0">Identificación mínima y progresiva</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4 px-4">
+
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00695C;">
+      <div class="card-body">
+        <h2 class="fs-5 fw-bold mb-3" style="color: #00695C;">Enunciado</h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">COMO</div>
+              <p class="mb-0">usuario anónimo o parcialmente identificado</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">QUIERO</div>
+              <p class="mb-0">recibir recomendaciones relevantes con la mínima información que puedo compartir</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARA</div>
+              <p class="mb-0">obtener valor del sistema sin exponer más datos de los necesarios</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Máximo 2 preguntas de perfilamiento inicial</li>
+          <li>Recomendaciones generadas con datos mínimos disponibles</li>
+          <li>Mejora progresiva conforme el usuario comparte más información</li>
+          <li>Transición fluida de anónimo a identificado</li>
+          <li>Datos mínimos nunca se combinan sin consentimiento explícito</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Sesiones anónimas con ID temporal</li>
+          <li>Progressive profiling con consentimiento</li>
+          <li>Modelo degradado para usuarios poco conocidos</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+</body>
+</html>

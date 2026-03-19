@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HU 2.4.1 – Definir reglas de negocio</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/bootstrap-loader.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-dark shadow-sm" style="background: #E65100;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.4_Configuracion_Gobernanza_Reglas.html">← Épica 2.4</a>
+        <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-white py-4 px-4" style="--hero-start: #E65100; --hero-end: #F57C00;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.4.1</div>
+      <h1 class="fw-bold fs-3 mb-0">Definir reglas de negocio</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4 px-4">
+
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #E65100;">
+      <div class="card-body">
+        <h2 class="fs-5 fw-bold mb-3" style="color: #E65100;">Enunciado</h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">COMO</div>
+              <p class="mb-0">administrador de reglas del negocio</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">QUIERO</div>
+              <p class="mb-0">definir y gestionar reglas (listas blancas/negras, exclusiones, restricciones) que controlan las recomendaciones</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARA</div>
+              <p class="mb-0">asegurar que el motor siempre respete las políticas del negocio sin necesidad de redeploy</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Interfaz para crear/editar/activar/desactivar reglas</li>
+          <li>Tipos de regla: whitelist, blacklist, exclusión por segmento, restricción por fecha</li>
+          <li>Reglas tienen prioridad y orden de evaluación configurable</li>
+          <li>Cambios aplicados en la próxima inferencia sin redeploy</li>
+          <li>Historial de cambios con usuario y timestamp</li>
+          <li>Validación antes de activar para detectar conflictos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Reglas almacenadas en YAML o base de datos</li>
+          <li>Motor de reglas desacoplado del modelo ML</li>
+          <li>Versionamiento de configuraciones</li>
+          <li>API para consultar reglas activas</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+</body>
+</html>

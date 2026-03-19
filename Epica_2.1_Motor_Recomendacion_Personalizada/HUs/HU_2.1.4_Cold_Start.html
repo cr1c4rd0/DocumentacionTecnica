@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HU 2.1.4 – Y si no existo (Cold Start)</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/bootstrap-loader.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-dark shadow-sm" style="background: #1565C0;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">← Épica 2.1</a>
+        <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1565C0; --hero-end: #1E88E5;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.1.4</div>
+      <h1 class="fw-bold fs-3 mb-0">Y si no existo (Cold Start)</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4 px-4">
+
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
+      <div class="card-body">
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">COMO</div>
+              <p class="mb-0">usuario nuevo sin historial en el sistema</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">QUIERO</div>
+              <p class="mb-0">recibir recomendaciones relevantes desde mi primera visita</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARA</div>
+              <p class="mb-0">no ver una página vacía o recomendaciones genéricas irrelevantes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Sistema detecta automáticamente usuario cold-start</li>
+          <li>Obtiene datos mínimos de contexto y demografía</li>
+          <li>Aplica estrategia: populares por segmento o más contratados</li>
+          <li>Recolecta primeras interacciones para personalizar progresivamente</li>
+          <li>Transición automática al modelo personalizado al alcanzar umbral de datos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Umbral configurable de interacciones para transición</li>
+          <li>Segmentación demográfica como fallback</li>
+          <li>A/B testing entre estrategias cold-start</li>
+          <li>Métricas específicas para cohorte cold-start</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+</body>
+</html>

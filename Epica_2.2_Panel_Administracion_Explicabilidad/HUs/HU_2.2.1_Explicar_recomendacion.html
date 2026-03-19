@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HU 2.2.1 – Explicar por qué se recomienda (negocio)</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/bootstrap-loader.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-dark shadow-sm" style="background: #6A1B9A;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html">← Épica 2.2</a>
+        <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-white py-4 px-4" style="--hero-start: #6A1B9A; --hero-end: #8E24AA;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.2.1</div>
+      <h1 class="fw-bold fs-3 mb-0">Explicar por qué se recomienda (negocio)</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4 px-4">
+
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #6A1B9A;">
+      <div class="card-body">
+        <h2 class="fs-5 fw-bold mb-3" style="color: #6A1B9A;">Enunciado</h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">COMO</div>
+              <p class="mb-0">administrador del sistema de recomendaciones</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">QUIERO</div>
+              <p class="mb-0">ver explicaciones trazables sobre por qué el motor sugiere ciertos servicios a cada usuario</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARA</div>
+              <p class="mb-0">poder auditar las decisiones del modelo y justificarlas ante el negocio</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Panel muestra desglose de factores por recomendación (features, pesos, scores)</li>
+          <li>Trazabilidad completa: ID de modelo, versión, timestamp</li>
+          <li>Filtros por usuario, servicio, fecha y tipo de explicación</li>
+          <li>Exportación de reportes en CSV/Excel</li>
+          <li>Alertas cuando score cae por debajo de umbral</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Explicabilidad basada en SHAP o LIME</li>
+          <li>API de explicabilidad independiente del motor</li>
+          <li>Logs estructurados en sistema de observabilidad</li>
+          <li>Dashboard en React o similar con charts</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+</body>
+</html>

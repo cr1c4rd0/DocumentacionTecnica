@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HU 2.16.2 – Ajuste de modelo por feedback</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../js/bootstrap-loader.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-dark shadow-sm" style="background: #2E7D32;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.16_Aprendizaje_Continuo.html">← Épica 2.16</a>
+        <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-white py-4 px-4" style="--hero-start: #2E7D32; --hero-end: #388E3C;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.16.2</div>
+      <h1 class="fw-bold fs-3 mb-0">Ajuste de modelo por feedback</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4 px-4">
+
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
+      <div class="card-body">
+        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">COMO</div>
+              <p class="mb-0">Data Scientist responsable del modelo de recomendación</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">QUIERO</div>
+              <p class="mb-0">usar el feedback e interacciones recolectados para reentrenar y mejorar el modelo periódicamente</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARA</div>
+              <p class="mb-0">que el motor evolucione con el comportamiento real de los usuarios y mejore sus métricas de negocio</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Pipeline de reentrenamiento consume feedback + interacciones de las últimas N semanas</li>
+          <li>Validación de fairness y sesgo antes de desplegar nueva versión</li>
+          <li>Comparación A/B entre versión actual y nueva candidata</li>
+          <li>Rollback automático si métricas caen más del umbral configurado</li>
+          <li>Notificación al equipo cuando el modelo se actualiza en producción</li>
+          <li>Incremento mínimo de precisión del 2% para aprobar nueva versión</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>MLflow o similar para tracking de experimentos</li>
+          <li>Pipeline orquestado con Airflow</li>
+          <li>Validación de sesgo con Fairlearn o AIF360</li>
+          <li>Blue-green deployment para cambio de versión</li>
+          <li>Alertas en Grafana/Datadog sobre degradación de métricas</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+</body>
+</html>
