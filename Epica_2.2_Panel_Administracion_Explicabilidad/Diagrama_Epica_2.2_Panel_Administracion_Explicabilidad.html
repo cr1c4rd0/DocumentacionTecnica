@@ -5,52 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.2 – Panel de Administración y Explicabilidad</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #6A1B9A, #9C27B0);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #6A1B9A; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #6A1B9A; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.2</div>
-    <h1>Panel de Administración y Explicabilidad</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.2.1: Explicar por qué se recomienda (negocio)</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #4A148C;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #6A1B9A; --hero-end: #8E24AA;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.2</div>
+      <h1 class="fw-bold fs-3 mb-3">Panel de Administración y Explicabilidad</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.2.1: Explicar por qué se recomienda (negocio)</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.2.1 — Explicar por qué se recomienda (negocio)</h3><p>Los administradores ven explicaciones trazables sobre por qué el motor sugiere ciertos servicios, con desglose de factores y scores.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #6A1B9A;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.2.1 — Explicar por qué se recomienda (negocio)</h3>
+            <p class="card-text small text-muted mb-0">Los administradores ven explicaciones trazables sobre por qué el motor sugiere ciertos servicios, con desglose de factores y scores.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU221["HU 2.2.1 — Explicar por qué se recomienda"]
       A1([Administrador de negocio]) --> B1[Accede al Panel\nde Explicabilidad]
@@ -73,10 +65,38 @@ flowchart TD
       P3 -.->|Datos| P4[Base de datos\nde usuarios]
       P3 -.->|Logs| P5[Sistema de auditoría]
     end
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Administrador de negocio": "Rol que accede al panel de explicabilidad para inspeccionar las recomendaciones generadas por el motor y verificar su trazabilidad.",
+      "Accede al Panel": "Punto de entrada al panel de explicabilidad donde el administrador puede consultar el razonamiento detrás de cada recomendación.",
+      "Selecciona cliente / usuario": "El administrador elige el cliente o usuario específico cuyas recomendaciones desea inspeccionar y auditar.",
+      "Sistema consulta": "El sistema recupera las recomendaciones actualmente generadas para el usuario seleccionado desde el motor de recomendación.",
+      "Carga componentes del score": "Se cargan los factores ponderados, pesos de cada dimensión y el segmento del usuario que componen el score de recomendación.",
+      "Muestra explicación legible": "El sistema presenta la explicación en lenguaje de negocio comprensible, sin jerga técnica, para facilitar la toma de decisiones.",
+      "¿Admin desea ajustar": "Punto de decisión: el administrador evalúa si necesita modificar parámetros del motor para mejorar las recomendaciones.",
+      "Modifica parámetros": "El administrador ajusta variables como pesos, umbrales o segmentos directamente desde el panel de explicabilidad.",
+      "Sistema recalcula impacto": "Tras el ajuste de parámetros, el sistema recalcula el efecto en las recomendaciones y actualiza la explicación en tiempo real.",
+      "Exporta o guarda": "El administrador puede exportar o guardar la explicación generada para documentación, auditoría o informes.",
+      "Sistema registra auditoría": "Cada consulta y modificación queda registrada en el sistema de auditoría con usuario, timestamp y parámetros consultados.",
+      "Fin: Recomendación": "Estado final: la recomendación queda documentada con trazabilidad completa y disponible para revisiones futuras.",
+      "Administrador": "Actor principal del sistema de explicabilidad que consulta y valida el comportamiento del motor de recomendación.",
+      "Panel Admin": "Interfaz de administración que actúa como intermediario entre el administrador y el motor de recomendación.",
+      "Motor de": "Motor de recomendación que procesa perfiles de usuario y genera sugerencias de servicios con scores explicables.",
+      "Base de datos": "Repositorio donde se almacenan los perfiles, historiales e interacciones de los usuarios del sistema.",
+      "Sistema de auditoría": "Componente que registra todas las consultas y modificaciones realizadas por los administradores para garantizar trazabilidad."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#6A1B9A', primaryTextColor: '#fff',

@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.8 – UI Recomendador Tipo Catálogo</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #0277BD, #039BE5);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #0277BD; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #0277BD; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.8</div>
-    <h1>UI Recomendador Tipo Catálogo</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.8.1: UI de carruseles para explorar recomendaciones</span><span class="hu-pill">HU 2.8.2: Filtros y botón Sorpréndeme</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #01579B;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #0277BD; --hero-end: #0288D1;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.8</div>
+      <h1 class="fw-bold fs-3 mb-3">UI Recomendador Tipo Catálogo</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.8.1: UI de carruseles para explorar recomendaciones</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.8.2: Filtros y botón Sorpréndeme</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.8.1 — UI de carruseles para explorar recomendaciones</h3><p>Visualización de recomendaciones en carruseles navegables horizontales con 5 secciones temáticas, responsive y accesible.</p></div><div class="hu-card"><h3>HU 2.8.2 — Filtros y botón Sorpréndeme</h3><p>Filtros por modalidad/temática y botón 'Sorpréndeme' que activa exploración controlada con umbral de diversidad.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #0277BD;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.8.1 — UI de carruseles para explorar recomendaciones</h3>
+            <p class="card-text small text-muted mb-0">Visualización de recomendaciones en carruseles navegables horizontales con 5 secciones temáticas, responsive y accesible.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #0277BD;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.8.2 — Filtros y botón Sorpréndeme</h3>
+            <p class="card-text small text-muted mb-0">Filtros por modalidad/temática y botón 'Sorpréndeme' que activa exploración controlada con umbral de diversidad.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU281["HU 2.8.1 — UI de carruseles para recomendaciones"]
       A1([Usuario accede al\nRecomendador CCB]) --> B1[UI captura contexto\nuser_id, segmento, dispositivo]
@@ -78,10 +79,43 @@ flowchart TD
       J2 --> K2
     end
     K1 --> HU282
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Usuario accede al": "Punto de entrada: el usuario navega al módulo Recomendador CCB desde el portal web o la aplicación móvil.",
+      "UI captura contexto": "La interfaz recopila automáticamente el identificador del usuario, su segmento de negocio y el tipo de dispositivo utilizado.",
+      "Consulta API": "La UI hace una llamada al API del motor de recomendación para obtener la lista personalizada de servicios sugeridos.",
+      "¿Respuesta": "Punto de decisión que evalúa el estado de la respuesta del API: error, vacía, cargando u OK con datos.",
+      "Muestra error state": "La UI presenta un mensaje de error amigable con opción para reintentar la solicitud al motor de recomendación.",
+      "Muestra empty state": "Cuando no hay recomendaciones disponibles, se muestran sugerencias genéricas para que el usuario no quede sin opciones.",
+      "Muestra loading skeleton": "Mientras se cargan las recomendaciones, se muestra un esqueleto animado para indicar al usuario que la carga está en proceso.",
+      "Renderiza 5 carruseles:": "Se despliegan cinco secciones temáticas de carruseles: recomendados, necesidad, populares en segmento, afiliados y exploración.",
+      "Cada tarjeta muestra:": "Cada tarjeta de servicio exhibe nombre, descripción breve, razón de la recomendación, elegibilidad del usuario y CTA de acción.",
+      "Usuario navega carruseles": "El usuario puede navegar los carruseles mediante swipe en dispositivos móviles o con flechas de navegación en escritorio.",
+      "Captura eventos de": "La UI registra todos los eventos de interacción del usuario (clics, tiempo de visualización, scrolls) para telemetría.",
+      "Usuario en carrusel": "Estado donde el usuario ya está interactuando con el carrusel de recomendaciones y puede aplicar filtros.",
+      "Ve controles de filtro": "El usuario visualiza los controles disponibles para filtrar las recomendaciones por modalidad (presencial/virtual) y temática.",
+      "Selecciona uno o más filtros": "El usuario elige uno o múltiples criterios de filtrado para refinar las recomendaciones mostradas en los carruseles.",
+      "Sistema filtra carruseles": "El sistema aplica los criterios de filtrado seleccionados y actualiza dinámicamente los carruseles mostrados.",
+      "Actualiza vista": "La interfaz se actualiza mostrando únicamente las recomendaciones que cumplen con los filtros seleccionados por el usuario.",
+      "Usuario ve recomendaciones": "Estado donde el usuario visualiza su catálogo de recomendaciones personalizado según los filtros aplicados.",
+      "Usuario presiona": "El usuario activa el botón 'Sorpréndeme' para descubrir servicios fuera de su zona habitual de interés.",
+      "Sistema activa exploración": "Se activa el modo de exploración controlada que usa un umbral de diversidad para generar recomendaciones más variadas.",
+      "Genera recomendaciones": "El sistema produce recomendaciones menos predecibles pero relevantes, ampliando el horizonte de descubrimiento del usuario.",
+      "Usuario descubre servicios": "El usuario es expuesto a servicios que normalmente no aparecerían en sus recomendaciones, fomentando la exploración.",
+      "Sistema registra": "Se almacenan los filtros aplicados y el nivel de diversidad utilizado para enriquecer el perfil de preferencias del usuario."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#0277BD', primaryTextColor: '#fff',

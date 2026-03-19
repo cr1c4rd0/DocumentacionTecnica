@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.3 – Gestión de Promoción de Servicios</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #2E7D32, #43A047);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #2E7D32; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #2E7D32; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.3</div>
-    <h1>Gestión de Promoción de Servicios</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.3.1: Resalta lo gratuito</span><span class="hu-pill">HU 2.3.2: Negocio puede destacar servicios</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #1B5E20;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #2E7D32; --hero-end: #43A047;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.3</div>
+      <h1 class="fw-bold fs-3 mb-3">Gestión de Promoción de Servicios</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.3.1: Resalta lo gratuito</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.3.2: Negocio puede destacar servicios</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.3.1 — Resalta lo gratuito</h3><p>El sistema identifica y destaca servicios gratuitos en recomendaciones, mostrando etiqueta 'Gratuito' de forma prominente.</p></div><div class="hu-card"><h3>HU 2.3.2 — Negocio puede destacar servicios</h3><p>Los admins seleccionan servicios para promover estratégicamente, definiendo período, intensidad y midiendo el impacto.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #2E7D32;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.3.1 — Resalta lo gratuito</h3>
+            <p class="card-text small text-muted mb-0">El sistema identifica y destaca servicios gratuitos en recomendaciones, mostrando etiqueta 'Gratuito' de forma prominente.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #2E7D32;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.3.2 — Negocio puede destacar servicios</h3>
+            <p class="card-text small text-muted mb-0">Los admins seleccionan servicios para promover estratégicamente, definiendo período, intensidad y midiendo el impacto.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU231["HU 2.3.1 — Resalta lo gratuito"]
       A1([Sistema / Admin]) --> B1[Identifica servicios gratuitos\nen catálogo]
@@ -79,10 +80,43 @@ flowchart TD
       K2 --> L2([Fin campaña])
     end
     J1 -.->|Aplica misma lógica| HU232
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Sistema / Admin": "Actor que inicia el proceso de identificación y destacado de servicios gratuitos en el catálogo del recomendador.",
+      "Identifica servicios gratuitos": "El sistema recorre el catálogo y detecta todos los servicios marcados sin costo para darles visibilidad preferencial.",
+      "Marca con indicador": "Se asigna el atributo 'sin_costo = true' a los servicios gratuitos para que el motor los trate de manera diferenciada.",
+      "Motor aplica boost": "El motor de recomendación incrementa el score de visibilidad de los servicios gratuitos para que aparezcan con mayor frecuencia.",
+      "UI muestra etiqueta": "La interfaz de usuario despliega de forma prominente la etiqueta 'GRATUITO' en las tarjetas de recomendación correspondientes.",
+      "Usuario ve servicio gratuito": "Estado en que el usuario final visualiza el servicio gratuito destacado dentro de sus recomendaciones personalizadas.",
+      "Sistema recolecta": "Se capturan métricas de interacción (clics, tiempo de visualización) sobre los servicios gratuitos destacados.",
+      "¿Engagement": "Punto de decisión que evalúa si el nivel de interacción con los servicios gratuitos es el esperado según los KPIs definidos.",
+      "Admin ajusta": "El administrador modifica la intensidad del boost aplicado a los servicios gratuitos para optimizar el engagement.",
+      "Mantener configuración": "La configuración actual se mantiene porque el engagement es adecuado; no se requieren ajustes adicionales.",
+      "Admin / Product Manager": "Rol con permisos para gestionar campañas de promoción de servicios específicos dentro del recomendador.",
+      "Accede al panel de": "El administrador ingresa al panel de gestión de servicios donde puede crear y configurar campañas de promoción.",
+      "Selecciona servicio": "El administrador elige el servicio específico que desea promover estratégicamente en las recomendaciones.",
+      "Define período de": "Se establece el rango de fechas durante el cual el servicio tendrá visibilidad promocional incrementada.",
+      "Establece nivel de boost": "Se configura la intensidad de la promoción: qué tanto se incrementa el score del servicio en las recomendaciones.",
+      "Sistema aplica boost": "El motor incorpora el boost configurado al score del servicio seleccionado, afectando su posición en las recomendaciones.",
+      "Servicio destacado": "El servicio promovido aparece con mayor frecuencia y en posiciones más prominentes en los carruseles de recomendación.",
+      "Usuario ve servicio": "El usuario final visualiza el servicio promocionado entre sus recomendaciones con mayor frecuencia.",
+      "Sistema registra impacto": "Se capturan métricas de conversión y clics del servicio promovido para evaluar el retorno de la campaña.",
+      "¿Admin desea": "Punto de decisión donde el administrador evalúa si debe ajustar los parámetros de la campaña en curso.",
+      "Sistema desactiva boost": "Al vencer el período de vigencia, el sistema elimina automáticamente el boost y el servicio vuelve a su score natural.",
+      "Fin campaña": "La campaña de promoción ha concluido y el sistema ha revertido el servicio a su comportamiento normal en el catálogo."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#2E7D32', primaryTextColor: '#fff',

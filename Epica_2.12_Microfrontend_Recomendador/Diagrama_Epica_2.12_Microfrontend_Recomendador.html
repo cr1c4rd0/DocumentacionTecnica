@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.12 – Micro-frontend Recomendador</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #37474F, #546E7A);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #37474F; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #37474F; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.12</div>
-    <h1>Micro-frontend Recomendador</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.12.1: Web component / micro-frontend</span><span class="hu-pill">HU 2.12.2: Navegación integrada con asistente</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #263238;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #37474F; --hero-end: #455A64;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.12</div>
+      <h1 class="fw-bold fs-3 mb-3">Micro-frontend Recomendador</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.12.1: Web component / micro-frontend</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.12.2: Navegación integrada con asistente</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.12.1 — Web component / micro-frontend</h3><p>El Recomendador se integra como Custom Element reutilizable en el portal CCB, con lazy load, responsive y seguridad anti-XSS.</p></div><div class="hu-card"><h3>HU 2.12.2 — Navegación integrada con asistente</h3><p>El usuario se mueve fluidamente entre el asistente conversacional y el Recomendador con sesión y contexto compartidos.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #37474F;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.12.1 — Web component / micro-frontend</h3>
+            <p class="card-text small text-muted mb-0">El Recomendador se integra como Custom Element reutilizable en el portal CCB, con lazy load, responsive y seguridad anti-XSS.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #37474F;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.12.2 — Navegación integrada con asistente</h3>
+            <p class="card-text small text-muted mb-0">El usuario se mueve fluidamente entre el asistente conversacional y el Recomendador con sesión y contexto compartidos.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU2121["HU 2.12.1 — Web Component / Micro-frontend"]
       A1([Equipo web CCB]) --> B1[Importa componente\nWeb Component o iframe micro-frontend]
@@ -77,10 +78,43 @@ flowchart TD
       F2 --> K2[Sistema registra navegación:\norigen asistente vs directo]
     end
     K1 -.->|Eventos de interacción| HU2122
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Equipo web CCB": "El equipo de desarrollo web de CCB que integra el componente recomendador en las páginas del portal institucional.",
+      "Importa componente": "El equipo importa el recomendador como Web Component estándar o como iframe de micro-frontend según la necesidad.",
+      "Incrusta en página destino": "El componente se incrusta en la página del portal con los parámetros de contexto necesarios para su personalización.",
+      "Componente inicializa": "El componente ejecuta su proceso de inicialización, cargando recursos de forma lazy para no impactar el rendimiento.",
+      "Consulta API Recomendador": "El micro-frontend hace una solicitud al API del recomendador con el ID de usuario, segmento y contexto de la página.",
+      "¿API responde?": "Punto de decisión que evalúa si el API del recomendador respondió correctamente, con error o con datos válidos.",
+      "Muestra fallback": "Ante un error del API, el componente muestra un estado alternativo sin romper el layout ni la funcionalidad de la página.",
+      "Renderiza recomendaciones": "El componente despliega las recomendaciones personalizadas en la interfaz en menos de 2 segundos.",
+      "Aplica CSS del portal": "Los estilos visuales del recomendador se adaptan al design system del portal CCB sin generar conflictos de CSS.",
+      "Componente integrado": "Estado donde el micro-frontend está correctamente integrado, es responsive en todos los dispositivos y funciona correctamente.",
+      "Captura interacciones": "El componente registra los eventos del usuario y los comunica al aplicativo padre mediante eventos del DOM.",
+      "Usuario interactúa": "El usuario está usando el asistente conversacional de CCB y expresa una necesidad que puede satisfacerse con el recomendador.",
+      "Asistente identifica": "El asistente conversacional detecta e interpreta la necesidad específica del usuario expresada en lenguaje natural.",
+      "Asistente genera": "El asistente construye un deep link al recomendador con el contexto de la necesidad del usuario pre-establecido.",
+      "Recomendador abre con": "El módulo recomendador se inicializa directamente con el contexto de necesidad del asistente ya configurado.",
+      "Sesión compartida:": "La sesión entre asistente y recomendador comparte el ID de usuario, sesión, necesidad identificada y segmento.",
+      "Usuario explora": "El usuario navega las recomendaciones del módulo, que están contextualizadas por la necesidad identificada por el asistente.",
+      "¿Usuario desea": "Punto de decisión que determina si el usuario quiere continuar en el recomendador o regresar al asistente conversacional.",
+      "Botón volver al asistente": "Botón de navegación que permite al usuario retornar al asistente conservando todo el contexto de la conversación activa.",
+      "Asistente retoma conversación": "El asistente conversacional retoma el diálogo con el usuario en el punto exacto donde se detuvo, con el estado previo.",
+      "Usuario continúa en": "El usuario decide quedarse en el módulo recomendador en lugar de regresar al asistente conversacional.",
+      "Sistema registra navegación:": "Se almacena el origen de la sesión (asistente o acceso directo) para análisis de patrones de uso y optimización."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#37474F', primaryTextColor: '#fff',

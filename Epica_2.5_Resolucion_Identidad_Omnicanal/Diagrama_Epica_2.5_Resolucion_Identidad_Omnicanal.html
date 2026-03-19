@@ -5,52 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.5 – Resolución de Identidad Omnicanal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #00695C, #00897B);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #00695C; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #00695C; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.5</div>
-    <h1>Resolución de Identidad Omnicanal</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.5.1: Resolución de identidad omnicanal</span><span class="hu-pill">HU 2.5.2: Identificación mínima y progresiva</span><span class="hu-pill">HU 2.5.3: Respeta mis preferencias</span><span class="hu-pill">HU 2.5.4: Preferencias y privacidad en UI</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #004D40;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #00695C; --hero-end: #00897B;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.5</div>
+      <h1 class="fw-bold fs-3 mb-3">Resolución de Identidad Omnicanal</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.5.1: Resolución de identidad omnicanal</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.5.2: Identificación mínima y progresiva</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.5.3: Respeta mis preferencias</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.5.4: Preferencias y privacidad en UI</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.5.1 — Resolución de identidad omnicanal</h3><p>El sistema unifica la identidad del usuario a través de canales (email, teléfono, IDs, cookies) generando un ID unificado con trazabilidad.</p></div><div class="hu-card"><h3>HU 2.5.2 — Identificación mínima y progresiva</h3><p>Cuando no se puede identificar al usuario, el sistema activa perfilamiento mínimo (2 preguntas) para generar recomendaciones iniciales.</p></div><div class="hu-card"><h3>HU 2.5.3 — Respeta mis preferencias</h3><p>El motor respeta las preferencias de comunicación y contenido del usuario, excluyendo servicios no deseados.</p></div><div class="hu-card"><h3>HU 2.5.4 — Preferencias y privacidad en UI</h3><p>La UI permite al usuario gestionar sus preferencias de privacidad, consentimiento y canales de comunicación.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00695C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.5.1 — Resolución de identidad omnicanal</h3>
+            <p class="card-text small text-muted mb-0">El sistema unifica la identidad del usuario a través de canales (email, teléfono, IDs, cookies) generando un ID unificado con trazabilidad.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00695C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.5.2 — Identificación mínima y progresiva</h3>
+            <p class="card-text small text-muted mb-0">Cuando no se puede identificar al usuario, el sistema activa perfilamiento mínimo (2 preguntas) para generar recomendaciones iniciales.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00695C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.5.3 — Respeta mis preferencias</h3>
+            <p class="card-text small text-muted mb-0">El motor respeta las preferencias de comunicación y contenido del usuario, excluyendo servicios no deseados.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00695C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.5.4 — Preferencias y privacidad en UI</h3>
+            <p class="card-text small text-muted mb-0">La UI permite al usuario gestionar sus preferencias de privacidad, consentimiento y canales de comunicación.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU251["HU 2.5.1 — Resolución de identidad omnicanal"]
       A1([Usuario accede al\nsistema CCB]) --> B1[Sistema captura identificadores\nemail, teléfono, CC/NIT, cookies, social login]
@@ -90,10 +109,50 @@ flowchart TD
     end
     I1 --> HU253
     HU253 --> HU254
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Usuario accede al": "Momento en que el usuario inicia una sesión o interacción con cualquier canal del sistema CCB (web, app, presencial).",
+      "Sistema captura identificadores": "El sistema recopila todos los identificadores disponibles del usuario: email, teléfono, cédula/NIT, cookies y social login.",
+      "¿Consentimiento": "Verificación de que el usuario ha otorgado consentimiento explícito para el uso y vinculación de sus datos personales.",
+      "Solicita consentimiento": "El sistema solicita al usuario que autorice el uso de caché y datos para generar su perfil unificado omnicanal.",
+      "Aplica reglas de matching": "Se ejecutan algoritmos de coincidencia determinísticos (datos exactos) y probabilísticos (similitudes) para vincular identidades.",
+      "¿Identidad": "Punto de decisión que evalúa si los identificadores capturados son suficientes para resolver la identidad del usuario.",
+      "Genera ID unificado": "Se crea un identificador único (client_unified_id) que agrupa todas las identidades del usuario en todos los canales.",
+      "Persiste en identity graph": "El perfil unificado se almacena en el grafo de identidades omnicanal para su uso en futuras interacciones.",
+      "Perfil consistente habilitado": "Estado donde el usuario tiene un perfil completo y consistente que permite generar recomendaciones Top-5 personalizadas.",
+      "Usuario no identificado": "Usuario que no pudo ser identificado a través de los mecanismos estándar y requiere un proceso de perfilamiento alternativo.",
+      "Sistema activa": "El sistema inicia el flujo de perfilamiento mínimo diseñado para usuarios anónimos o no identificados.",
+      "Lanza 2 preguntas de": "Se presentan al usuario exactamente 2 preguntas de contexto para obtener información básica sin requerir registro.",
+      "Usuario responde": "El usuario provee su necesidad principal y la categoría de servicio de su interés mediante las preguntas de contexto.",
+      "Sistema genera": "Con base en las respuestas, el sistema construye recomendaciones iniciales Top-5 adaptadas al perfil mínimo del usuario.",
+      "Recolecta interacciones": "Se capturan progresivamente las interacciones del usuario para enriquecer su perfil anónimo con cada sesión.",
+      "¿Datos suficientes": "Evaluación de si las interacciones acumuladas son suficientes para identificar al usuario y crear su perfil completo.",
+      "Mantiene perfil anónimo": "El usuario continúa con recomendaciones básicas basadas en su perfil anónimo hasta que se pueda identificar formalmente.",
+      "Sistema / Motor": "El motor de recomendación que consulta y aplica las preferencias del usuario al generar sus recomendaciones.",
+      "Carga preferencias": "Se recuperan del sistema las preferencias previamente configuradas por el usuario sobre servicios y comunicaciones.",
+      "Filtra servicios": "Los servicios marcados como 'not_interested' por el usuario son eliminados de la lista de candidatos a recomendar.",
+      "Respeta frecuencia": "El sistema controla la frecuencia de comunicaciones según la preferencia del usuario para no saturarlo con mensajes.",
+      "Excluye canales": "Los canales de comunicación que el usuario ha marcado como no deseados son excluidos de cualquier contacto.",
+      "Recomendaciones respetan": "Estado donde las recomendaciones generadas respetan completamente las preferencias de privacidad del usuario.",
+      "Usuario": "Usuario final del sistema que gestiona sus preferencias de privacidad y comunicación en la interfaz de configuración.",
+      "Accede a configuración": "El usuario ingresa a la sección de privacidad de la UI donde puede personalizar su experiencia y gestionar consentimientos.",
+      "Define preferencias:": "El usuario configura sus preferencias de canales preferidos, temáticas de interés y frecuencia de comunicaciones.",
+      "Gestiona consentimientos": "El usuario revisa y gestiona sus consentimientos de privacidad según las normativas GDPR y Habeas Data colombiano.",
+      "Sistema persiste y aplica": "Las preferencias configuradas se guardan y se aplican inmediatamente en tiempo real a todas las recomendaciones futuras.",
+      "Experiencia personalizada": "Estado final donde el usuario disfruta de una experiencia completamente personalizada que respeta su privacidad."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#00695C', primaryTextColor: '#fff',

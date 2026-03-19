@@ -5,52 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.11 – Integración con Formularios de Servicios</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #00796B, #00ACC1);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #00796B; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #00796B; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.11</div>
-    <h1>Integración con Formularios de Servicios</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.11.1: Redirección al formulario correcto</span><span class="hu-pill">HU 2.11.2: Registro del resultado de inscripción</span><span class="hu-pill">HU 2.11.3: Atribución y ventana de conversión parametrizable</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #004D40;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #00796B; --hero-end: #00897B;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.11</div>
+      <h1 class="fw-bold fs-3 mb-3">Integración con Formularios de Servicios</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.11.1: Redirección al formulario correcto</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.11.2: Registro del resultado de inscripción</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.11.3: Atribución y ventana de conversión parametrizable</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.11.1 — Redirección al formulario correcto</h3><p>Al hacer clic en CTA de una recomendación, el sistema genera deep link con contexto y redirige al formulario correcto en ≤500ms.</p></div><div class="hu-card"><h3>HU 2.11.2 — Registro del resultado de inscripción</h3><p>El sistema captura el estado final del intento de inscripción vía webhook/callback para atribuir conversiones.</p></div><div class="hu-card"><h3>HU 2.11.3 — Atribución y ventana de conversión parametrizable</h3><p>Admin configura ventanas de conversión y modelos de atribución (first_click, last_click, linear, time_decay) sin redeploy.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00796B;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.11.1 — Redirección al formulario correcto</h3>
+            <p class="card-text small text-muted mb-0">Al hacer clic en CTA de una recomendación, el sistema genera deep link con contexto y redirige al formulario correcto en ≤500ms.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00796B;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.11.2 — Registro del resultado de inscripción</h3>
+            <p class="card-text small text-muted mb-0">El sistema captura el estado final del intento de inscripción vía webhook/callback para atribuir conversiones.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #00796B;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.11.3 — Atribución y ventana de conversión parametrizable</h3>
+            <p class="card-text small text-muted mb-0">Admin configura ventanas de conversión y modelos de atribución (first_click, last_click, linear, time_decay) sin redeploy.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU2111["HU 2.11.1 — Redirección al formulario correcto"]
       A1([Usuario hace clic en CTA\nde recomendación]) --> B1[Sistema valida\nelegibilidad / requisitos]
@@ -90,10 +100,51 @@ flowchart TD
     end
     K1 --> HU2112
     K2 --> HU2113
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Usuario hace clic en CTA": "El usuario activa el botón de llamada a la acción (CTA) de una recomendación para inscribirse o conocer más del servicio.",
+      "Sistema valida": "El sistema verifica si el usuario cumple los requisitos de elegibilidad para acceder al servicio seleccionado.",
+      "¿Elegible?": "Punto de decisión que determina si el usuario cumple todos los requisitos de elegibilidad para el servicio.",
+      "Muestra información": "Si el usuario no es elegible, se le muestra qué requisitos le faltan cumplir para acceder al servicio.",
+      "Construye deep link": "Se genera un enlace profundo que incluye el ID del servicio, contexto del usuario, segmento e ID de la recomendación.",
+      "Valida URL destino": "El sistema verifica que la URL de destino sea válida, segura y que los parámetros no contengan vulnerabilidades.",
+      "¿URL válida?": "Punto de decisión que verifica la validez y seguridad de la URL construida para el deep link.",
+      "Fallback al portal": "Si la URL no es válida, se redirige al usuario al portal genérico de servicios de CCB como alternativa segura.",
+      "Redirige en ≤ 500ms": "La redirección al formulario de inscripción ocurre en menos de 500 milisegundos con los datos del usuario pre-rellenados.",
+      "Usuario ve formulario correcto": "El usuario llega al formulario específico del servicio con sus datos personales ya cargados para facilitar la inscripción.",
+      "Sistema registra:": "Se almacena el evento de redirección con la URL de destino y el timestamp para trazabilidad de la conversión.",
+      "Usuario interactúa": "El usuario está en el formulario del servicio y decide completar la inscripción, dejarla incompleta o cancelarla.",
+      "Usuario completa o cancela": "El usuario toma una acción definitiva en el formulario: lo completa, lo abandona incompleto o lo cancela explícitamente.",
+      "Sistema de formularios": "El sistema externo de formularios envía una notificación webhook al recomendador con el resultado de la interacción.",
+      "¿Estado recibido?": "Evaluación del tipo de estado recibido via webhook: completado, incompleto, cancelado o error técnico.",
+      "Estado: inscripción_completada": "El usuario completó exitosamente el proceso de inscripción al servicio recomendado.",
+      "Estado: inscripción_incompleta": "El usuario inició el proceso pero no completó todos los pasos requeridos para la inscripción.",
+      "Estado: cancelado": "El usuario decidió explícitamente no continuar con el proceso de inscripción al servicio.",
+      "Estado: error_técnico": "Se produjo un error técnico durante el proceso de inscripción que impidió su completación.",
+      "Recomendador consolida": "El recomendador registra la señal de conversión asegurando idempotencia para evitar duplicados en las métricas.",
+      "Reintento automático": "Ante un error técnico, el sistema reintenta el registro de la conversión con backoff exponencial para garantizar entrega.",
+      "Señal de conversión": "Estado donde la conversión quedó registrada de forma completa y trazable en el sistema de atribución.",
+      "Admin de negocio": "Rol que configura las reglas de atribución de conversiones para medir el impacto real del recomendador.",
+      "Accede al panel": "El administrador ingresa al panel de configuración de atribución para definir cómo se medirán las conversiones.",
+      "Define ventana de conversión": "Se establece el período máximo (en horas o días) en que una inscripción se puede atribuir a una recomendación.",
+      "Selecciona modelo de atribución:": "El administrador elige el modelo matemático de atribución: primer clic, último clic, lineal o decaimiento temporal.",
+      "Aplica filtros adicionales": "Se pueden aplicar filtros adicionales, como considerar solo conversiones de servicios de pago para métricas financieras.",
+      "Sistema genera policy_version_id": "Se crea un identificador de versión de la política de atribución para aplicación retrospectiva y trazabilidad.",
+      "Recalcula métricas": "El sistema recalcula las métricas históricas bajo el nuevo modelo de atribución en un proceso batch de máximo 30 minutos.",
+      "Admin ve métricas actualizadas": "El administrador visualiza el dashboard de conversiones con las métricas recalculadas bajo el nuevo modelo de atribución."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#00796B', primaryTextColor: '#fff',

@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.7 – Reglas de Exclusión</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #B71C1C, #E53935);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #B71C1C; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #B71C1C; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.7</div>
-    <h1>Reglas de Exclusión</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.7.1: Exclusión de servicios ya consumidos</span><span class="hu-pill">HU 2.7.2: Exclusión por descarte explícito</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #7F0000;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #B71C1C; --hero-end: #C62828;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.7</div>
+      <h1 class="fw-bold fs-3 mb-3">Reglas de Exclusión</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.7.1: Exclusión de servicios ya consumidos</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.7.2: Exclusión por descarte explícito</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.7.1 — Exclusión de servicios ya consumidos</h3><p>El motor excluye servicios que el usuario ya ha tomado, validando contra historial de transacciones y registro de consumos.</p></div><div class="hu-card"><h3>HU 2.7.2 — Exclusión por descarte explícito</h3><p>Si el usuario descarta una recomendación, el sistema la oculta por una ventana temporal configurable con control del usuario.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #B71C1C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.7.1 — Exclusión de servicios ya consumidos</h3>
+            <p class="card-text small text-muted mb-0">El motor excluye servicios que el usuario ya ha tomado, validando contra historial de transacciones y registro de consumos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #B71C1C;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.7.2 — Exclusión por descarte explícito</h3>
+            <p class="card-text small text-muted mb-0">Si el usuario descarta una recomendación, el sistema la oculta por una ventana temporal configurable con control del usuario.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU271["HU 2.7.1 — Exclusión de servicios ya consumidos"]
       A1([Motor genera candidatos\nde recomendación]) --> B1[Consulta historial\nde consumo del usuario]
@@ -79,10 +80,42 @@ flowchart TD
       L2 --> K2
     end
     I1 --> HU272
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Motor genera candidatos": "El motor de recomendación produce la lista inicial de servicios candidatos antes de aplicar las reglas de exclusión.",
+      "Consulta historial": "El sistema accede al historial de consumo del usuario para identificar qué servicios ya ha tomado anteriormente.",
+      "Verifica cada servicio": "Cada servicio candidato es verificado individualmente contra el registro de transacciones del usuario.",
+      "¿Ya fue": "Punto de decisión que determina si el servicio candidato ya fue consumido o adquirido previamente por el usuario.",
+      "Marca como TAKEN": "El servicio se marca con el estado TAKEN y se elimina de la lista de candidatos elegibles para este usuario.",
+      "Registra motivo": "Se almacena el motivo de exclusión 'exclusion_reason: taken' en los logs para trazabilidad y análisis posterior.",
+      "Mantiene en": "El servicio no tiene historial de consumo por el usuario, por lo que se mantiene como candidato elegible a recomendar.",
+      "Consolida lista": "Se genera la lista depurada de candidatos que no han sido consumidos previamente por el usuario.",
+      "Lista depurada": "Lista final de servicios candidatos que excluye todos los que el usuario ya ha tomado, lista para ser procesada.",
+      "Usuario ve recomendación": "El usuario visualiza una recomendación activa en la interfaz del recomendador y decide si le interesa o no.",
+      "Usuario hace clic en": "El usuario utiliza el botón de ocultar o descartar para indicar explícitamente que no le interesa esa recomendación.",
+      "Sistema registra": "El sistema almacena el descarte explícito del usuario asociado al service_id, con timestamp y contexto de la sesión.",
+      "Aplica ventana temporal": "Se configura un período (t_days) durante el cual el servicio descartado no aparecerá en las recomendaciones del usuario.",
+      "Servicio oculto": "El servicio descartado permanece oculto durante el período de ventana temporal configurado por el administrador.",
+      "¿Venció": "Evaluación de si el período de ocultamiento temporal del servicio descartado ha expirado.",
+      "Servicio sigue excluido": "El período de ventana no ha vencido, por lo que el servicio permanece excluido de las recomendaciones activas.",
+      "Servicio vuelve": "Una vez vencida la ventana temporal, el servicio regresa automáticamente al pool de candidatos elegibles.",
+      "¿Usuario cambia": "Evaluación de si el usuario desea reactivar manualmente un servicio que descartó anteriormente.",
+      "Usuario reactiva": "El usuario utiliza la interfaz para reactivar explícitamente un servicio que había descartado, devolviéndolo a candidatos.",
+      "Flujo normal": "Estado donde el proceso de recomendación retoma su comportamiento estándar con la lista de candidatos actualizada.",
+      "Registra en logs": "El descarte se documenta en los logs del sistema con el motivo 'exclusion_reason: declined' para análisis de preferencias."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#B71C1C', primaryTextColor: '#fff',

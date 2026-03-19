@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.10 – Prueba Social</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #F57F17, #FB8C00);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #F57F17; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #F57F17; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.10</div>
-    <h1>Prueba Social</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.10.1: Módulo de reseñas y calificaciones</span><span class="hu-pill">HU 2.10.2: Moderación básica de contenido</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #E65100;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #F57F17; --hero-end: #FB8C00;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.10</div>
+      <h1 class="fw-bold fs-3 mb-3">Prueba Social</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.10.1: Módulo de reseñas y calificaciones</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.10.2: Moderación básica de contenido</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.10.1 — Módulo de reseñas y calificaciones</h3><p>Muestra rating promedio y reseñas de otros empresarios por servicio, con lazy load, estados de confiabilidad y fallbacks.</p></div><div class="hu-card"><h3>HU 2.10.2 — Moderación básica de contenido</h3><p>Flujo automático y humano para moderar reseñas: filtros de spam, PII y lenguaje ofensivo antes de publicar.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #F57F17;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.10.1 — Módulo de reseñas y calificaciones</h3>
+            <p class="card-text small text-muted mb-0">Muestra rating promedio y reseñas de otros empresarios por servicio, con lazy load, estados de confiabilidad y fallbacks.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #F57F17;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.10.2 — Moderación básica de contenido</h3>
+            <p class="card-text small text-muted mb-0">Flujo automático y humano para moderar reseñas: filtros de spam, PII y lenguaje ofensivo antes de publicar.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU2101["HU 2.10.1 — Módulo de reseñas y calificaciones"]
       A1([Usuario ve detalle\nde servicio]) --> B1[UI solicita rating\ny reseñas del servicio]
@@ -82,10 +83,45 @@ flowchart TD
       K2 --> M2[Sistema registra:\ntasa aprobación, tiempo, moderador]
     end
     K1 -.->|Nuevas reseñas pasan por| HU2102
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Usuario ve detalle": "El usuario accede a la página de detalle de un servicio donde se cargan las reseñas y calificaciones de otros empresarios.",
+      "UI solicita rating": "La interfaz realiza una solicitud al servicio de reseñas para obtener las calificaciones y comentarios del servicio seleccionado.",
+      "¿Hay reseñas": "Punto de decisión que verifica si el servicio tiene reseñas publicadas disponibles para mostrar al usuario.",
+      "Muestra fallback:": "Cuando no hay reseñas, se presenta un mensaje invitando al usuario a ser el primero en valorar el servicio.",
+      "Calcula rating promedio": "Se calcula el promedio de las calificaciones de todos los usuarios con un decimal de precisión para mostrarlo en la tarjeta.",
+      "Muestra distribución": "Se presenta la distribución de calificaciones por nivel de estrellas (1 a 5) en formato de barra visual.",
+      "Lista reseñas verificadas": "Se muestran las reseñas de usuarios verificados, con peso diferencial para aquellos con mayor credibilidad.",
+      "¿Muchas reseñas?": "Evaluación de si el volumen de reseñas requiere paginación para mantener el rendimiento de carga de la página.",
+      "Aplica lazy load": "Para servicios con muchas reseñas, se carga el contenido de forma progresiva con un tiempo máximo de 2 segundos.",
+      "Muestra todas directamente": "Cuando el número de reseñas es bajo, se muestran todas en una sola carga sin necesidad de paginación.",
+      "Usuario ve reseñas": "Estado final donde el usuario visualiza el rating y las reseñas verificadas del servicio para tomar una decisión informada.",
+      "Usuario envía": "Un usuario que consumió el servicio envía su reseña o comentario a través del formulario de valoración de la plataforma.",
+      "Motor de moderación": "Sistema automático que analiza el contenido de cada reseña antes de publicarla para detectar contenido inapropiado.",
+      "Evalúa: spam, PII,": "El motor examina la reseña en busca de spam, información personal identificable (PII) y lenguaje ofensivo.",
+      "¿Confianza del": "Evaluación del nivel de certeza del filtro automático: alta confianza aprueba/rechaza automáticamente, baja va a revisión.",
+      "Reseña aprobada": "El filtro automático tiene alta confianza de que la reseña es válida y la publica sin intervención humana.",
+      "Reseña rechazada": "El filtro automático detecta con alta certeza contenido inapropiado y rechaza la reseña automáticamente.",
+      "Envía a revisión": "Cuando el filtro tiene baja confianza, la reseña pasa a un revisor humano del equipo CCB para evaluación manual.",
+      "Revisor humano": "Un miembro del equipo CCB evalúa manualmente la reseña en la cola de moderación y decide si aprobarla o rechazarla.",
+      "Estado: publicada": "La reseña fue aprobada y está disponible públicamente para que otros usuarios la consulten en el detalle del servicio.",
+      "Estado: archivada": "La reseña fue rechazada y archivada. El autor recibe una notificación anónima con el motivo del rechazo.",
+      "Reseña visible": "Estado donde la reseña aprobada es visible para todos los usuarios que consulten el detalle del servicio.",
+      "Notificación": "El sistema notifica al autor de la reseña rechazada, informándole el motivo de forma anónima y respetuosa.",
+      "Sistema registra:": "Se almacenan métricas del proceso de moderación: tasa de aprobación, tiempo promedio y moderador responsable."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#F57F17', primaryTextColor: '#fff',

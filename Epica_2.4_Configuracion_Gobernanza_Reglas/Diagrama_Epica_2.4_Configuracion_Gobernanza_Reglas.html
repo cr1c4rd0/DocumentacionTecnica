@@ -5,52 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.4 – Configuración y Gobernanza de Reglas</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #E65100, #FB8C00);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #E65100; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #E65100; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.4</div>
-    <h1>Configuración y Gobernanza de Reglas</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.4.1: Definir reglas de negocio</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #BF360C;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #E65100; --hero-end: #EF6C00;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.4</div>
+      <h1 class="fw-bold fs-3 mb-3">Configuración y Gobernanza de Reglas</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.4.1: Definir reglas de negocio</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.4.1 — Definir reglas de negocio</h3><p>El sistema permite definir y gestionar reglas (listas blancas/negras, exclusiones, restricciones) que controlan las recomendaciones sin redeploy.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #E65100;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.4.1 — Definir reglas de negocio</h3>
+            <p class="card-text small text-muted mb-0">El sistema permite definir y gestionar reglas (listas blancas/negras, exclusiones, restricciones) que controlan las recomendaciones sin redeploy.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU241["HU 2.4.1 — Definir reglas de negocio"]
       A1([Admin / Compliance]) --> B1[Accede a interfaz\nde configuración de reglas]
@@ -81,10 +73,44 @@ flowchart TD
       G6 -->|No| G8[Rollback / Editar]
       G8 --> G2
     end
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Admin / Compliance": "Rol responsable de definir y gestionar las reglas de negocio que controlan el comportamiento del motor de recomendación.",
+      "Accede a interfaz": "El administrador ingresa a la interfaz de configuración donde puede crear, editar y activar reglas de negocio.",
+      "Selecciona tipo de regla": "Se elige el tipo de regla a configurar: whitelist (permitir), blacklist (bloquear), exclusión o boost de visibilidad.",
+      "Especifica condiciones": "Se definen las condiciones de aplicación de la regla: segmento de usuario, rol, estado del cliente o ubicación geográfica.",
+      "Establece acción": "Se configura la acción que ejecutará la regla: incluir un servicio, excluirlo o aplicar una penalización en su score.",
+      "Configura vigencia temporal": "Se establece el período de validez de la regla y su nivel de prioridad respecto a otras reglas activas.",
+      "Sistema valida consistencia": "El sistema verifica que la nueva regla no contradiga ni genere conflictos con las reglas ya existentes en el motor.",
+      "¿Conflictos": "Punto de decisión que determina si la regla configurada entra en conflicto con otras reglas activas del sistema.",
+      "Sistema alerta": "El sistema notifica al administrador sobre los conflictos detectados para que pueda corregir la configuración.",
+      "Admin activa regla": "Una vez validada sin conflictos, el administrador activa la regla para que comience a aplicarse en las recomendaciones.",
+      "Sistema aplica hot-reload": "La nueva regla se carga en el motor de recomendación en tiempo real sin necesidad de reiniciar o redesplegar el sistema.",
+      "Registra policy_version_id": "Se genera y almacena un identificador único de versión de la política para garantizar trazabilidad y auditoría completa.",
+      "Admin monitorea impacto": "El administrador supervisa cómo la nueva regla está afectando las recomendaciones generadas por el motor.",
+      "¿Rollback": "Punto de decisión que evalúa si los efectos de la regla requieren revertir a la versión de política anterior.",
+      "Sistema revierte": "El sistema restaura automáticamente la versión anterior de la configuración de reglas, cancelando los efectos de la nueva.",
+      "Regla activa": "Estado final donde la regla está funcionando correctamente en producción y mejora el comportamiento del recomendador.",
+      "Crear regla": "Primera etapa del ciclo de gobernanza: el administrador define una nueva regla de negocio en el sistema.",
+      "Validar": "Segunda etapa: el sistema verifica la consistencia y ausencia de conflictos de la regla propuesta.",
+      "Activar": "Tercera etapa: la regla validada se activa y se aplica mediante hot-reload al motor de recomendación.",
+      "Monitorear": "Cuarta etapa: se supervisa continuamente el impacto de la regla activa sobre las recomendaciones y métricas del negocio.",
+      "¿OK?": "Evaluación periódica del ciclo de gobernanza que determina si la regla está cumpliendo su objetivo o requiere ajustes.",
+      "Mantener": "La regla permanece activa porque está funcionando correctamente y cumpliendo los objetivos de negocio.",
+      "Rollback / Editar": "La regla se revierte o se edita porque no está cumpliendo los objetivos o está generando efectos no deseados."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#E65100', primaryTextColor: '#fff',

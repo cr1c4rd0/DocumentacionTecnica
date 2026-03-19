@@ -5,52 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.6 – Motor de Recomendación</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #1A237E, #3949AB);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #1A237E; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #1A237E; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.6</div>
-    <h1>Motor de Recomendación</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.6.1: Modelo de recomendación de servicios</span><span class="hu-pill">HU 2.6.2: Parametrización sin redeploy</span><span class="hu-pill">HU 2.6.3: Recomendaciones por elegibilidad y membresía</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #0D1270;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1A237E; --hero-end: #283593;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.6</div>
+      <h1 class="fw-bold fs-3 mb-3">Motor de Recomendación</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.6.1: Modelo de recomendación de servicios</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.6.2: Parametrización sin redeploy</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.6.3: Recomendaciones por elegibilidad y membresía</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.6.1 — Modelo de recomendación de servicios</h3><p>Motor que genera lista Top-N de servicios usando perfil, historial, segmento e intereses del usuario con scores explicables.</p></div><div class="hu-card"><h3>HU 2.6.2 — Parametrización sin redeploy</h3><p>Permite actualizar variables y pesos del motor (feature flags, YAML) sin redeploy, con gobernanza y versionamiento.</p></div><div class="hu-card"><h3>HU 2.6.3 — Recomendaciones por elegibilidad y membresía</h3><p>El motor considera membresía (Círculo de Afiliados) y elegibilidad, mostrando rutas de afiliación cuando aplica.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1A237E;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.6.1 — Modelo de recomendación de servicios</h3>
+            <p class="card-text small text-muted mb-0">Motor que genera lista Top-N de servicios usando perfil, historial, segmento e intereses del usuario con scores explicables.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1A237E;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.6.2 — Parametrización sin redeploy</h3>
+            <p class="card-text small text-muted mb-0">Permite actualizar variables y pesos del motor (feature flags, YAML) sin redeploy, con gobernanza y versionamiento.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1A237E;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.6.3 — Recomendaciones por elegibilidad y membresía</h3>
+            <p class="card-text small text-muted mb-0">El motor considera membresía (Círculo de Afiliados) y elegibilidad, mostrando rutas de afiliación cuando aplica.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU261["HU 2.6.1 — Modelo de recomendación Top-N"]
       A1([Request de recomendación]) --> B1[Carga perfil del usuario\nsegmento, historial, intereses]
@@ -87,10 +97,46 @@ flowchart TD
     H1 --> HU262
     I2 --> HU261
     H1 --> HU263
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Request de recomendación": "Solicitud entrante al motor que desencadena el proceso completo de generación de recomendaciones personalizadas.",
+      "Carga perfil del usuario": "El motor recupera el perfil completo del usuario: segmento de negocio, historial de servicios e intereses registrados.",
+      "Aplica algoritmo de recomendación": "Se ejecuta el algoritmo híbrido que combina filtrado colaborativo, análisis de contenido y reglas de negocio.",
+      "Calcula scores ponderados": "Se computan scores numéricos para cada servicio candidato, ponderados por múltiples dimensiones de relevancia.",
+      "Aplica filtros de exclusión": "Se eliminan de la lista los servicios ya tomados por el usuario, los descartados y los que no cumple los requisitos.",
+      "Ordena Top-N por score": "Los servicios candidatos se ordenan descendentemente por score, incorporando un factor de diversidad para enriquecer la lista.",
+      "Adjunta razones explicables": "Cada recomendación recibe una explicación legible que describe por qué fue seleccionada para ese usuario específico.",
+      "Responde lista Top-N": "El motor devuelve la lista final de servicios recomendados con su service_id, score, razones y estado de elegibilidad.",
+      "Admin / Data Scientist": "Rol técnico que accede al panel de configuración para ajustar los parámetros del motor de recomendación.",
+      "Accede a panel de": "El administrador o científico de datos ingresa al panel de configuración del motor para realizar ajustes de parámetros.",
+      "Modifica parámetros:": "Se actualizan los pesos de los factores, umbrales de score y feature flags que controlan el comportamiento del motor.",
+      "Define policy_version_id": "Se asigna un identificador único a la nueva versión de configuración para garantizar trazabilidad y posibilidad de rollback.",
+      "Sistema valida": "El motor verifica que los nuevos parámetros sean compatibles y no generen inconsistencias en el proceso de recomendación.",
+      "¿Validación": "Punto de decisión que determina si los nuevos parámetros superaron la validación de compatibilidad del sistema.",
+      "Alerta conflicto": "El sistema notifica al administrador que los parámetros ingresados generan un conflicto y no pueden aplicarse.",
+      "Hot-reload de configuración": "Los nuevos parámetros se aplican al motor en tiempo real sin interrumpir el servicio ni requerir redeploy.",
+      "Motor actualizado": "Estado donde el motor está operando con los nuevos parámetros, mejorando la calidad de las recomendaciones.",
+      "Motor consulta estado": "El motor verifica en tiempo real si el usuario actual tiene membresía activa en el programa Círculo de Afiliados de CCB.",
+      "¿Es miembro": "Verificación del estado de membresía del usuario en el programa Círculo de Afiliados de la Cámara de Comercio.",
+      "Incluye servicios": "Se agregan a los candidatos los servicios exclusivos disponibles únicamente para miembros del Círculo de Afiliados.",
+      "¿Es elegible": "Evaluación de si el usuario cumple los requisitos para afiliarse al programa Círculo de Afiliados de CCB.",
+      "Incluye recomendación": "Se añade una recomendación de afiliación al Círculo con la ruta de acceso y beneficios explicados al usuario.",
+      "Excluye servicios": "Los servicios de membresía exclusiva son excluidos del Top-N porque el usuario no es miembro ni elegible.",
+      "Genera Top-N considerando": "Se construye la lista final de recomendaciones incorporando el estado de membresía y beneficios correspondientes.",
+      "Usuario recibe": "Estado final donde el usuario visualiza sus recomendaciones personalizadas, adaptadas a su nivel de membresía."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#1A237E', primaryTextColor: '#fff',

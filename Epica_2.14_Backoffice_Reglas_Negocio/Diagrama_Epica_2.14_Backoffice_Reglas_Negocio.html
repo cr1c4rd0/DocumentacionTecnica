@@ -5,52 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.14 – Backoffice y Reglas de Negocio</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #4E342E, #795548);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #4E342E; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #4E342E; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.14</div>
-    <h1>Backoffice y Reglas de Negocio</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.14.1: Panel de reglas de negocio</span><span class="hu-pill">HU 2.14.2: Registro de clics y navegación</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #3E2723;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
+    </div>
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #4E342E; --hero-end: #5D4037;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.14</div>
+      <h1 class="fw-bold fs-3 mb-3">Backoffice y Reglas de Negocio</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.14.1: Panel de reglas de negocio</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU 2.14.2: Registro de clics y navegación</span>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.14.1 — Panel de reglas de negocio</h3><p>Admin configura reglas (whitelist, blacklist, filtros dinámicos) que el motor aplica en la próxima inferencia sin redeploy.</p></div><div class="hu-card"><h3>HU 2.14.2 — Registro de clics y navegación</h3><p>Sistema captura de forma trazable todos los eventos de interacción del usuario (views, clics, filtros) respetando consentimiento.</p></div>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #4E342E;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.14.1 — Panel de reglas de negocio</h3>
+            <p class="card-text small text-muted mb-0">Admin configura reglas (whitelist, blacklist, filtros dinámicos) que el motor aplica en la próxima inferencia sin redeploy.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #4E342E;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.14.2 — Registro de clics y navegación</h3>
+            <p class="card-text small text-muted mb-0">Sistema captura de forma trazable todos los eventos de interacción del usuario (views, clics, filtros) respetando consentimiento.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
 flowchart TD
     subgraph HU2141["HU 2.14.1 — Panel de reglas de negocio"]
       A1([Administrador]) --> B1[Accede al panel\nde backoffice]
@@ -83,10 +84,45 @@ flowchart TD
       I2 --> J2([Analista consulta dashboard\no exporta datos])
     end
     N1 -.->|Reglas afectan| HU2142
+        </div>
       </div>
     </div>
-  </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+  <script>
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Administrador": "Rol con acceso al panel de backoffice que gestiona las reglas de negocio del motor de recomendación.",
+      "Accede al panel": "El administrador ingresa al panel de backoffice donde puede crear, editar y activar reglas que controlan las recomendaciones.",
+      "Crea / edita regla:": "Se define o modifica una regla especificando su tipo, condición de activación, acción resultante y ámbito de aplicación.",
+      "¿Tipo de regla?": "Bifurcación que clasifica la regla a configurar según su naturaleza: whitelist, blacklist o filtro dinámico.",
+      "Solo estos servicios": "Regla de tipo whitelist: únicamente los servicios especificados en la lista son elegibles para ser recomendados.",
+      "Excluir estos servicios": "Regla de tipo blacklist: los servicios especificados son completamente excluidos de cualquier recomendación.",
+      "Condiciones por segmento,": "Regla de tipo filtro dinámico que se activa basándose en atributos del usuario, segmento o del servicio en tiempo real.",
+      "Sistema valida compatibilidad": "El sistema verifica que la nueva regla no genere conflictos de lógica con las reglas ya activas en el motor.",
+      "¿Conflictos?": "Punto de decisión que determina si la regla propuesta entra en conflicto con otras reglas existentes.",
+      "Alerta al administrador": "El sistema notifica al administrador sobre los conflictos detectados para que corrija la configuración antes de activar.",
+      "Admin activa regla": "Una vez verificada la consistencia, el administrador activa la regla para que entre en vigor en el próximo ciclo.",
+      "Hot-reload sin redeploy": "La regla se aplica al motor en tiempo real mediante hot-reload, invalidando el caché sin necesidad de redespliegue.",
+      "Registra policy_version_id": "Se genera un identificador de versión de la política que permite auditoría completa y rollback si es necesario.",
+      "Motor aplica regla": "Estado final donde el motor de recomendación aplica la nueva regla activa en su próxima inferencia de recomendaciones.",
+      "Usuario interactúa": "El usuario está navegando el recomendador y sus interacciones pueden ser capturadas si ha dado consentimiento.",
+      "¿Consentimiento": "Verificación del consentimiento del usuario para la captura de eventos de interacción según las políticas de privacidad.",
+      "No captura eventos": "Si el usuario no dio consentimiento, el sistema respeta su privacidad y no registra ningún evento de interacción.",
+      "UI captura evento:": "La interfaz registra el tipo de evento, timestamp y contexto completo de cada interacción del usuario.",
+      "SDK envía evento al": "El SDK de telemetría envía el evento al backend de forma asíncrona para no afectar el rendimiento de la UI.",
+      "Backend valida y almacena": "El backend verifica la integridad del evento y lo almacena en la base de datos y el data lake para análisis.",
+      "¿Evento exitoso?": "Evaluación de si el evento fue procesado y almacenado correctamente en el sistema de telemetría.",
+      "Reintento con backoff": "Ante fallos, el sistema reintenta el envío del evento con un retardo incremental (backoff exponencial) y registra el error.",
+      "Disponible para análisis": "El evento está almacenado y puede ser usado por analistas y el equipo de ML para mejorar el modelo de recomendación.",
+      "Analista consulta dashboard": "Estado final donde el analista puede acceder al dashboard de interacciones o exportar los datos para análisis externo."
+    };
+  </script>
   <script>
     mermaid.initialize({ startOnLoad: true, theme: 'base',
       themeVariables: { primaryColor: '#4E342E', primaryTextColor: '#fff',

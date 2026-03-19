@@ -1,111 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Épica 2.1 – Motor de Recomendación Personalizada</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
-    .header {
-      background: linear-gradient(135deg, #1565C0, #1E88E5);
-      color: white; padding: 28px 40px;
-    }
-    .header .epica-tag { font-size: 13px; font-weight: 600; opacity: 0.85; letter-spacing: 1px; text-transform: uppercase; }
-    .header h1 { font-size: 26px; margin-top: 6px; font-weight: 700; }
-    .hu-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-    .hu-pill {
-      background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 500;
-    }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px 30px; }
-    .diagram-card {
-      background: white; border-radius: 12px; padding: 30px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-    }
-    .diagram-card h2 { font-size: 16px; color: #444; margin-bottom: 20px; font-weight: 600; }
-    .mermaid { display: flex; justify-content: center; overflow-x: auto; }
-    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .hu-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
-    .hu-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 4px solid #1565C0; }
-    .hu-card h3 { font-size: 13px; font-weight: 700; color: #1565C0; margin-bottom: 6px; }
-    .hu-card p { font-size: 12px; color: #555; line-height: 1.5; }
-    footer { text-align: center; padding: 20px; color: #999; font-size: 11px; }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <div class="header">
-    <div class="epica-tag">Diagrama de Proceso · Épica 2.1</div>
-    <h1>Motor de Recomendación Personalizada</h1>
-    <div class="hu-list">
-      <span class="hu-pill">HU 2.1.1: Recomendar proactivamente</span><span class="hu-pill">HU 2.1.2: Entrenar motor (6M clientes / 24M)</span><span class="hu-pill">HU 2.1.3: Aprende de mis clics y navegación</span><span class="hu-pill">HU 2.1.4: Y si no existo (Cold Start)</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background: #0D47A1;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0">CCB · Sistema Recomendador</span>
+      <a class="btn btn-outline-light btn-sm" href="../Indice_Diagramas_Epicas.html">← Inicio</a>
     </div>
-  </div>
-  <div class="container">
-    <div class="hu-cards">
-      <div class="hu-card"><h3>HU 2.1.1 — Recomendar proactivamente</h3><p>El usuario recibe recomendaciones proactivas de servicios basadas en su historial, perfil, segmento, rol e intereses.</p></div><div class="hu-card"><h3>HU 2.1.2 — Entrenar motor (6M clientes / 24M)</h3><p>El sistema entrena el motor con 6 millones de clientes y 24 meses de datos históricos para aprender patrones a escala.</p></div><div class="hu-card"><h3>HU 2.1.3 — Aprende de mis clics y navegación</h3><p>El motor captura y aprende de los patrones de comportamiento del usuario en tiempo real para mejorar recomendaciones.</p></div><div class="hu-card"><h3>HU 2.1.4 — Y si no existo (Cold Start)</h3><p>El sistema maneja usuarios nuevos sin historial, proveyendo recomendaciones relevantes por defecto o por segmento.</p></div>
-    </div>
-    <div class="diagram-card">
-      <h2>Diagrama de Flujo Integrado</h2>
-      <div class="mermaid">
-flowchart TD
-    subgraph HU211["HU 2.1.1 — Recomendar proactivamente"]
-      A1([Usuario identificado]) --> B1[Captura perfil, historial,\nsegmento, rol, intereses]
-      B1 --> C1[Motor aplica filtros\nde pertinencia y elegibilidad]
-      C1 --> D1{¿Servicio elegible?}
-      D1 -->|No| E1[Registrar motivo exclusión\ntaken / declined / not_eligible]
-      D1 -->|Sí| F1[Generar score ponderado]
-      F1 --> G1[Retornar Top-5 recomendaciones\ncon razones y score]
-      G1 --> H1([Usuario recibe\nrecomendaciones])
-    end
-    subgraph HU212["HU 2.1.2 — Entrenar motor con 6M / 24M"]
-      A2([Data Engineers]) --> B2[Extraer y preparar datos\n6M clientes · 24 meses]
-      B2 --> C2[Limpiar y normalizar\ndatos históricos]
-      C2 --> D2[Ingestar en pipeline\nde entrenamiento]
-      D2 --> E2[Entrenar modelo ML]
-      E2 --> F2{¿Métricas aceptables?}
-      F2 -->|No| D2
-      F2 -->|Sí| G2[Deploy modelo entrenado]
-      G2 --> H2([Monitoreo en producción])
-    end
-    subgraph HU213["HU 2.1.3 — Aprende de clics y navegación"]
-      A3([Usuario navegando]) --> B3[Frontend captura eventos\nclics, scroll, navegación]
-      B3 --> C3[Event stream / Log]
-      C3 --> D3[Pipeline batch o streaming]
-      D3 --> E3[Extraer features\nde comportamiento]
-      E3 --> F3[Actualizar perfil /\nembeddings usuario]
-      F3 --> G3([Motor ajusta\npesos y preferencias])
-    end
-    subgraph HU214["HU 2.1.4 — Cold Start (nuevo usuario)"]
-      A4([Usuario nuevo\nsin historial]) --> B4{¿Existe perfil?}
-      B4 -->|No| C4[Detectar usuario cold start]
-      C4 --> D4[Obtener datos mínimos\ncontexto, demografía]
-      D4 --> E4[Aplicar estrategia cold start\npopulares, por segmento]
-      E4 --> F4[Recomendaciones por defecto]
-      F4 --> G4[Recolectar primeras interacciones]
-      G4 --> H4{¿Suficientes datos?}
-      H4 -->|No| G4
-      H4 -->|Sí| I4([Transicionar a\nmodelo personalizado])
-      B4 -->|Sí| I4
-    end
-    H1 --> HU212
-    G2 --> HU213
-    G3 --> HU211
-    I4 --> HU211
+  </nav>
+  <!-- Hero -->
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1565C0; --hero-end: #1E88E5;">
+    <div class="container-xl">
+      <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Diagrama de Proceso · Épica 2.1</div>
+      <h1 class="fw-bold fs-3 mb-3">Motor de Recomendación Personalizada</h1>
+      <div class="d-flex flex-wrap gap-2">
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU
+          2.1.1: Recomendar proactivamente</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU
+          2.1.2: Entrenar motor (6M clientes / 24M)</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU
+          2.1.3: Aprende de mis clics y navegación</span>
+        <span class="badge rounded-pill bg-white bg-opacity-25 border border-white border-opacity-50 fw-normal px-3">HU
+          2.1.4: Y si no existo (Cold Start)</span>
       </div>
     </div>
   </div>
-  <footer>Cámara de Comercio de Bogotá · DengueConecta · 2025</footer>
+
+  <div class="container-xl py-4 px-4">
+    <div class="row g-3 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1565C0;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.1.1 — Recomendar proactivamente</h3>
+            <p class="card-text small text-muted mb-0">El usuario recibe recomendaciones proactivas de servicios basadas
+              en su historial, perfil, segmento, rol e intereses.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1565C0;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.1.2 — Entrenar motor (6M clientes / 24M)</h3>
+            <p class="card-text small text-muted mb-0">El sistema entrena el motor con 6 millones de clientes y 24 meses
+              de datos históricos para aprender patrones a escala.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1565C0;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.1.3 — Aprende de mis clics y navegación</h3>
+            <p class="card-text small text-muted mb-0">El motor captura y aprende de los patrones de comportamiento del
+              usuario en tiempo real para mejorar recomendaciones.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 shadow-sm hu-card-accent" style="--accent: #1565C0;">
+          <div class="card-body">
+            <h3 class="card-title fs-6 fw-bold mb-2">HU 2.1.4 — Y si no existo (Cold Start)</h3>
+            <p class="card-text small text-muted mb-0">El sistema maneja usuarios nuevos sin historial, proveyendo
+              recomendaciones relevantes por defecto o por segmento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold text-secondary">Diagrama de Flujo Integrado</div>
+      <div class="card-body p-3">
+        <div class="mermaid">
+          flowchart TD
+          subgraph HU211["HU 2.1.1 — Recomendar proactivamente"]
+          A1([Usuario identificado]) --> B1[Captura perfil, historial,\nsegmento, rol, intereses]
+          B1 --> C1[Motor aplica filtros\nde pertinencia y elegibilidad]
+          C1 --> D1{¿Servicio elegible?}
+          D1 -->|No| E1[Registrar motivo exclusión\ntaken / declined / not_eligible]
+          D1 -->|Sí| F1[Generar score ponderado]
+          F1 --> G1[Retornar Top-5 recomendaciones\ncon razones y score]
+          G1 --> H1([Usuario recibe\nrecomendaciones])
+          end
+          subgraph HU212["HU 2.1.2 — Entrenar motor con 6M / 24M"]
+          A2([Data Engineers]) --> B2[Extraer y preparar datos\n6M clientes · 24 meses]
+          B2 --> C2[Limpiar y normalizar\ndatos históricos]
+          C2 --> D2[Ingestar en pipeline\nde entrenamiento]
+          D2 --> E2[Entrenar modelo ML]
+          E2 --> F2{¿Métricas aceptables?}
+          F2 -->|No| D2
+          F2 -->|Sí| G2[Deploy modelo entrenado]
+          G2 --> H2([Monitoreo en producción])
+          end
+          subgraph HU213["HU 2.1.3 — Aprende de clics y navegación"]
+          A3([Usuario navegando]) --> B3[Frontend captura eventos\nclics, scroll, navegación]
+          B3 --> C3[Event stream / Log]
+          C3 --> D3[Pipeline batch o streaming]
+          D3 --> E3[Extraer features\nde comportamiento]
+          E3 --> F3[Actualizar perfil /\nembeddings usuario]
+          F3 --> G3([Motor ajusta\npesos y preferencias])
+          end
+          subgraph HU214["HU 2.1.4 — Cold Start (nuevo usuario)"]
+          A4([Usuario nuevo\nsin historial]) --> B4{¿Existe perfil?}
+          B4 -->|No| C4[Detectar usuario cold start]
+          C4 --> D4[Obtener datos mínimos\ncontexto, demografía]
+          D4 --> E4[Aplicar estrategia cold start\npopulares, por segmento]
+          E4 --> F4[Recomendaciones por defecto]
+          F4 --> G4[Recolectar primeras interacciones]
+          G4 --> H4{¿Suficientes datos?}
+          H4 -->|No| G4
+          H4 -->|Sí| I4([Transicionar a\nmodelo personalizado])
+          B4 -->|Sí| I4
+          end
+          H1 --> HU212
+          G2 --> HU213
+          G3 --> HU211
+          I4 --> HU211
+        </div>
+      </div>
+    </div>
+  </div><!-- cierre container-xl -->
+
+  <footer class="text-center py-4 text-muted small border-top">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
   <script>
-    mermaid.initialize({ startOnLoad: true, theme: 'base',
-      themeVariables: { primaryColor: '#1565C0', primaryTextColor: '#fff',
+    // ── Descripciones por nodo para los popovers ──────────────────────────────
+    // Clave: texto visible del nodo (exacto o parcial, case-insensitive)
+    // Si un nodo no aparece aquí, mostrará el texto por defecto.
+    window.diagramDescriptions = {
+      "Usuario identificado":            "Punto de entrada: cliente autenticado en cualquier canal.",
+      "Captura perfil, historial":        "Se obtienen historial de servicios, segmento, rol e intereses del CRM.",
+      "Motor aplica filtros":             "Filtros de pertinencia, elegibilidad y reglas de negocio activas.",
+      "¿Servicio elegible?":              "Decisión: el servicio cumple todas las reglas para este cliente.",
+      "Registrar motivo exclusión":       "Se persiste el motivo (taken / declined / not_eligible) para auditoría.",
+      "Generar score ponderado":          "Algoritmo ML calcula score combinando múltiples señales del cliente.",
+      "Retornar Top-5 recomendaciones":   "Se devuelven las 5 mejores opciones con razón legible y score.",
+      "Usuario recibe":                   "El cliente ve las recomendaciones en su canal preferido.",
+      "Data Engineers":                   "Equipo responsable de preparar y supervisar el pipeline de datos.",
+      "Extraer y preparar datos":         "ETL sobre 6 millones de clientes y 24 meses de histórico.",
+      "Entrenar modelo ML":               "Entrenamiento del modelo colaborativo / híbrido en infraestructura cloud.",
+      "¿Métricas aceptables?":            "Validación de precisión, recall y cobertura mínima requerida.",
+      "Deploy modelo entrenado":          "Publicación del modelo en producción con versionado y rollback.",
+      "Monitoreo en producción":          "Observabilidad continua: drift, latencia y métricas de negocio.",
+      "Usuario navegando":                "Cliente interactuando activamente con el portal o app.",
+      "Frontend captura eventos":         "Clic, scroll, tiempo en pantalla y navegación se envían al stream.",
+      "Event stream / Log":               "Bus de eventos (Kafka / Kinesis) que recibe la actividad en tiempo real.",
+      "Pipeline batch o streaming":       "Procesamiento adaptado al volumen: batch nocturno o streaming continuo.",
+      "Extraer features":                 "Construcción de vectores de comportamiento para el modelo.",
+      "Actualizar perfil":                "Se actualizan embeddings y pesos del usuario en el feature store.",
+      "Motor ajusta":                     "El motor incorpora las nuevas señales en la próxima inferencia.",
+      "Usuario nuevo":                    "Cliente sin historial previo: aplica estrategia cold-start.",
+      "¿Existe perfil?":                  "Verificación de datos mínimos disponibles en el sistema.",
+      "Detectar usuario cold start":      "Clasificación automática como cliente sin suficiente historial.",
+      "Obtener datos mínimos":            "Se usan datos demográficos o de contexto de la sesión actual.",
+      "Aplicar estrategia cold start":    "Recomendaciones basadas en popularidad global o segmento demográfico.",
+      "Recomendaciones por defecto":      "Set inicial de servicios más contratados por clientes similares.",
+      "Recolectar primeras interacciones":"Se registran los primeros clics para acelerar la personalización.",
+      "¿Suficientes datos?":              "Umbral mínimo de interacciones para activar el modelo personalizado.",
+      "Transicionar a":                   "El cliente pasa del modo cold-start al modelo completamente personalizado."
+    };
+  </script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true, theme: 'base',
+      themeVariables: {
+        primaryColor: '#1565C0', primaryTextColor: '#fff',
         primaryBorderColor: '#1E88E5', lineColor: '#666',
-        secondaryColor: '#f0f4ff', tertiaryColor: '#fff' },
+        secondaryColor: '#f0f4ff', tertiaryColor: '#fff'
+      },
       flowchart: { curve: 'basis', padding: 20 }
     });
   </script>
 </body>
+
 </html>
