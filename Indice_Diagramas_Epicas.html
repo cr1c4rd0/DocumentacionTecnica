@@ -34,11 +34,47 @@
     </div>
   </div>
 
-  <!-- Cards Grid -->
-  <div class="container-xl py-4 px-4">
-    <div class="row g-3">
+  <!-- Filtro por topic badge -->
+  <div class="container-xl px-4 pt-4 pb-2">
+    <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
+      <label for="topic-select" class="text-muted small fw-semibold mb-0" style="white-space:nowrap;">Filtrar por tema:</label>
+      <select id="topic-select" class="form-select form-select-sm" style="max-width:320px;">
+        <option value="*">Todos</option>
+        <option value="t-personalizacion">Personalización y proactividad</option>
+        <option value="t-interfaz-exp">Interfaz y experiencia</option>
+        <option value="t-logica-explicativa">Lógica explicativa</option>
+        <option value="t-trazabilidad">Trazabilidad</option>
+        <option value="t-destacar-gratuito">Destacar gratuito</option>
+        <option value="t-panel-negocio">Panel negocio</option>
+        <option value="t-productos-destacados">Productos destacados</option>
+        <option value="t-modulo-admin-reglas">Módulo admin reglas</option>
+        <option value="t-id-omnicanal">Identificación Omnicanal</option>
+        <option value="t-resolver-identidad">Resolver identidad</option>
+        <option value="t-preferencias">Preferencias</option>
+        <option value="t-interfaz-personal">Interfaz personalizada</option>
+        <option value="t-evitar-repetidas">Evitar sugerencias repetidas</option>
+        <option value="t-reglas-carrusel">Reglas por carrusel</option>
+        <option value="t-exp-visual">Experiencia visual</option>
+        <option value="t-comentarios">Comentarios y calificaciones</option>
+        <option value="t-redireccion">Redirección formularios</option>
+        <option value="t-formularios">Formularios</option>
+        <option value="t-registrar-resultado">Registrar resultado</option>
+        <option value="t-frontend-integrable">Frontend integrable</option>
+        <option value="t-clasificacion">Clasificación</option>
+        <option value="t-promocion">Promoción</option>
+        <option value="t-notificaciones">Notificaciones</option>
+        <option value="t-registro-nav">Registro navegación</option>
+        <option value="t-adaptacion-continua">Adaptación continua</option>
+      </select>
+    </div>
+    <p id="filter-count" class="text-muted small mb-0">Mostrando <strong>15</strong> de 15 épicas</p>
+  </div>
 
-      <div class="col-md-6 col-lg-4">
+  <!-- Cards Grid -->
+  <div class="container-xl py-3 px-4">
+    <div class="row g-3" id="epicas-grid">
+
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-personalizacion t-interfaz-exp">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.1_Motor_Recomendacion_Personalizada/Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html"
           style="--color:#1565C0">
@@ -57,7 +93,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-logica-explicativa">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.2_Panel_Administracion_Explicabilidad/Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html"
           style="--color:#6A1B9A">
@@ -72,7 +108,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-destacar-gratuito t-panel-negocio t-productos-destacados">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.3_Gestion_Promocion_Servicios/Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html"
           style="--color:#2E7D32">
@@ -91,7 +127,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-modulo-admin-reglas">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.4_Configuracion_Gobernanza_Reglas/Diagrama_Epica_2.4_Configuracion_Gobernanza_Reglas.html"
           style="--color:#E65100">
@@ -107,7 +143,8 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col"
+        data-topics="t-id-omnicanal t-resolver-identidad t-preferencias t-interfaz-personal">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.5_Resolucion_Identidad_Omnicanal/Diagrama_Epica_2.5_Resolucion_Identidad_Omnicanal.html"
           style="--color:#00695C">
@@ -128,7 +165,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-personalizacion t-productos-destacados">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.6_Motor_Recomendacion/Diagrama_Epica_2.6_Motor_Recomendacion.html" style="--color:#1A237E">
           <div class="epica-num">Épica 2.6</div>
@@ -145,7 +182,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-personalizacion t-evitar-repetidas">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.7_Reglas_Exclusion/Diagrama_Epica_2.7_Reglas_Exclusion.html" style="--color:#B71C1C">
           <div class="epica-num">Épica 2.7</div>
@@ -161,7 +198,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-reglas-carrusel t-exp-visual">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.8_UI_Recomendador_Catalogo/Diagrama_Epica_2.8_UI_Recomendador_Catalogo.html"
           style="--color:#0277BD">
@@ -173,13 +210,14 @@
           </div>
           <div class="d-flex flex-wrap gap-1 mt-2 pt-2 border-top border-opacity-25">
             <span class="badge rounded-pill topic-badge t-reglas-carrusel">Reglas por carrusel</span>
-            <span class="badge rounded-pill topic-badge t-exp-visual">Experiencia visual amigable y atractiva similiar a
+            <span class="badge rounded-pill topic-badge t-exp-visual">Experiencia visual amigable y atractiva<br>
+              similiar a
               otras plataformas</span>
           </div>
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-logica-explicativa t-trazabilidad">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.9_Logica_Explicativa/Diagrama_Epica_2.9_Logica_Explicativa.html" style="--color:#4527A0">
           <div class="epica-num">Épica 2.9</div>
@@ -195,7 +233,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-comentarios">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.10_Prueba_Social/Diagrama_Epica_2.10_Prueba_Social.html" style="--color:#F57F17">
           <div class="epica-num">Épica 2.10</div>
@@ -210,7 +248,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-redireccion t-formularios t-registrar-resultado">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.11_Integracion_Formularios/Diagrama_Epica_2.11_Integracion_Formularios.html"
           style="--color:#00796B">
@@ -229,7 +267,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-frontend-integrable">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.12_Microfrontend_Recomendador/Diagrama_Epica_2.12_Microfrontend_Recomendador.html"
           style="--color:#37474F">
@@ -245,7 +283,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-clasificacion t-promocion t-notificaciones">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.13_Catalogo_Promocion_Servicios/Diagrama_Epica_2.13_Catalogo_Promocion_Servicios.html"
           style="--color:#AD1457">
@@ -263,7 +301,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-modulo-admin-reglas t-registro-nav">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.14_Backoffice_Reglas_Negocio/Diagrama_Epica_2.14_Backoffice_Reglas_Negocio.html"
           style="--color:#4E342E">
@@ -281,7 +319,7 @@
         </a>
       </div>
 
-      <div class="col-md-6 col-lg-4">
+      <div class="col-md-6 col-lg-4 epica-col" data-topics="t-adaptacion-continua">
         <a class="card card-epica h-100 shadow-sm p-3 d-block"
           href="Epica_2.16_Aprendizaje_Continuo/Diagrama_Epica_2.16_Aprendizaje_Continuo.html" style="--color:#1B5E20">
           <div class="epica-num">Épica 2.16</div>
@@ -299,6 +337,30 @@
 
     </div>
   </div>
+
+  <script>
+    (function () {
+      const TOTAL = 15;
+      const select = document.getElementById('topic-select');
+      const cols = document.querySelectorAll('.epica-col');
+      const countEl = document.getElementById('filter-count');
+
+      function applyFilter(filter) {
+        let visible = 0;
+        cols.forEach(function (col) {
+          const topics = col.dataset.topics || '';
+          const show = filter === '*' || topics.split(' ').indexOf(filter) !== -1;
+          col.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        countEl.innerHTML = 'Mostrando <strong>' + visible + '</strong> de ' + TOTAL + ' épicas';
+      }
+
+      select.addEventListener('change', function () {
+        applyFilter(select.value);
+      });
+    })();
+  </script>
 
   <footer class="text-center py-4 text-muted small border-top mt-2">
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025

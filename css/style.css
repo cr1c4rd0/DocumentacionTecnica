@@ -139,3 +139,27 @@
 .t-notificaciones       { background: #6A1B9A !important; }
 .t-registro-nav         { background: #5D4037 !important; }
 .t-adaptacion-continua  { background: #1B5E20 !important; }
+
+/* Botones de filtro por tema en el índice */
+.btn-filter {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 2px solid var(--fc, #999);
+  color: var(--fc, #999);
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.btn-filter:hover {
+  background: var(--fc, #999);
+  color: #fff;
+}
+
+.btn-filter.active {
+  background: var(--fc, #999);
+  color: #fff;
+}
