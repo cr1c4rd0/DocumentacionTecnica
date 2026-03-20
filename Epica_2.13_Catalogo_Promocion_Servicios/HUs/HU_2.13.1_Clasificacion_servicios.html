@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #880E4F; --hero-end: #AD1457;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.13.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Clasificación de servicios</h1>
+      <h1 class="fw-bold fs-3 mb-1">Clasificación de servicios</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.13 · Catálogo y Promoción de Servicios</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #AD1457;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #AD1457;">Enunciado</h2>
@@ -34,49 +38,330 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que navega el catálogo de servicios</p>
+              <p class="mb-0">usuario que consulta el Recomendador de Servicios</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver cada servicio con etiquetas claras de categoría y estado de disponibilidad</p>
+              <p class="mb-0">ver cada servicio con <strong>etiquetas visibles de categoría y estado de disponibilidad</strong> (Disponible, Próximamente, Cerrado, Sin programación)</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">entender de un vistazo qué servicios puedo contratar ahora y cuáles tengo que esperar</p>
+              <p class="mb-0">entender de un vistazo qué servicios puedo contratar ahora y cuáles debo esperar, con reglas de clasificación consistentes y trazables</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Clasificación</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Etiquetas de estado visibles: Disponible, Próximamente, Cerrado, Sin programación</li>
-          <li>Categorías jerárquicas (área > subárea) visibles en tarjeta</li>
-          <li>Colores diferenciados por estado de disponibilidad</li>
-          <li>Filtro por estado aplicable en el catálogo</li>
-          <li>Actualización de estados en tiempo real sin recarga</li>
-          <li>Contador de cupos disponibles cuando aplica</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Etiquetas visibles por servicio (categoría + estado)</strong>
+            <ul class="mt-1">
+              <li>Cada servicio muestra de forma visible su <strong>categoría</strong> (área temática) y su <strong>estado de disponibilidad</strong>.</li>
+              <li>Los estados válidos son: <code>Disponible</code>, <code>Próximamente</code>, <code>Cerrado</code>, <code>Sin programación actual</code>.</li>
+              <li>Las etiquetas de estado usan colores diferenciados definidos en design tokens (no hardcoded).</li>
+              <li>Cuando aplique, se muestra el contador de cupos disponibles junto al estado.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas de clasificación consistentes y trazables</strong>
+            <ul class="mt-1">
+              <li>Las reglas de clasificación por categoría y estado se definen en una <strong>fuente única de verdad</strong> (tabla de configuración o archivo YAML en repo).</li>
+              <li>Cualquier cambio en la clasificación queda auditado (versión + timestamp + autor).</li>
+              <li>El campo <code>status</code> en el catálogo usa un <strong>enum estricto</strong>; valores no reconocidos se rechazan con error 400.</li>
+              <li>Las categorías son jerárquicas (área &gt; subárea) y visibles en la tarjeta del servicio.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Actualización y frescura de la disponibilidad</strong>
+            <ul class="mt-1">
+              <li>Los estados se actualizan vía <strong>webhook del gestor de servicios</strong> en tiempo real, sin recarga de página.</li>
+              <li>El caché de estados tiene <strong>invalidación por evento</strong> (TTL máximo configurable, defecto 5 min).</li>
+              <li>Si el gestor no responde, se mantiene el último estado conocido y se muestra un indicador de "última actualización hace X min".</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback por datos incompletos</strong>
+            <ul class="mt-1">
+              <li>Si un servicio carece de categoría o estado, se asigna automáticamente <code>Sin programación actual</code> y se registra una alerta interna.</li>
+              <li>Los servicios sin datos completos <strong>no se ocultan</strong> del catálogo; se muestran con etiqueta de fallback.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Filtrado y rendimiento</strong>
+            <ul class="mt-1">
+              <li>El catálogo ofrece filtro por estado de disponibilidad aplicable en tiempo real.</li>
+              <li>La carga inicial del catálogo con etiquetas debe completarse en <strong>≤ 2 s</strong> (p95) para listados de hasta 200 servicios.</li>
+              <li>Las etiquetas son accesibles (contraste WCAG AA mínimo) y compatibles con lectores de pantalla.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Campo status en catálogo con enum estricto</li>
-          <li>Webhook del gestor de servicios para actualización de estados</li>
-          <li>Cache con invalidación por evento</li>
-          <li>Colores de estado definidos en design tokens</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        2. Tecnología <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Catálogo de Servicios (fuente)</div>
+              <ul class="mb-0 small">
+                <li>Campo <code>status</code> con enum estricto: <code>available | upcoming | closed | unscheduled</code>.</li>
+                <li>Campo <code>category</code> con jerarquía: <code>area_id</code> + <code>subarea_id</code>.</li>
+                <li>Maestro versionado en base de datos relacional o Delta Lake.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Integración y Eventos</div>
+              <ul class="mb-0 small">
+                <li>Webhook del gestor de servicios para propagación de cambios de estado.</li>
+                <li>Caché con invalidación por evento (Redis o similar).</li>
+                <li>Capa de Motor / API que expone el catálogo enriquecido con etiquetas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Frontend / UI</div>
+              <ul class="mb-0 small">
+                <li>Design tokens para colores de estado (sin hardcoding de colores en componentes).</li>
+                <li>Componente de tarjeta reutilizable con slot de etiquetas de categoría y estado.</li>
+                <li>Filtro por estado integrado en el listado del catálogo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Observabilidad y Auditoría</div>
+              <ul class="mb-0 small">
+                <li>Log de cada cambio de clasificación: campo, valor anterior, valor nuevo, autor, timestamp.</li>
+                <li>Alerta interna cuando se detectan servicios sin categoría o sin estado válido.</li>
+                <li>Dashboard interno de salud del catálogo (% servicios sin etiqueta, última sincronización).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> consulta el recomendador.</li>
+                <li><strong>CRM / Dynamics:</strong> provee etiquetas visibles por servicio.</li>
+                <li><strong>Catálogo Servicios:</strong> aplica reglas de clasificación.</li>
+                <li><strong>Motor / API:</strong> actualiza frescura de disponibilidad.</li>
+                <li><strong>Frontend / UI:</strong> gestiona fallback por datos incompletos.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SECUENCIA PRINCIPAL</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>CRM / Dynamics entrega etiquetas visibles por servicio (categoría + estado).</li>
+                <li>Catálogo Servicios aplica reglas de clasificación consistentes y trazables al Motor / API.</li>
+                <li>Motor / API envía actualización y frescura de la disponibilidad al Frontend / UI.</li>
+                <li>Frontend / UI devuelve fallback por datos incompletos al Motor / API.</li>
+                <li>Motor / API devuelve confirmación de rendimiento al Usuario.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SALIDA</div>
+              <ul class="mb-0 small ps-3">
+                <li>Tarjeta de servicio con etiqueta de categoría (área &gt; subárea).</li>
+                <li>Badge de estado con color diferenciado.</li>
+                <li>Contador de cupos cuando aplica.</li>
+                <li>Indicador de última actualización.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #AD1457;">Pasos del Pipeline de Clasificación</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Ingesta:</strong> el gestor de servicios publica un evento de cambio de estado o categoría.</li>
+          <li><strong>Validación:</strong> el Motor / API valida el enum de estado y la jerarquía de categoría; rechaza valores inválidos.</li>
+          <li><strong>Enriquecimiento:</strong> se adjuntan metadatos de cupos, fechas de vigencia y tags estratégicos.</li>
+          <li><strong>Caché:</strong> el resultado enriquecido se guarda en caché con TTL; se invalida al recibir nuevo webhook.</li>
+          <li><strong>Fallback:</strong> si faltan datos, se asigna <code>unscheduled</code> y se registra alerta.</li>
+          <li><strong>Exposición:</strong> el Frontend / UI consulta el catálogo y renderiza tarjetas con etiquetas.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #AD1457;">Ejemplo de Estructura de Servicio en Catálogo</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "service_id": "S-421",
+  "nombre": "Programa de Formalización Empresarial",
+  "categoria": {
+    "area_id": "formalizacion",
+    "area_nombre": "Formalización",
+    "subarea_id": "registro-mercantil",
+    "subarea_nombre": "Registro Mercantil"
+  },
+  "status": "upcoming",
+  "status_label": "Próximamente",
+  "cupos_disponibles": null,
+  "fecha_apertura_estimada": "2025-09-01",
+  "ultima_actualizacion": "2025-08-15T10:30:00Z"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        4. Diseño — Etiquetas y Estados Visibles
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #AD1457;">Estados de Disponibilidad y Colores</div>
+              <ul class="mb-0 small">
+                <li><span class="badge" style="background:#198754;">Disponible</span> — verde: inscripciones abiertas.</li>
+                <li><span class="badge" style="background:#fd7e14;">Próximamente</span> — naranja: fecha conocida futura.</li>
+                <li><span class="badge" style="background:#6c757d;">Sin programación</span> — gris: sin fecha definida.</li>
+                <li><span class="badge" style="background:#dc3545;">Cerrado</span> — rojo: fuera de vigencia.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #AD1457;">Elementos de la Tarjeta de Servicio</div>
+              <ul class="mb-0 small">
+                <li>Nombre del servicio (título principal).</li>
+                <li>Breadcrumb de categoría: Área &gt; Subárea.</li>
+                <li>Badge de estado con color semántico.</li>
+                <li>Cupos disponibles (cuando <code>status = available</code>).</li>
+                <li>Indicador de "Última actualización: hace X min".</li>
+                <li>Botón de acción contextual (inscribirse / avisarme / ver detalle).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Etiquetas visibles en tarjeta</strong></td>
+                <td>Cada tarjeta muestra categoría (área &gt; subárea) y badge de estado con color correcto según design token.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Enum estricto de estado</strong></td>
+                <td>Un estado con valor <code>"activo"</code> (fuera del enum) es rechazado con error 400 y se registra alerta.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Actualización en tiempo real</strong></td>
+                <td>Tras webhook de cambio de estado a <code>available</code>, la tarjeta actualiza el badge sin recarga en ≤ 5 s.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Fallback por datos incompletos</strong></td>
+                <td>Servicio sin categoría aparece con etiqueta <code>Sin programación</code> y se genera alerta interna.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Filtro por estado</strong></td>
+                <td>Al seleccionar filtro "Disponible", solo se muestran servicios con <code>status = available</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Rendimiento (p95)</strong></td>
+                <td>Listado de 200 servicios con etiquetas carga en ≤ 2 s (p95) medido en entorno de prueba.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Enum estricto</dt>
+          <dd class="col-sm-9">Conjunto cerrado de valores permitidos para un campo; cualquier valor externo es rechazado.</dd>
+
+          <dt class="col-sm-3">Design token</dt>
+          <dd class="col-sm-9">Variable de diseño (color, tipografía, espaciado) centralizada que se aplica a todos los componentes.</dd>
+
+          <dt class="col-sm-3">Webhook</dt>
+          <dd class="col-sm-9">Notificación HTTP enviada por el gestor de servicios cuando ocurre un cambio de estado.</dd>
+
+          <dt class="col-sm-3">Caché con TTL</dt>
+          <dd class="col-sm-9">Almacenamiento temporal de respuestas con expiración automática por tiempo o por evento.</dd>
+
+          <dt class="col-sm-3">Fallback</dt>
+          <dd class="col-sm-9">Valor o comportamiento por defecto aplicado cuando los datos esperados están incompletos o ausentes.</dd>
+
+          <dt class="col-sm-3 mb-0">Cupos disponibles</dt>
+          <dd class="col-sm-9 mb-0">Número de plazas activas restantes para inscripción a un servicio con capacidad limitada.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#AD1457 !important; background:#fce4ec;">
+      <strong>Nota de alcance:</strong> Esta HU cubre exclusivamente la clasificación y presentación visual de servicios con etiquetas de categoría y estado. La lógica de suscripción a notificaciones de disponibilidad futura se gestiona en HU 2.13.2.
     </div>
 
   </div>
@@ -85,4 +370,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

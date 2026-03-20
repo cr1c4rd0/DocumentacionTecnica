@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.1.2 – Entrenar motor (6M clientes / 24M)</title>
+  <title>HU 2.1.2 – Entrenar motor con 6M+ clientes / 24M+ interacciones</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">← Épica 2.1</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">←
+          Épica 2.1</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
@@ -21,12 +24,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.1.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Entrenar motor (6M clientes / 24M)</h1>
+      <h1 class="fw-bold fs-3 mb-1">Entrenar motor con 6M+ clientes / 24M+ interacciones</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.1 · Motor de Recomendación Personalizada · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
@@ -34,48 +39,330 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">Data Engineer del equipo de ML</p>
+              <p class="mb-0">científico de datos de la CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">entrenar el motor de recomendación con 6 millones de clientes y 24 meses de datos históricos</p>
+              <p class="mb-0">entrenar y versionar un motor de recomendación usando el histórico de
+                <strong>≥6 millones de clientes y ≥24 millones de interacciones</strong>
+                (consultas, consumos, clics, conversiones).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">que el modelo aprenda patrones de comportamiento a escala real</p>
+              <p class="mb-0">optimizar CTR/CR y dejar una base reproducible para
+                experimentación y despliegue futuro.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 –
+          Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Pipeline ETL procesa 6M clientes y 24 meses de histórico</li>
-          <li>Normalización y limpieza de datos antes del entrenamiento</li>
-          <li>Métricas mínimas: precision@5 ≥ 0.35, recall@10 ≥ 0.25</li>
-          <li>Reentrenamiento automático mensual</li>
-          <li>Deploy con versionamiento y rollback</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Dataset listo para entrenamiento a escala</strong>
+            <ul class="mt-1">
+              <li>Existe un pipeline reproducible (script/notebook + orquestación simple) que construye
+                datasets de entrenamiento/validación/test desde fuentes dev/seudonimizadas.</li>
+              <li>El pipeline maneja <strong>desbalance</strong> (p. ej., <em>negative sampling</em> y/o
+                <em>class weights</em>) y fugas de información (<em>split temporal por usuario</em>).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Feature Store mínima operativa</strong>
+            <ul class="mt-1">
+              <li>Catálogo/tabla(s) con:
+                <ul>
+                  <li>Features de usuario (segmento, rol, antigüedad, señales de interés).</li>
+                  <li>Features de servicio (categoría, elegibilidad, campaña, popularidad).</li>
+                  <li>Features de interacción (frecuencia/recencia, canales).</li>
+                </ul>
+              </li>
+              <li>Esquema versionado (<code>feature_group</code>, <code>version</code>, <code>created_at</code>)
+                y diccionario de datos.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Entrenamiento y versionado del modelo</strong>
+            <ul class="mt-1">
+              <li>Entrena al menos un enfoque <strong>baseline</strong> (p. ej., factorización matricial/LightFM
+                o Two-Tower con embeddings) y uno <strong>híbrido</strong> (contenido + reglas).</li>
+              <li>Artefactos versionados: <code>modelo.pkl</code> (o formato equivalente),
+                <code>requirements.txt</code>, <code>config.yml</code>, commit/tag.</li>
+              <li>Registra métricas offline: <strong>AUC/ROC, MAP@K, NDCG@K, Recall@K</strong>, sin exigir
+                umbrales en E1 (solo medición y reporte).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Evaluación offline y "shadow" planificada</strong>
+            <ul class="mt-1">
+              <li>Reporte comparativo <em>baseline vs. híbrido</em> con tablas/gráficos e intervalos por
+                bootstrap o k-fold temporal.</li>
+              <li>Se documenta un plan de evaluación online en <strong>"shadow mode"</strong> (sin afectar
+                usuarios) para fase siguiente; en E1 no se ejecuta A/B productivo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Escalabilidad demostrada en dev</strong>
+            <ul class="mt-1">
+              <li>Evidencia de tiempos de entrenamiento y uso de memoria para un subconjunto representativo
+                (p. ej., 10–20% del total) y estimación lineal para el total.</li>
+              <li>Batch inference genera top-K por usuario para un lote ≥100k usuarios con latencia por
+                usuario reportada (p95/p99).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad, ética y privacidad</strong>
+            <ul class="mt-1">
+              <li>Seudonimización de identificadores; no se persiste PII en artefactos.</li>
+              <li>Bitácora: <code>data_versions</code>, <code>feature_versions</code>,
+                <code>model_version</code>, <code>seed</code>, <code>hyperparams</code>,
+                <code>latencias</code>.</li>
+              <li>Documento de riesgos de sesgo + mitigaciones iniciales (diversidad mínima y exclusión
+                de atributos sensibles).</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Infraestructura cloud (GPU/TPU)</li>
-          <li>Framework: TensorFlow o PyTorch</li>
-          <li>Almacenamiento en S3/GCS</li>
-          <li>Pipeline orquestado con Airflow o similar</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Procesamiento</div>
+              <ul class="mb-0 small">
+                <li>Python + PySpark/Polars (según volumen disponible en dev).</li>
+                <li>Almacenamiento Parquet/Delta.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Modelado</div>
+              <ul class="mb-0 small">
+                <li><strong>Baseline:</strong> LightFM/ALS (implícito) o Two-Tower (TensorFlow/PyTorch).</li>
+                <li><strong>Híbrido:</strong> similitud de contenido (embeddings/texto) + reglas de negocio
+                  (elegibilidad, no-repetición).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Feature Store &amp; Versionado</div>
+              <ul class="mb-0 small">
+                <li>Tablas particionadas por fecha/segmento; catálogo (Glue/HCatalog/Delta catalog) en dev.</li>
+                <li>Git + etiquetas; opcional <strong>MLflow</strong> para run_id, métricas y artefactos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Logs estructurados (JSON).</li>
+                <li>Métricas guardadas en CSV/Parquet y gráfico HTML/PNG.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 –
+          Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">INICIO</div>
+              <p class="mb-0 small">Job manual/orquestado (cron dev) que ejecuta:
+                <em>feature build → training → evaluation → packaging</em>.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">FUENTES (dev/seudonimizadas)</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>CRM Dynamics:</strong> segmento, rol, antigüedad, estado cliente.</li>
+                <li><strong>SIREP:</strong> interacciones/transacciones (consumos, clics, fechas, canal).</li>
+                <li><strong>Catálogo:</strong> metadata, elegibilidad, campañas, categorías.</li>
+                <li><strong>Señales:</strong> popularidad, novedad, temporadas.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SALIDA TÉCNICA</div>
+              <p class="mb-0 small">Artefactos versionados + reporte con métricas offline, tiempos,
+                consumo, ejemplos de top-K explicados y lista de errores conocidos/riesgos.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Ingesta &amp; limpieza:</strong> normaliza IDs, fechas, canales; seudonimiza usuario.</li>
+          <li><strong>Construcción de features:</strong> ventanas (7/30/90 días), recency-frequency,
+            embeddings de descripciones.</li>
+          <li><strong>Split temporal y balanceo:</strong> holdout por mes/semana; negative sampling por usuario.</li>
+          <li><strong>Entrenamiento:</strong> baseline + híbrido; grid/random search de hiperparámetros.</li>
+          <li><strong>Evaluación offline:</strong> MAP@10, NDCG@10, Recall@10, AUC; tablas y gráficos.</li>
+          <li><strong>Empaque:</strong> <code>modelo.pkl</code> + <code>config.yml</code> + <code>preprocess.pkl</code>;
+            guardado con hash/versión.</li>
+          <li><strong>Batch inference (dev):</strong> top-K para lote; exclusiones (ya tomados/declinados).</li>
+          <li><strong>Reporte:</strong> notebook/markdown con resultados, costos estimados y próximos pasos.</li>
+        </ol>
+
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">E1 sin front
+          público</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Validación E1 (notebook / CSV)</div>
+              <ul class="mb-0 small">
+                <li>Tabla comparativa de modelos y métricas (baseline vs. híbrido).</li>
+                <li>Muestras de recomendaciones por usuario con campos:
+                  <code>service_id</code>, <code>nombre</code>, <code>score</code>,
+                  <code>razones[]</code>, <code>reglas_aplicadas</code>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">No hay UI final en E1</div>
+              <ul class="mb-0 small">
+                <li>La validación es vía notebook de resultados y salida JSON/CSV.</li>
+                <li>El A/B real y la UI de negocio se programan para la siguiente fase.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Split temporal correcto</strong></td>
+                <td>Ninguna interacción del futuro "contamina" el conjunto de entrenamiento.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Balanceo</strong></td>
+                <td>Negative sampling activo y configurable; impacto reflejado en métricas.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Exclusiones de negocio</strong></td>
+                <td>Post-ranking elimina servicios <code>taken</code>/<code>declined</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Reproducibilidad</strong></td>
+                <td>Ejecutar con la misma <code>seed</code> genera métricas dentro de tolerancia.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Escalabilidad</strong></td>
+                <td>Lote ≥100k usuarios genera top-K y registra p95/p99 de inferencia.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">CTR / CR</dt>
+          <dd class="col-sm-9">Click-Through Rate / Conversion Rate.</dd>
+
+          <dt class="col-sm-3">MAP@K / NDCG@K / Recall@K</dt>
+          <dd class="col-sm-9">Métricas de ranking evaluadas en el top-K de recomendaciones.</dd>
+
+          <dt class="col-sm-3">Negative Sampling</dt>
+          <dd class="col-sm-9">Generación de no-interacciones para balancear clases en entrenamiento.</dd>
+
+          <dt class="col-sm-3">Two-Tower</dt>
+          <dd class="col-sm-9">Arquitectura de dos torres (usuario/ítem) para aprendizaje de similitud.</dd>
+
+          <dt class="col-sm-3">Seudonimización</dt>
+          <dd class="col-sm-9">Reemplazo de PII por identificadores no reversibles usados en dev.</dd>
+
+          <dt class="col-sm-3">Shadow Mode</dt>
+          <dd class="col-sm-9">Ejecución paralela del modelo nuevo sin impactar al usuario final.</dd>
+
+          <dt class="col-sm-3 mb-0">Feature Store</dt>
+          <dd class="col-sm-9 mb-0">Repositorio/tablas con variables de usuario/servicio listas para inferencia, con versión y sello de tiempo.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Nota de alcance E1:</strong> Se mide y documenta todo (sin umbrales obligatorios), se deja artefacto
+      versionado, Feature Store mínima y reporte reproducible. El A/B real y la UI de negocio se programan para la
+      siguiente fase.
     </div>
 
   </div>
@@ -84,4 +371,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

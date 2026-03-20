@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,375 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1B5E20; --hero-end: #2E7D32;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.11.3</div>
-      <h1 class="fw-bold fs-3 mb-0">Atribución y ventana de conversión parametrizable</h1>
+      <h1 class="fw-bold fs-3 mb-1">Atribución y ventana de conversión parametrizable</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.11 · Integración con Formularios de Servicios · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00796B;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #00796B;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador de analítica de negocio</p>
+              <p class="mb-0">usuario de negocio <strong>responsable del Recomendador de Servicios</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">configurar ventanas de tiempo y modelos de atribución para medir conversiones</p>
+              <p class="mb-0">configurar <strong>ventanas de tiempo y modelos de atribución</strong> para medir qué conversiones se le acreditan al recomendador.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">analizar con flexibilidad el impacto real del recomendador bajo diferentes modelos de negocio</p>
+              <p class="mb-0">analizar con flexibilidad el <strong>impacto real del recomendador</strong> bajo diferentes modelos de negocio sin redeploy.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Ventana de conversión configurable por servicio (1, 7, 14, 30 días)</li>
-          <li>Modelos de atribución seleccionables: first_click, last_click, linear, time_decay</li>
-          <li>Cambios aplicados sin redeploy en ≤ 10 minutos</li>
-          <li>Retroactividad: recalcular atribuciones históricas con nuevo modelo</li>
-          <li>Comparación side-by-side de modelos de atribución</li>
-          <li>Export de resultados de atribución en CSV</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Parametrización de ventanas y reglas de atribución</strong>
+            <ul class="mt-1">
+              <li>La ventana de conversión es configurable <strong>por servicio y por canal</strong>: 1, 7, 14 o 30 días (valor customizable sin redeploy, vía tabla de config o YAML).</li>
+              <li>El modelo de atribución es seleccionable:
+                <ol type="a" class="mt-1">
+                  <li><code>first_click</code>: 100% del crédito a la primera interacción.</li>
+                  <li><code>last_click</code>: 100% del crédito a la última interacción antes de la conversión.</li>
+                  <li><code>linear</code>: crédito distribuido equitativamente entre todas las interacciones en la ventana.</li>
+                  <li><code>time_decay</code>: mayor crédito a las interacciones más cercanas a la conversión.</li>
+                </ol>
+              </li>
+              <li>Cambios de configuración aplican en <strong>≤ 10 minutos</strong> sin redeploy.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Identificadores de atribución presentes y persistidos</strong>
+            <ul class="mt-1">
+              <li>Cada recomendación entregada genera un <code>recommendation_id</code> único que se persiste en SIREP con: <code>user_key_pseudo</code>, <code>service_id</code>, <code>canal</code>, <code>campaign_id</code>, <code>timestamp_recomendacion</code>.</li>
+              <li>El <code>recommendation_id</code> viaja en el deep link (HU 2.11.1) y se almacena en el callback (HU 2.11.2), garantizando la cadena de atribución.</li>
+              <li>Los identificadores se conservan durante toda la ventana de conversión configurada.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Recepción de callback/estado y cálculo de conversión</strong>
+            <ul class="mt-1">
+              <li>Al recibir un callback con estado <code>inscrito</code>, el motor de atribución verifica si existe un <code>recommendation_id</code> asociado dentro de la ventana de conversión activa.</li>
+              <li>Si la conversión está dentro de la ventana: se registra como <strong>conversión atribuida</strong> al recomendador con el modelo seleccionado.</li>
+              <li>Si está fuera de la ventana: se registra como <strong>conversión no atribuida</strong> (clasificación de no atribución, ver criterio 7).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Manejo de múltiples recomendaciones</strong>
+            <ul class="mt-1">
+              <li>Si un usuario recibió múltiples recomendaciones del mismo servicio en la ventana, el modelo de atribución seleccionado determina cómo se distribuye el crédito entre ellas.</li>
+              <li>Si el usuario recibió recomendaciones de múltiples canales, el sistema puede atribuir crédito a cada canal según el modelo (sin doble conteo en el total).</li>
+              <li>Se garantiza que la suma de créditos atribuidos a un evento de conversión es siempre 1.0 (100%).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Tablero/consulta muestra tasas por ventana y canal</strong>
+            <ul class="mt-1">
+              <li>El dashboard analítico permite filtrar conversiones por: ventana de tiempo, modelo de atribución, servicio, canal y período.</li>
+              <li>Se pueden comparar resultados <strong>side-by-side</strong> con diferentes modelos de atribución aplicados al mismo conjunto de datos.</li>
+              <li>Export de resultados de atribución en <strong>CSV</strong> disponible desde el dashboard.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback y manejo de ambigüedad</strong>
+            <ul class="mt-1">
+              <li>Si no se puede determinar el modelo de atribución por falta de datos, se aplica el modelo <strong>default configurado</strong> (<code>last_click</code> por defecto).</li>
+              <li>Si el <code>recommendation_id</code> del callback no existe en SIREP (huérfano), el evento se registra como <code>conversion_sin_attribution</code> y se alerta al equipo.</li>
+              <li>Si el servicio de cálculo de atribución no está disponible, los callbacks se encolan y se procesan cuando se recupera (no se pierden).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Clasificación de no atribución</strong>
+            <ul class="mt-1">
+              <li>Las inscripciones fuera de ventana se clasifican con motivo: <code>fuera_ventana</code>, <code>sin_recomendacion_previa</code>, <code>recomendacion_expirada</code>.</li>
+              <li>Esta clasificación permite al equipo de negocio entender la magnitud del impacto "orgánico" vs. el atribuido al recomendador.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Motor de atribución desacoplado del pipeline de recomendaciones</li>
-          <li>Config en YAML con validación de esquema</li>
-          <li>Job de recálculo retroactivo en Spark o similar</li>
-          <li>Versionado de modelos de atribución</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        2. Tecnología <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Motor de Atribución (desacoplado)</div>
+              <ul class="mb-0 small">
+                <li>Servicio independiente del pipeline de recomendaciones para no introducir latencia.</li>
+                <li>Implementación de los 4 modelos: <code>first_click</code>, <code>last_click</code>, <code>linear</code>, <code>time_decay</code>.</li>
+                <li>Config en YAML/tabla con validación de esquema; hot-reload sin redeploy.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">SIREP — Almacenamiento de Interacciones</div>
+              <ul class="mb-0 small">
+                <li>Tabla de interacciones: <code>recommendation_id</code>, <code>user_key_pseudo</code>, <code>service_id</code>, <code>canal</code>, <code>timestamp</code>, <code>tipo</code> (<code>impresion</code>, <code>clic</code>, <code>inscripcion</code>).</li>
+                <li>Índice por <code>user_key_pseudo</code> + <code>service_id</code> + <code>timestamp</code> para consultas de ventana.</li>
+                <li>Retención configurable: mínimo igual a la ventana máxima de conversión (30 días).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Recálculo Retroactivo</div>
+              <ul class="mb-0 small">
+                <li>Job batch (Spark o similar) para recalcular atribuciones históricas al cambiar de modelo.</li>
+                <li>Versionado de modelos: los recálculos se almacenan con <code>version_modelo_atribucion</code>.</li>
+                <li>Los recálculos no sobrescriben el histórico original; se generan vistas adicionales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Dashboard y Export</div>
+              <ul class="mb-0 small">
+                <li>Consultas con filtros por ventana, modelo, servicio, canal y período.</li>
+                <li>Comparación side-by-side de modelos sobre el mismo dataset.</li>
+                <li>Export CSV con campos: <code>recommendation_id</code>, <code>service_id</code>, <code>canal</code>, <code>credito_atribuido</code>, <code>modelo</code>, <code>ventana_dias</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Usuario de negocio responsable del Recomendador — configura ventanas y modelos; analiza el impacto atribuido.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (atribución)</li>
+                <li><strong>SIREP</strong> (interacciones)</li>
+                <li><strong>Frontend / UI</strong> (dashboard)</li>
+                <li><strong>Formulario</strong> (callbacks)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">MODELOS DISPONIBLES</div>
+              <div class="d-flex flex-wrap gap-1 small">
+                <span class="badge" style="background:#2E7D32;">first_click</span>
+                <span class="badge" style="background:#2E7D32;">last_click</span>
+                <span class="badge" style="background:#2E7D32;">linear</span>
+                <span class="badge" style="background:#2E7D32;">time_decay</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Parametrización de ventanas y reglas:</strong> el Usuario/Actor configura la ventana y el modelo de atribución; el Motor/API aplica la nueva config en ≤ 10 min via hot-reload.</li>
+          <li><strong>Identificadores de atribución:</strong> el Motor/API persiste los <code>recommendation_id</code> con contexto completo en SIREP para la ventana configurada.</li>
+          <li><strong>Recepción de callback y cálculo:</strong> el Motor/API recibe callback de conversión del Formulario; consulta SIREP para verificar ventana activa y calcula crédito según modelo seleccionado.</li>
+          <li><strong>Manejo de múltiples recomendaciones:</strong> el Formulario puede haber generado múltiples interacciones; el motor distribuye el crédito (suma = 1.0) según el modelo, retornando el resultado al Motor/API.</li>
+          <li><strong>Tablero/consulta:</strong> el Motor/API expone resultados al dashboard con filtros por ventana, modelo y canal; disponibilidad de export CSV.</li>
+          <li><strong>Fallback y manejo de ambigüedad:</strong> si falta contexto, el Motor aplica el modelo default y registra el fallback en SIREP.</li>
+          <li><strong>Clasificación de no atribución:</strong> las conversiones fuera de ventana se clasifican y almacenan con su motivo específico en SIREP.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Ejemplo de Configuración de Atribución</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;"># attribution_config.yaml
+default_model: last_click
+default_window_days: 7
+
+services:
+  S-134:  # Asesoría Formalización
+    window_days: 14
+    model: time_decay
+  S-200:  # Curso Presencial
+    window_days: 30
+    model: linear
+
+canales:
+  recomendador:
+    weight_multiplier: 1.0
+  asistente:
+    weight_multiplier: 0.8
+
+version: "attribution-2025.12.10"
+hot_reload: true</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        4. Diseño — Dashboard de Atribución <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Vista analítica de negocio</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">Configuración sin Redeploy</div>
+              <ul class="mb-0 small">
+                <li>Formulario web para cambiar ventana y modelo por servicio/canal.</li>
+                <li>Validación de esquema antes de aplicar; confirmación de efectividad en ≤ 10 min.</li>
+                <li>Historial de versiones de configuración con diff visual.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">Comparación de Modelos</div>
+              <ul class="mb-0 small">
+                <li>Vista side-by-side: mismo período, mismo servicio, 2 modelos diferentes.</li>
+                <li>Diferencia porcentual de conversiones atribuidas entre modelos.</li>
+                <li>Botón de export CSV con los campos de atribución completos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Conversión dentro de ventana</strong></td>
+                <td>Inscripción registrada como <code>conversion_atribuida</code> con crédito calculado según modelo activo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Conversión fuera de ventana</strong></td>
+                <td>Inscripción registrada como <code>conversion_no_atribuida</code> con motivo <code>fuera_ventana</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Cambio de modelo sin redeploy</strong></td>
+                <td>Nueva configuración activa en ≤ 10 min; conversiones posteriores usan el nuevo modelo; versión registrada en log.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Múltiples recomendaciones — modelo linear</strong></td>
+                <td>Crédito distribuido equitativamente; suma total de créditos = 1.0.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Callback huérfano (sin recommendation_id)</strong></td>
+                <td>Registrado como <code>conversion_sin_attribution</code>; alerta al equipo; no afecta métricas atribuidas.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Export CSV</strong></td>
+                <td>CSV contiene todos los campos requeridos y es descargable desde el dashboard.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Comparación side-by-side</strong></td>
+                <td>Dashboard muestra diferencia de conversiones atribuidas entre dos modelos para el mismo dataset.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Ventana de conversión</dt>
+          <dd class="col-sm-9">Período de tiempo desde la recomendación durante el cual una inscripción se considera atribuible al recomendador.</dd>
+
+          <dt class="col-sm-3">Modelo first_click</dt>
+          <dd class="col-sm-9">Atribuye el 100% del crédito de conversión a la primera interacción del usuario con el recomendador.</dd>
+
+          <dt class="col-sm-3">Modelo last_click</dt>
+          <dd class="col-sm-9">Atribuye el 100% del crédito a la última interacción antes de la conversión.</dd>
+
+          <dt class="col-sm-3">Modelo linear</dt>
+          <dd class="col-sm-9">Distribuye el crédito equitativamente entre todas las interacciones en la ventana.</dd>
+
+          <dt class="col-sm-3">Modelo time_decay</dt>
+          <dd class="col-sm-9">Asigna mayor crédito a las interacciones más recientes (más cercanas a la conversión).</dd>
+
+          <dt class="col-sm-3">Hot-reload</dt>
+          <dd class="col-sm-9">Capacidad de aplicar cambios de configuración en un sistema en ejecución sin necesidad de reiniciarlo ni redesplegar.</dd>
+
+          <dt class="col-sm-3 mb-0">Conversión no atribuida</dt>
+          <dd class="col-sm-9 mb-0">Inscripción que ocurrió sin una recomendación previa dentro de la ventana activa; representa conversión "orgánica".</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#2E7D32 !important; background:#e8f5e9;">
+      <strong>Nota de alcance E1:</strong> La atribución parametrizable cierra el ciclo de medición del recomendador: recomendación → clic → formulario → resultado → atribución. En E1 se implementan los 4 modelos estándar con configuración por servicio/canal. Los modelos de atribución probabilística o multi-dimensional son parte de etapas posteriores.
     </div>
 
   </div>
@@ -85,4 +397,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

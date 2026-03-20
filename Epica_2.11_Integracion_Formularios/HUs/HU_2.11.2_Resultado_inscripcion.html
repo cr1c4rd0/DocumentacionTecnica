@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,64 +20,360 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1B5E20; --hero-end: #2E7D32;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.11.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Registro del resultado de inscripción</h1>
+      <h1 class="fw-bold fs-3 mb-1">Registro del resultado de inscripción</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.11 · Integración con Formularios de Servicios · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00796B;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #00796B;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">sistema de analítica del recomendador</p>
+              <p class="mb-0"><strong>sistema del Recomendador de Servicios</strong> (actor técnico — analítica).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">recibir el estado final de cada intento de inscripción originado en una recomendación</p>
+              <p class="mb-0">recibir y registrar el <strong>estado final de cada intento de inscripción</strong> originado en una recomendación.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">medir la tasa de conversión real y atribuir correctamente los resultados al motor</p>
+              <p class="mb-0">medir la <strong>tasa de conversión real</strong> y atribuir correctamente los resultados al motor de recomendación.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Webhook/callback recibe estado: inscrito, pendiente, rechazado, abandonado</li>
-          <li>Reconciliación automática de eventos huérfanos en ≤ 1 hora</li>
-          <li>Registro persistente con recommendationId, serviceId, userId y timestamp</li>
-          <li>Dashboard en tiempo real de conversiones por servicio y campaña</li>
-          <li>Alertas cuando tasa de conversión cae por debajo de umbral</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Registro de estados estándar por intento</strong>
+            <ul class="mt-1">
+              <li>El sistema registra cada intento de inscripción con uno de los siguientes estados:
+                <ol type="a" class="mt-1">
+                  <li><code>inscrito</code>: el usuario completó y envió el formulario exitosamente.</li>
+                  <li><code>pendiente</code>: el formulario fue enviado pero requiere revisión/confirmación externa.</li>
+                  <li><code>rechazado</code>: la inscripción fue rechazada por el sistema de formularios (elegibilidad, cupo, etc.).</li>
+                  <li><code>abandonado</code>: el usuario abrió el formulario pero no lo completó (ver criterio 6).</li>
+                </ol>
+              </li>
+              <li>Cada registro incluye obligatoriamente: <code>recommendation_id</code>, <code>service_id</code>, <code>user_key_pseudo</code>, <code>estado</code>, <code>timestamp_intento</code>, <code>timestamp_resultado</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Disponibilidad analítica y trazabilidad</strong>
+            <ul class="mt-1">
+              <li>Los resultados de inscripción están disponibles en el pipeline analítico en <strong>≤ 5 minutos</strong> tras registrarse el evento.</li>
+              <li>Se puede trazar el camino completo: <code>recomendación</code> → <code>clic CTA</code> → <code>apertura formulario</code> → <code>resultado inscripción</code>.</li>
+              <li>Dashboard básico muestra tasa de conversión por servicio, canal y período.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fuente de verdad del resultado</strong>
+            <ul class="mt-1">
+              <li>El estado definitivo de una inscripción proviene del <strong>sistema de formularios (Formulario)</strong> vía webhook/callback; el motor de recomendación es receptor, no origen.</li>
+              <li>Si el formulario no envía callback en ≤ 1 hora, se ejecuta <strong>reconciliación automática</strong>: el sistema consulta al Formulario el estado del intento por <code>recommendation_id</code>.</li>
+              <li>El estado más reciente del formulario sobrescribe cualquier estado previo; se mantiene historial de cambios.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Captura de detalle de error (mínimo viable)</strong>
+            <ul class="mt-1">
+              <li>Para inscripciones con estado <code>rechazado</code>, se captura el <strong>código de error</strong> del formulario (p. ej. <code>cupo_agotado</code>, <code>no_elegible</code>, <code>datos_invalidos</code>).</li>
+              <li>El código de error se almacena en el registro de inscripción; no se expone al usuario directamente (solo se usa para analítica interna).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y resiliencia (no impactar UX)</strong>
+            <ul class="mt-1">
+              <li>El registro del resultado es <strong>asíncrono</strong>: un fallo en el registro no interrumpe la experiencia del usuario en el formulario.</li>
+              <li>Reintentos automáticos con <strong>backoff exponencial</strong> (máx. 3 reintentos) si el endpoint de registro no está disponible.</li>
+              <li>Cola de mensajes con <strong>dead letter queue</strong> para eventos que no se procesan tras los reintentos.</li>
+              <li>Latencia del endpoint de recepción de callback: p95 ≤ 200ms.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Definición operativa de "abandono"</strong>
+            <ul class="mt-1">
+              <li>Una inscripción se marca como <code>abandonado</code> si:
+                <ul>
+                  <li>Han transcurrido <strong>≥ 2 horas</strong> desde la apertura del formulario, y</li>
+                  <li>No se ha recibido callback de resultado (<code>inscrito</code>, <code>pendiente</code> o <code>rechazado</code>).</li>
+                </ul>
+              </li>
+              <li>La ventana de 2 horas es configurable sin redeploy (tabla de configuración).</li>
+              <li>El estado <code>abandonado</code> puede ser sobrescrito si llega un callback tardío con resultado real.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Endpoint POST /conversions con validación HMAC</li>
-          <li>Retry automático con backoff exponencial</li>
-          <li>Dead letter queue para eventos no procesados</li>
-          <li>Integración bidireccional con CRM</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        2. Tecnología <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Endpoint de Recepción de Callbacks</div>
+              <ul class="mb-0 small">
+                <li><code>POST /inscriptions/callback</code> — recibe resultado del formulario.</li>
+                <li>Validación de autenticidad: HMAC-SHA256 con secret compartido por servicio.</li>
+                <li>Idempotente: reintentos del formulario no generan duplicados (<code>recommendation_id</code> como clave idempotente).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">SIREP / Almacenamiento</div>
+              <ul class="mb-0 small">
+                <li>Tabla de inscripciones en SIREP o base analítica con campos obligatorios y campo <code>error_code</code> nullable.</li>
+                <li>Índice por <code>recommendation_id</code>, <code>service_id</code>, <code>user_key_pseudo</code> y <code>estado</code>.</li>
+                <li>Historial de cambios de estado (tabla de auditoría con timestamp por cada transición).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Resiliencia y Cola</div>
+              <ul class="mb-0 small">
+                <li>Cola de mensajes (Azure Service Bus / Kafka) para procesamiento asíncrono de callbacks.</li>
+                <li>Política de reintentos: 3 intentos con backoff 1s → 5s → 30s.</li>
+                <li>Dead letter queue para eventos sin procesar; alerta al equipo de integración.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Reconciliación y Abandono</div>
+              <ul class="mb-0 small">
+                <li>Job cron cada 30 minutos: identifica intentos sin callback en el tiempo configurado.</li>
+                <li>Para cada intento huérfano: consulta estado al Formulario por <code>recommendation_id</code>.</li>
+                <li>Si no hay respuesta, marca como <code>abandonado</code> según ventana configurada (default 2h).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Sistema del Recomendador (actor técnico) — recibe y registra resultados de inscripción para analítica.</p>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (endpoint callback + analítica)</li>
+                <li><strong>SIREP</strong> (almacenamiento resultados)</li>
+                <li><strong>Frontend / UI</strong> (visualización tasa conversión)</li>
+                <li><strong>Formulario</strong> (fuente de verdad del resultado)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ESTADOS POSIBLES</div>
+              <div class="d-flex flex-wrap gap-2 small">
+                <span class="badge" style="background:#2E7D32;">inscrito</span>
+                <span class="badge" style="background:#0277BD;">pendiente</span>
+                <span class="badge" style="background:#C62828;">rechazado</span>
+                <span class="badge" style="background:#6c757d;">abandonado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Registro de estados estándar por intento:</strong> el Motor/API abre el registro de inscripción con estado <code>pendiente</code> al recibir el evento de apertura de formulario.</li>
+          <li><strong>Disponibilidad analítica y trazabilidad:</strong> el Motor/API envía el registro a SIREP para disponibilidad analítica; SIREP confirma almacenamiento.</li>
+          <li><strong>Fuente de verdad del resultado:</strong> el Formulario (sistema destino) envía callback con estado definitivo al Motor/API; el estado se actualiza en SIREP.</li>
+          <li><strong>Captura de detalle de error:</strong> el Formulario incluye código de error en el callback cuando aplica (estado <code>rechazado</code>); el Motor almacena el <code>error_code</code> en SIREP.</li>
+          <li><strong>Rendimiento y resiliencia:</strong> el Motor/API confirma recepción del callback a SIREP y emite evento analítico; la operación es asíncrona y no bloquea al usuario.</li>
+          <li><strong>Definición operativa de abandono:</strong> el Motor devuelve la definición operativa de abandono al usuario/analítica y cierra el ciclo del intento.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Ejemplo de Callback Recibido</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">POST /inscriptions/callback
+{
+  "recommendation_id": "rec-0042",
+  "service_id": "S-134",
+  "user_key_pseudo": "u_9f3a",
+  "estado": "inscrito",
+  "timestamp_resultado": "2025-11-21T10:32:00Z",
+  "error_code": null,
+  "hmac_signature": "sha256=abc123..."
+}
+
+// Respuesta del Motor:
+{ "status": "ok", "processed": true }</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        4. Diseño — Dashboard de Conversiones <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Vista analítica interna</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">KPIs Principales</div>
+              <ul class="mb-0 small">
+                <li>Tasa de conversión global: <em>inscripciones / clics en CTA</em>.</li>
+                <li>Desglose por servicio, canal y período.</li>
+                <li>Distribución de estados: inscrito / pendiente / rechazado / abandonado.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">Alertas y Monitoreo</div>
+              <ul class="mb-0 small">
+                <li>Alerta cuando la tasa de conversión de un servicio cae por debajo de umbral configurado.</li>
+                <li>Alerta cuando hay acumulación en dead letter queue.</li>
+                <li>Alerta cuando la reconciliación automática detecta alta tasa de intentos huérfanos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Callback exitoso — inscrito</strong></td>
+                <td>Registro actualizado a <code>inscrito</code> en ≤ 200ms; disponible en analítica en ≤ 5min.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Callback con rechazo + código error</strong></td>
+                <td>Registro actualizado a <code>rechazado</code>; campo <code>error_code</code> almacenado; no se expone al usuario.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Sin callback en 2 horas</strong></td>
+                <td>Job de reconciliación marca registro como <code>abandonado</code>; log registra motivo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Callback tardío (después de marcado como abandonado)</strong></td>
+                <td>Estado se actualiza al valor real del callback; historial de cambios conserva el estado previo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Callback duplicado (reintento del formulario)</strong></td>
+                <td>Endpoint idempotente: no se genera registro duplicado; se retorna <code>ok</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Endpoint no disponible</strong></td>
+                <td>Cola retiene el evento; reintentos con backoff; tras 3 fallos, evento va a dead letter queue.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Trazabilidad completa</strong></td>
+                <td>Dado un <code>recommendation_id</code>, se puede trazar: recomendación → clic → apertura formulario → resultado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Callback / Webhook</dt>
+          <dd class="col-sm-9">Llamada HTTP que el sistema de formularios hace al Recomendador para notificar el resultado de una inscripción.</dd>
+
+          <dt class="col-sm-3">Idempotencia</dt>
+          <dd class="col-sm-9">Propiedad de una operación que produce el mismo resultado aunque se ejecute múltiples veces con los mismos parámetros.</dd>
+
+          <dt class="col-sm-3">Dead letter queue</dt>
+          <dd class="col-sm-9">Cola especial que recibe los mensajes que no pudieron procesarse tras el número máximo de reintentos, para revisión manual.</dd>
+
+          <dt class="col-sm-3">Reconciliación</dt>
+          <dd class="col-sm-9">Proceso automático que detecta y resuelve discrepancias entre el estado esperado y el estado real de un registro.</dd>
+
+          <dt class="col-sm-3">Tasa de conversión</dt>
+          <dd class="col-sm-9">Proporción de clics en CTA que resultan en una inscripción exitosa (<code>inscrito</code>).</dd>
+
+          <dt class="col-sm-3 mb-0">HMAC</dt>
+          <dd class="col-sm-9 mb-0">Hash-based Message Authentication Code — mecanismo criptográfico para verificar la autenticidad de un mensaje.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#2E7D32 !important; background:#e8f5e9;">
+      <strong>Nota de alcance E1:</strong> El registro del resultado de inscripción es la base del pipeline de atribución. En E1 se capturan todos los estados estándar y se garantiza trazabilidad por <code>recommendation_id</code>. La lógica de atribución multi-toque y ventanas de conversión parametrizables se especifica en HU 2.11.3.
     </div>
 
   </div>
@@ -84,4 +382,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

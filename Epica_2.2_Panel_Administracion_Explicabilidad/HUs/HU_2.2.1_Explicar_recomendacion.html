@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.2.1 – Explicar por qué se recomienda (negocio)</title>
+  <title>HU 2.2.1 – Explícame por qué me recomiendan esto (Panel de Administración y Explicabilidad)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html">← Épica 2.2</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html">←
+          Épica 2.2</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #4A148C; --hero-end: #6A1B9A;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.2.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Explicar por qué se recomienda (negocio)</h1>
+      <h1 class="fw-bold fs-3 mb-1">Explícame por qué me recomiendan esto</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.2 · Panel de Administración y Explicabilidad · XAI para Negocio</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #6A1B9A;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #6A1B9A;">Enunciado</h2>
@@ -34,48 +39,329 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador del sistema de recomendaciones</p>
+              <p class="mb-0">administrador/a de negocio de la CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver explicaciones trazables sobre por qué el motor sugiere ciertos servicios a cada usuario</p>
+              <p class="mb-0">ver la <strong>lógica explicativa</strong> detrás de cada recomendación
+                (qué factores la soportan y qué reglas la afectaron).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">poder auditar las decisiones del modelo y justificarlas ante el negocio</p>
+              <p class="mb-0">validar pertinencia, <strong>auditar decisiones</strong>, ajustar reglas
+                y comunicar con confianza a las áreas interesadas.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#6A1B9A;font-size:0.7rem;">Definition of Done</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Panel muestra desglose de factores por recomendación (features, pesos, scores)</li>
-          <li>Trazabilidad completa: ID de modelo, versión, timestamp</li>
-          <li>Filtros por usuario, servicio, fecha y tipo de explicación</li>
-          <li>Exportación de reportes en CSV/Excel</li>
-          <li>Alertas cuando score cae por debajo de umbral</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Explicación clara por recomendación (XAI legible)</strong>
+            <ul class="mt-1">
+              <li>En la vista de una recomendación, el panel muestra <strong>Top-3 factores</strong> que más
+                aportaron al score (p. ej.: <em>"Sector comercio +0.18"</em>, <em>"Usó Certificados hace 14 días
+                +0.12"</em>, <em>"Servicios gratuitos priorizados +0.07"</em>).</li>
+              <li>Cada factor incluye tipo (usuario/empresa, servicio, comportamiento, regla) y un
+                <strong>resumen humano</strong> (<em>"Por tu sector y tu uso reciente de certificados."</em>).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad completa (end-to-end)</strong>
+            <ul class="mt-1">
+              <li>Se visualizan eventos y decisiones: <em>generación de candidatos → filtros (listas
+                blancas/negras, cupos/elegibilidad) → re-ranking → boosts/pinning → Top-N final</em>.</li>
+              <li>Se puede abrir un log de decisiones con timestamp, score antes/después de cada etapa
+                y regla aplicada.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Compatibilidad con usuarios anónimos (consentimiento)</strong>
+            <ul class="mt-1">
+              <li>Si el usuario es anónimo con <code>anon_id</code>, la explicación <strong>nunca expone
+                PII</strong>.</li>
+              <li>Se indica el estado de consentimiento (<em>"Personalización: ON/OFF"</em>).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y alcance</strong>
+            <ul class="mt-1">
+              <li>Carga de explicación <strong>≤ 1.0 s</strong> (p95) para un ítem con datos cacheados.</li>
+              <li>Existe búsqueda por usuario (<code>anon_id</code> o id CRM), segmento, servicio y fecha.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Exactitud y consistencia</strong>
+            <ul class="mt-1">
+              <li>La suma de contribuciones mostradas reconstruye el score (<strong>±2%</strong> tolerancia numérica).</li>
+              <li>Si una regla invalida un servicio (lista negra/cupo agotado), ese servicio no aparece;
+                queda motivo visible.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Gobernanza y exportación</strong>
+            <ul class="mt-1">
+              <li>Botón <em>"Exportar evidencia"</em> (PDF/CSV) con: factores, reglas activas y métricas del
+                caso (CTR/CR, impresiones).</li>
+              <li>Bitácora: quién consultó/descargó qué explicación (auditoría).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Accesibilidad y lenguaje</strong>
+            <ul class="mt-1">
+              <li>Panel WCAG 2.1 AA; idioma ES/EN.</li>
+              <li>Todos los términos técnicos tienen <em>tooltip</em> con glosario breve.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Explicabilidad basada en SHAP o LIME</li>
-          <li>API de explicabilidad independiente del motor</li>
-          <li>Logs estructurados en sistema de observabilidad</li>
-          <li>Dashboard en React o similar con charts</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">
+        2. Tecnología <span class="badge ms-2" style="background:#6A1B9A;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #6A1B9A;">XAI — Explainable AI</div>
+              <ul class="mb-0 small">
+                <li>Exposición de contribuciones de variables (features) al score.</li>
+                <li>En re-ranking (Learning-to-Rank): <strong>SHAP</strong> o feature contributions
+                  equivalentes (para LR/XGBoost/LightGBM).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #6A1B9A;">Motor de Reglas &amp; Decision Logging</div>
+              <ul class="mb-0 small">
+                <li>Capa que aplica listas blancas/negras, boost gratuitos, pinning, filtros de elegibilidad/cupos.</li>
+                <li>Registro estructurado de cada paso del pipeline (candidatos, filtros, re-rank, score final)
+                  con IDs correlacionados.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #6A1B9A;">Feature Store &amp; API de Consulta</div>
+              <ul class="mb-0 small">
+                <li>Variables efectivamente utilizadas (con versión y timestamp) para reproducibilidad.</li>
+                <li><code>GET /explanations/{userId|anon_id}/{service_id}?at=timestamp</code> → factores, reglas y log.</li>
+                <li><code>GET /rules/active</code> → reglas vigentes.</li>
+                <li><code>GET /recs?userId|segment</code> → Top-N con explicación embebida (opcional).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #6A1B9A;">Capa de Presentación</div>
+              <ul class="mb-0 small">
+                <li>Panel web con atajos de teclado, labels ARIA, contraste AA.</li>
+                <li>Tooltips con glosario para términos como "SHAP", "pinning", "boost".</li>
+                <li>Acción <em>"Abrir en sandbox"</em> para simular impacto de cambios de pesos.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">
+        3. Flujo Técnico XAI <span class="badge ms-2" style="background:#6A1B9A;font-size:0.7rem;">Alto Nivel</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #6A1B9A;">Pipeline de Recomendación con Trazabilidad</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Generación de candidatos (Stage 1):</strong> Collaborative Filtering + Content-Based → Top-K
+            inicial. Se excluyen ya tomados/descartados y se aplican filtros de elegibilidad/cupos.</li>
+          <li><strong>Re-ranking (Stage 2):</strong> modelo L2R calcula score base; se computan contribuciones
+            por feature (SHAP/coeficientes); se aplican reglas (boost gratuitos, pinning) registrando los
+            deltas al score.</li>
+          <li><strong>Salida + logging:</strong> se arma el Top-N final; se guarda el <em>decision log</em>:
+            candidatos, scores por etapa, reglas aplicadas, Top-3 factores, IDs de features/versión de modelo.</li>
+          <li><strong>Consulta en el panel:</strong> el panel llama a la API de explicaciones con
+            <code>userId/anon_id + service_id</code> (y timestamp). La API rehidrata: factores (con texto
+            legible), reglas activas, eventos, métricas y consentimiento.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #6A1B9A;">Fuentes consultadas</div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm small mb-0">
+            <thead class="table-light">
+              <tr><th>Fuente</th><th>Propósito</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>CRM</strong></td><td>Segmento, rol, tamaño (si consentido) → factores de perfil.</td></tr>
+              <tr><td><strong>Catálogo/Agenda</strong></td><td>Categoría, modalidad (gratuito/pago), cupos → reglas y factores del ítem.</td></tr>
+              <tr><td><strong>Eventos (clickstream)</strong></td><td>Impresiones, clics, dwell/scroll → factores de comportamiento.</td></tr>
+              <tr><td><strong>Motor de reglas</strong></td><td>Qué regla afectó y con qué peso.</td></tr>
+              <tr><td><strong>Feature Store/Modelo</strong></td><td>Contribuciones por variable y versión de modelo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">
+        4. Diseño — Vista "Detalle de Recomendación" en el Panel
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #6A1B9A;">Tarjeta "Score y Razones"</div>
+              <ul class="mb-0 small">
+                <li><strong>Header:</strong> Servicio · Usuario (anon_id o id CRM) · Fecha/hora ·
+                  Modelo vX.Y · Reglas activas (chips).</li>
+                <li>Score final con mini-barras: <em>score base + boosts reglas − penalizaciones</em>.</li>
+                <li>Top-3 razones (texto humano):
+                  <ul>
+                    <li><em>"Eres microempresa del sector comercio (+0.18)"</em></li>
+                    <li><em>"Has usado Certificados en 14 días (+0.12)"</em></li>
+                    <li><em>"Regla Gratuitos primero (+0.07)"</em></li>
+                  </ul>
+                </li>
+                <li>Switch "Ver detalle técnico" → lista de contribuciones por feature (tabla: variable, valor, contribución).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #6A1B9A;">Sección "Trazabilidad" (timeline)</div>
+              <ul class="mb-0 small">
+                <li>Candidatos (K=200) → Filtros (−12) → Re-ranking (N=12) → Boost/Pin → Top-N final.</li>
+                <li>Cada etapa expandible muestra IDs y cambios de score.</li>
+                <li>Panel lateral <em>"Reglas y políticas"</em>: reglas vigentes (listas, boosts, pinning, cupos)
+                  con motivo y vigencia.</li>
+                <li>Pie: CTR/CR históricos, impresiones, ocultados, dwell medio.</li>
+                <li>Acciones: <em>Exportar evidencia</em> (PDF/CSV), <em>Abrir en sandbox</em>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">
+        5. Escenarios de Prueba <span class="badge ms-2" style="background:#6A1B9A;font-size:0.7rem;">Gherkin</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">S1</td>
+                <td><strong>Explicación mínima legible</strong></td>
+                <td>Veo Top-3 razones en lenguaje natural y el score final con deltas por reglas.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S2</td>
+                <td><strong>Reconstrucción del score</strong></td>
+                <td>La suma de contribuciones por feature cuadra con el score final ±2%.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S3</td>
+                <td><strong>Regla que altera el orden</strong></td>
+                <td>El log indica el delta por la regla "Gratuitos primero" y el override registrado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S4</td>
+                <td><strong>Usuario anónimo sin PII</strong></td>
+                <td>No aparece PII; sí se muestra el estado de consentimiento (ON/OFF).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S5</td>
+                <td><strong>Exportación y auditoría</strong></td>
+                <td>Se descarga PDF con razones, reglas y métricas; queda registro de auditoría con usuario/fecha.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #6A1B9A;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">XAI (Explainable AI)</dt>
+          <dd class="col-sm-9">Técnicas para explicar por qué el modelo decide algo de forma comprensible para humanos.</dd>
+
+          <dt class="col-sm-3">SHAP</dt>
+          <dd class="col-sm-9">Método que estima la contribución de cada feature al score del modelo (Shapley Additive Explanations).</dd>
+
+          <dt class="col-sm-3">Feature</dt>
+          <dd class="col-sm-9">Variable del modelo (p. ej.: "sector=CIIU G", "gratuito=true", "días desde último uso=14").</dd>
+
+          <dt class="col-sm-3">Re-ranking / L2R</dt>
+          <dd class="col-sm-9">Modelo que ordena candidatos con más señales (Learning-to-Rank).</dd>
+
+          <dt class="col-sm-3">Boost</dt>
+          <dd class="col-sm-9">Aumento de score por regla de negocio (p. ej.: "gratuitos primero").</dd>
+
+          <dt class="col-sm-3">Pinning</dt>
+          <dd class="col-sm-9">Fijar un ítem en posiciones superiores por campaña/política de negocio.</dd>
+
+          <dt class="col-sm-3">Decision Log</dt>
+          <dd class="col-sm-9">Registro paso a paso de cómo se llegó al Top-N, incluyendo scores, reglas y deltas por etapa.</dd>
+
+          <dt class="col-sm-3 mb-0">CTR / CR</dt>
+          <dd class="col-sm-9 mb-0">Tasas de clic (Click-Through Rate) y de conversión (Conversion Rate).</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#6A1B9A !important; background:#f3e5f5;">
+      <strong>Parámetros iniciales (ajustables en E1):</strong>
+      Top-3 razones como estándar (botón "ver más" para lista completa) ·
+      Latencia objetivo: explicación ≤ 1 s (p95) usando cache de contribuciones ·
+      Privacidad: nunca mostrar valores crudos de PII ·
+      Versionado: toda explicación referencia modelo vX.Y, feature set vA.B y reglas (hash/fecha).
     </div>
 
   </div>
@@ -84,4 +370,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

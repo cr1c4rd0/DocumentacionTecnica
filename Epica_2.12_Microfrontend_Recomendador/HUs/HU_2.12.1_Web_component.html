@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.12.1 – Web component / micro-frontend</title>
+  <title>HU 2.12.1 – Web component / micro-frontend de recomendaciones</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,67 +20,370 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #01579B; --hero-end: #0277BD;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.12.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Web component / micro-frontend</h1>
+      <h1 class="fw-bold fs-3 mb-1">Web component / micro-frontend de recomendaciones</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.12 · Micro-frontend Recomendador · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #37474F;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #0277BD;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #37474F;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #0277BD;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">desarrollador del portal CCB que integra el recomendador</p>
+              <p class="mb-0"><strong>equipo web de CCB</strong> responsable de integrar el recomendador en el portal.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">un Custom Element reutilizable que pueda incrustar en cualquier página del portal</p>
+              <p class="mb-0">un <strong>componente incrustable</strong> (web component / micro-frontend) que pueda integrar en cualquier página del portal CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">integrar el recomendador sin acoplar su código al portal base y facilitar actualizaciones independientes</p>
+              <p class="mb-0">integrar el recomendador <strong>sin acoplar su código al portal base</strong> y facilitar actualizaciones independientes.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Custom Element <code>&lt;ccb-recomendador&gt;</code> compatible con cualquier framework</li>
-          <li>Lazy loading: carga solo cuando entra en viewport</li>
-          <li>Responsive con breakpoints consistentes con el portal</li>
-          <li>Parámetros configurables via atributos HTML (userId, canal, límite)</li>
-          <li>Sanitización de outputs anti-XSS</li>
-          <li>Isolated styles con Shadow DOM o CSS scoping</li>
-          <li>Tiempo de carga inicial ≤ 2 segundos</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Componente incrustable e integración en ambiente de desarrollo</strong>
+            <ul class="mt-1">
+              <li>El componente se publica como <strong>Custom Element</strong> estándar (<code>&lt;ccb-recomendador&gt;</code>), compatible con cualquier framework (React, Angular, Vue, vanilla JS).</li>
+              <li>Se integra mediante una sola línea de script: <code>&lt;script src="https://cdn.ccb.org.co/recomendador/v1/bundle.js"&gt;&lt;/script&gt;</code>.</li>
+              <li>Soporta atributos HTML configurables: <code>user-id</code>, <code>canal</code>, <code>limite</code>, <code>tema</code>.</li>
+              <li>Validado en ambiente de desarrollo con integración real en al menos una página del portal.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Contrato de integración (API) definido y estable</strong>
+            <ul class="mt-1">
+              <li>El contrato de API del componente (atributos de entrada, eventos de salida, métodos públicos) está <strong>documentado y versionado</strong>.</li>
+              <li>Eventos de salida del componente (via Custom Events):
+                <ul>
+                  <li><code>ccb-rec-loaded</code>: componente cargado y recomendaciones disponibles.</li>
+                  <li><code>ccb-rec-cta-click</code>: usuario hizo clic en un CTA de recomendación.</li>
+                  <li><code>ccb-rec-error</code>: error en la carga de recomendaciones.</li>
+                </ul>
+              </li>
+              <li>El contrato de API no cambia de forma <strong>breaking</strong> sin incremento de versión mayor.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y experiencia</strong>
+            <ul class="mt-1">
+              <li>Tiempo de carga inicial del componente: <strong>≤ 2 segundos</strong> (p95) en conexión estándar.</li>
+              <li><strong>Lazy loading</strong>: el componente solo solicita recomendaciones cuando entra en el viewport (Intersection Observer).</li>
+              <li>Responsive con breakpoints consistentes con el Design System del portal CCB.</li>
+              <li>Estado de carga con skeleton/spinner; estado de error con mensaje amigable.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Seguridad y autenticación</strong>
+            <ul class="mt-1">
+              <li>El componente usa <strong>OAuth2</strong> como estándar de autorización para acceder al API de recomendaciones; el token se pasa como atributo o mediante evento de handshake con el portal padre.</li>
+              <li>Los outputs del componente están <strong>sanitizados anti-XSS</strong> (nunca se inserta HTML no controlado del API en el DOM).</li>
+              <li>Estilos aislados mediante <strong>Shadow DOM</strong> o CSS scoping para evitar colisiones con el portal padre.</li>
+              <li>Cabeceras CSP (Content Security Policy) compatibles con el componente.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback operativo</strong>
+            <ul class="mt-1">
+              <li>Si el API de recomendaciones no está disponible, el componente muestra un <strong>estado de fallback</strong> configurable (mensaje, banner alternativo o simplemente ocultarse).</li>
+              <li>El fallback no genera errores en consola visibles al usuario final.</li>
+              <li>El componente emite el evento <code>ccb-rec-error</code> para que el portal padre pueda reaccionar.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>OAuth2 y estándar de autorización</strong>
+            <ul class="mt-1">
+              <li>El flujo de autenticación usa <strong>OAuth2 Authorization Code + PKCE</strong> para entornos browser.</li>
+              <li>El token de acceso tiene <strong>scope mínimo</strong> necesario para leer recomendaciones (<code>rec:read</code>).</li>
+              <li>Renovación automática de token (refresh) sin interrumpir la sesión del usuario en el portal.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Web Components estándar (Custom Elements v1)</li>
-          <li>Bundle independiente versionado</li>
-          <li>CDN propio para distribución</li>
-          <li>Postmessage API para comunicación con el portal padre</li>
-          <li>CSP headers compatibles</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        2. Tecnología <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Web Component (Custom Elements v1)</div>
+              <ul class="mb-0 small">
+                <li>Estándar W3C: Custom Elements v1 + Shadow DOM v1.</li>
+                <li>Bundle independiente versionado (p. ej. Lit, Stencil o vanilla WC).</li>
+                <li>Distribución via CDN propio CCB: <code>cdn.ccb.org.co/recomendador/v{N}/bundle.js</code>.</li>
+                <li>PostMessage API para comunicación bidireccional con el portal padre.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Integración con Motor / API</div>
+              <ul class="mb-0 small">
+                <li>El componente consume el API REST del Motor de Recomendación con autenticación OAuth2.</li>
+                <li>Intersection Observer para lazy loading; no llama al API hasta que el componente es visible.</li>
+                <li>Timeout configurable (default 3s); si supera, activa fallback.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Seguridad</div>
+              <ul class="mb-0 small">
+                <li>Shadow DOM: estilos y DOM del componente aislados del portal padre.</li>
+                <li>Sanitización de contenido del API antes de insertar en DOM (DOMPurify o equivalente).</li>
+                <li>OAuth2 + PKCE para el flujo de autorización browser-side.</li>
+                <li>CSP headers: <code>script-src</code> incluye CDN del componente.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Observabilidad del Componente</div>
+              <ul class="mb-0 small">
+                <li>Métricas de cliente: tiempo de carga, tasa de error, tasa de fallback activado.</li>
+                <li>Custom Events para integración con analítica del portal padre.</li>
+                <li>Logging de errores a endpoint de observabilidad del Motor (sin exponer datos del usuario).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Equipo web de CCB que integra el componente en el portal; usuario final que visualiza las recomendaciones.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (recomendaciones)</li>
+                <li><strong>Frontend / UI</strong> (portal padre + componente)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">INTEGRACIÓN MÍNIMA</div>
+              <pre class="mb-0 small" style="font-size:0.72rem;">&lt;script src="cdn.ccb.org.co/
+  recomendador/v1/bundle.js"
+  defer&gt;&lt;/script&gt;
+
+&lt;ccb-recomendador
+  canal="portal"
+  limite="5"&gt;
+&lt;/ccb-recomendador&gt;</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #0277BD;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Componente incrustable e integración:</strong> el Usuario/Actor (portal) incluye el script del CDN; el Motor/API confirma disponibilidad del bundle.</li>
+          <li><strong>Contrato de integración (API):</strong> el Frontend/UI (portal padre) recibe el contrato de API del componente (atributos, eventos, métodos); el Motor establece el contrato estable y versionado.</li>
+          <li><strong>Rendimiento y experiencia:</strong> el Motor/API solicita recomendaciones al Frontend/UI cuando el componente entra en viewport (lazy loading); la respuesta se renderiza en ≤ 2s.</li>
+          <li><strong>Seguridad y autenticación:</strong> el Frontend/UI valida el token OAuth2 con el Motor; el Motor verifica scope y devuelve datos autorizados.</li>
+          <li><strong>Fallback operativo:</strong> si el Motor no responde en el timeout configurado, el Frontend/UI activa el fallback y emite <code>ccb-rec-error</code>.</li>
+          <li><strong>OAuth2 — finalización:</strong> el Motor confirma al usuario/actor el estándar de autorización utilizado; el componente queda operativo con token activo.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #0277BD;">Ejemplo de Uso del Componente</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">&lt;!-- Integración en portal CCB --&gt;
+&lt;script src="https://cdn.ccb.org.co/recomendador/v1/bundle.js" defer&gt;&lt;/script&gt;
+
+&lt;ccb-recomendador
+  canal="portal-empresas"
+  limite="5"
+  tema="light"&gt;
+&lt;/ccb-recomendador&gt;
+
+&lt;script&gt;
+  const rec = document.querySelector('ccb-recomendador');
+  rec.addEventListener('ccb-rec-cta-click', (e) => {
+    // El portal padre captura el clic y puede reaccionar
+    analytics.track('rec_cta_click', e.detail);
+  });
+  rec.addEventListener('ccb-rec-error', (e) => {
+    // Fallback a nivel de portal
+    console.warn('Recomendador no disponible', e.detail);
+  });
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Componente embebido en portal</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #0277BD;">Estado de Carga</div>
+              <ul class="mb-0 small">
+                <li>Skeleton loader con el mismo layout que las tarjetas de recomendación.</li>
+                <li>Sin flash de contenido sin estilo (FOUC) — estilos en Shadow DOM.</li>
+                <li>El portal no "salta" mientras carga el componente (reserva de espacio).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #0277BD;">Estado Operativo</div>
+              <ul class="mb-0 small">
+                <li>Tarjetas de recomendación con nombre, razones, badges y CTA.</li>
+                <li>Responsive: 1 columna en móvil, 2-3 en desktop.</li>
+                <li>Fallback: mensaje configurable o elemento oculto (display:none) si el API falla.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Carga exitosa en portal React</strong></td>
+                <td>Componente renderiza recomendaciones en ≤ 2s; evento <code>ccb-rec-loaded</code> disparado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Lazy loading (componente fuera de viewport)</strong></td>
+                <td>No se llama al API hasta que el componente entra en viewport; cero requests antes.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>API no disponible</strong></td>
+                <td>Componente muestra fallback configurado; evento <code>ccb-rec-error</code> disparado; sin errores en consola.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Token OAuth2 expirado</strong></td>
+                <td>Refresh automático del token; recomendaciones se cargan sin interrumpir al usuario.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Aislamiento de estilos</strong></td>
+                <td>Los estilos del componente no afectan el CSS del portal padre; los estilos del portal no penetran el Shadow DOM.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Sanitización XSS</strong></td>
+                <td>Si el API devuelve texto con <code>&lt;script&gt;</code>, el contenido no se ejecuta; se renderiza como texto plano.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Responsive en móvil</strong></td>
+                <td>Componente se renderiza en 1 columna en viewport < 576px; sin scroll horizontal.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Custom Element</dt>
+          <dd class="col-sm-9">Estándar W3C que permite definir nuevas etiquetas HTML con comportamiento propio; base de los Web Components.</dd>
+
+          <dt class="col-sm-3">Shadow DOM</dt>
+          <dd class="col-sm-9">Árbol DOM encapsulado e independiente del documento principal; los estilos dentro no afectan ni son afectados por el exterior.</dd>
+
+          <dt class="col-sm-3">Lazy loading</dt>
+          <dd class="col-sm-9">Técnica que difiere la carga de recursos hasta que son necesarios (p. ej., hasta que el componente es visible en el viewport).</dd>
+
+          <dt class="col-sm-3">OAuth2 + PKCE</dt>
+          <dd class="col-sm-9">Flujo de autorización seguro para aplicaciones de navegador; PKCE previene ataques de intercepción del código de autorización.</dd>
+
+          <dt class="col-sm-3">PostMessage API</dt>
+          <dd class="col-sm-9">Mecanismo del navegador para comunicación entre documentos de diferente origen (portal padre ↔ componente).</dd>
+
+          <dt class="col-sm-3">CDN</dt>
+          <dd class="col-sm-9">Red de distribución de contenido; sirve el bundle del componente desde nodos cercanos al usuario para reducir latencia.</dd>
+
+          <dt class="col-sm-3 mb-0">Micro-frontend</dt>
+          <dd class="col-sm-9 mb-0">Arquitectura que divide el frontend en módulos independientes con despliegue autónomo; el web component es la implementación técnica de este concepto.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#0277BD !important; background:#e1f5fe;">
+      <strong>Nota de alcance E1:</strong> En E1 el componente se integra y valida en ambiente de desarrollo con al menos una página del portal CCB. La integración en múltiples páginas y canales (móvil, kiosco) es parte de etapas posteriores. El contrato de API v1 debe mantenerse estable durante todo E1 para no bloquear al equipo de portal.
     </div>
 
   </div>
@@ -87,4 +392,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

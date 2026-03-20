@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,370 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #263238; --hero-end: #37474F;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.14.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Panel de reglas de negocio</h1>
+      <h1 class="fw-bold fs-3 mb-1">Panel de reglas de negocio</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.14 · Backoffice y Reglas de Negocio</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #4E342E;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #37474F;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #4E342E;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #37474F;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador de negocio sin conocimientos técnicos profundos</p>
+              <p class="mb-0">administrador del Recomendador de Servicios (equipo de negocio CCB, sin perfil técnico profundo)</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">configurar reglas de recomendación (whitelist, blacklist, filtros dinámicos) desde una interfaz visual</p>
+              <p class="mb-0">gestionar desde un <strong>panel operativo visual</strong> las reglas de negocio del recomendador: exclusión dura, inclusión dura, filtrado contextual y priorización</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">controlar qué servicios recomienda el motor sin necesidad de intervención del equipo técnico</p>
+              <p class="mb-0">controlar qué servicios recomienda el motor, en qué contexto y con qué prioridad, <strong>sin intervención del equipo técnico</strong> y con trazabilidad completa de cambios</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Panel Admin</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>CRUD completo de reglas desde interfaz web</li>
-          <li>Tipos de regla: incluir siempre, excluir siempre, filtro dinámico por atributo</li>
-          <li>Preview del impacto de una regla antes de activarla</li>
-          <li>Regla activa en la próxima inferencia sin redeploy</li>
-          <li>Historial de cambios con usuario y razón del cambio</li>
-          <li>Conflictos entre reglas detectados y alertados antes de guardar</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Panel operativo para crear/editar reglas</strong>
+            <ul class="mt-1">
+              <li>El panel ofrece <strong>CRUD completo</strong> (crear, leer, editar, desactivar) de reglas desde interfaz web, sin edición directa de código o configuración.</li>
+              <li>Cada regla tiene: nombre, descripción, tipo, condición, efecto, prioridad, estado (activa/inactiva), autor y fecha.</li>
+              <li>La interfaz ofrece <strong>preview del impacto</strong> estimado de una regla antes de activarla (cuántos servicios/usuarios afecta).</li>
+              <li>Los cambios de parámetros aplican <strong>sin redeploy</strong> del motor (hot-reload o feature flag).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas aplicadas efectivamente en la UI</strong>
+            <ul class="mt-1">
+              <li>Las reglas activas se aplican <strong>en la próxima inferencia</strong> del motor sin necesidad de reinicio del servicio.</li>
+              <li>El Frontend / UI refleja el efecto de las reglas en los resultados de recomendación en tiempo real.</li>
+              <li>Los endpoints del Motor / API exponen el campo <code>reglas_aplicadas[]</code> en el log de cada inferencia.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Precedencia, conflictos y trazabilidad</strong>
+            <ul class="mt-1">
+              <li>El sistema detecta <strong>conflictos entre reglas</strong> (p. ej., un servicio incluido y excluido a la vez) y los reporta antes de guardar.</li>
+              <li>Las reglas tienen un campo de <strong>prioridad numérica</strong> explícito; ante conflicto, prevalece la regla de mayor prioridad.</li>
+              <li>El historial de cambios registra: campo modificado, valor anterior, valor nuevo, usuario, timestamp y razón del cambio.</li>
+              <li>Los cambios críticos (desactivar regla de exclusión dura) generan notificación al equipo técnico.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas de exclusión dura</strong>
+            <ul class="mt-1">
+              <li>Permiten <strong>excluir servicios específicos</strong> del catálogo de recomendaciones para todos los usuarios o para segmentos definidos.</li>
+              <li>Ejemplo: excluir servicio <code>S-099</code> para el segmento "Empresa grande" durante campaña Q3.</li>
+              <li>La exclusión dura tiene precedencia sobre el ranking del modelo IA y sobre las reglas de inclusión dura de menor prioridad.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas de inclusión dura</strong>
+            <ul class="mt-1">
+              <li>Permiten <strong>forzar la presencia</strong> de servicios específicos en las recomendaciones (p. ej., servicios de campaña estratégica).</li>
+              <li>El administrador define posición (slot 1, 2…) o simplemente "asegurar presencia en top-K".</li>
+              <li>Una inclusión dura no puede superar a una exclusión dura de igual o mayor prioridad.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas de filtrado contextual</strong>
+            <ul class="mt-1">
+              <li>Permiten aplicar <strong>filtros dinámicos por atributo</strong>: segmento, canal, región, fecha, estado del usuario.</li>
+              <li>Ejemplo: mostrar servicio X solo a usuarios del segmento "MiPyme formalizable" en canal "Web".</li>
+              <li>Los filtros contextuales se evalúan después de la exclusión dura y antes del ranking IA.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Ranking del recomendador IA y reglas de priorización</strong>
+            <ul class="mt-1">
+              <li>El motor IA produce un ranking base; las reglas de priorización pueden <strong>subir o bajar</strong> servicios en ese ranking sin eliminarlo.</li>
+              <li>El administrador puede definir boosts positivos (multiplicador de score) o penalizaciones para servicios o categorías.</li>
+              <li>El resultado final se registra con <code>reglas_priorización_aplicadas[]</code> para trazabilidad.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Motor de reglas en memoria con carga desde DB</li>
-          <li>API RESTful para CRUD de reglas</li>
-          <li>Validación de conflictos en backend antes de persistir</li>
-          <li>Notificación a equipo técnico de cambios críticos via Slack/email</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        2. Tecnología <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Motor de Reglas</div>
+              <ul class="mb-0 small">
+                <li>Motor de reglas en memoria con carga desde base de datos al inicio y hot-reload vía API.</li>
+                <li>Reglas expresadas en DSL interno o YAML con validación de esquema estricto.</li>
+                <li>Evaluación de orden: Exclusión Dura → Filtrado Contextual → Inclusión Dura → Ranking IA → Priorización.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Panel Admin (Frontend)</div>
+              <ul class="mb-0 small">
+                <li>Interfaz web accesible solo a roles autorizados (RBAC).</li>
+                <li>Formulario de creación/edición con validación en tiempo real.</li>
+                <li>Vista de preview de impacto antes de activar una regla.</li>
+                <li>Tabla de historial de cambios con filtros por usuario, fecha y tipo de regla.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">API de Reglas (Backend)</div>
+              <ul class="mb-0 small">
+                <li>API RESTful: <code>GET/POST/PUT/DELETE /rules</code> con autenticación y autorización.</li>
+                <li>Validación de conflictos en backend antes de persistir.</li>
+                <li>Endpoint <code>POST /rules/preview</code> para simular impacto sin activar.</li>
+                <li>Webhook / notificación al equipo técnico en cambios críticos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Auditoría y Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Tabla de auditoría: <code>rule_id</code>, <code>campo</code>, <code>valor_anterior</code>, <code>valor_nuevo</code>, <code>usuario</code>, <code>razon</code>, <code>timestamp</code>.</li>
+                <li>Log por inferencia: <code>reglas_aplicadas[]</code> con tipo, id y efecto en el score final.</li>
+                <li>Alertas en Slack/email para cambios críticos (desactivar exclusión dura, cambio de prioridad top).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> administrador del recomendador.</li>
+                <li><strong>Motor / API:</strong> evalúa y aplica reglas en inferencias.</li>
+                <li><strong>Panel Admin:</strong> interfaz para CRUD de reglas.</li>
+                <li><strong>Frontend / UI:</strong> presenta resultados con reglas aplicadas.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SECUENCIA PRINCIPAL</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>Admin crea/edita reglas en Panel Admin → Motor / API.</li>
+                <li>Panel Admin propaga reglas aplicadas efectivamente al Frontend / UI.</li>
+                <li>Frontend / UI reporta precedencia, conflictos y trazabilidad al Motor / API.</li>
+                <li>Motor / API aplica reglas de exclusión dura al Panel Admin.</li>
+                <li>Panel Admin aplica reglas de inclusión dura al Frontend / UI.</li>
+                <li>Frontend / UI devuelve filtrado contextual al Motor / API.</li>
+                <li>Motor / API procesa ranking del recomendador IA al Panel Admin.</li>
+                <li>Panel Admin aplica reglas de priorización y devuelve resultado al Usuario.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ORDEN DE EVALUACIÓN DE REGLAS</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li><strong>Exclusión dura</strong> — elimina servicios prohibidos.</li>
+                <li><strong>Filtrado contextual</strong> — aplica condiciones de segmento/canal/fecha.</li>
+                <li><strong>Inclusión dura</strong> — garantiza presencia de servicios obligatorios.</li>
+                <li><strong>Ranking IA</strong> — ordena por score del modelo.</li>
+                <li><strong>Priorización</strong> — aplica boosts/penalizaciones finales.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #37474F;">Ejemplo de Estructura de Regla</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "rule_id": "R-045",
+  "nombre": "Excluir S-099 para segmento Empresa Grande en Q3",
+  "tipo": "exclusion_dura",
+  "condicion": {
+    "service_ids": ["S-099"],
+    "segmentos": ["empresa_grande"],
+    "fecha_fin": "2025-09-30"
+  },
+  "efecto": "exclude",
+  "prioridad": 10,
+  "estado": "activa",
+  "autor": "admin_jperez",
+  "timestamp_creacion": "2025-07-01T09:00:00Z",
+  "razon": "Capacidad limitada en Q3 para este segmento"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        4. Diseño — Panel Operativo de Reglas
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #37474F;">Vistas Principales del Panel</div>
+              <ul class="mb-0 small">
+                <li><strong>Listado de reglas:</strong> tabla con columnas tipo, nombre, estado, prioridad, autor, última modificación. Filtros por tipo y estado.</li>
+                <li><strong>Formulario de regla:</strong> campos validados en tiempo real con selector de tipo y condición dinámica.</li>
+                <li><strong>Preview de impacto:</strong> muestra número de servicios afectados y usuarios impactados antes de activar.</li>
+                <li><strong>Historial de auditoría:</strong> timeline de cambios filtrable por usuario y período.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #37474F;">Indicadores de Conflicto</div>
+              <ul class="mb-0 small">
+                <li>Badge <span class="badge bg-danger">Conflicto</span> en reglas que se contradicen mutuamente.</li>
+                <li>Modal de advertencia antes de guardar: "La regla R-045 entra en conflicto con R-032. ¿Confirmar prioridad?"</li>
+                <li>Indicador visual de cadena de precedencia en la vista de detalle de cada regla.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Crear regla de exclusión dura</strong></td>
+                <td>Servicio S-099 no aparece en top-K para segmento "empresa_grande" tras activar la regla, sin redeploy.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Conflicto detectado</strong></td>
+                <td>Al guardar regla que incluye y excluye S-099 simultáneamente, el sistema alerta del conflicto y solicita confirmación de prioridad.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Preview de impacto</strong></td>
+                <td><code>POST /rules/preview</code> devuelve número de servicios y usuarios afectados sin crear la regla.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Hot-reload sin redeploy</strong></td>
+                <td>Regla activada a las 10:00 aplica en inferencia de las 10:01 sin reiniciar el servicio.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Auditoría de cambio</strong></td>
+                <td>Historial registra: regla editada, campo, valor anterior/nuevo, usuario y timestamp.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Orden de precedencia</strong></td>
+                <td>Exclusión dura supera a inclusión dura de menor prioridad; servicio excluido no aparece aunque esté en lista de inclusión.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Trazabilidad en inferencia</strong></td>
+                <td>Log de inferencia incluye <code>reglas_aplicadas: ["R-045 exclusion_dura", "R-012 boost_campana"]</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">8</td>
+                <td><strong>Notificación por cambio crítico</strong></td>
+                <td>Desactivar una regla de exclusión dura genera notificación automática al equipo técnico.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Exclusión dura</dt>
+          <dd class="col-sm-9">Regla que elimina un servicio del conjunto de candidatos de forma incondicional, con la más alta precedencia.</dd>
+
+          <dt class="col-sm-3">Inclusión dura</dt>
+          <dd class="col-sm-9">Regla que garantiza la presencia de un servicio en el top-K independientemente del score del modelo.</dd>
+
+          <dt class="col-sm-3">Filtrado contextual</dt>
+          <dd class="col-sm-9">Regla que aplica condiciones dinámicas (segmento, canal, fecha) para filtrar candidatos antes del ranking IA.</dd>
+
+          <dt class="col-sm-3">Hot-reload</dt>
+          <dd class="col-sm-9">Mecanismo que recarga la configuración de reglas en memoria sin reiniciar el servicio.</dd>
+
+          <dt class="col-sm-3">Boost / Penalización</dt>
+          <dd class="col-sm-9">Multiplicador aplicado al score de un servicio para subir o bajar su posición en el ranking final.</dd>
+
+          <dt class="col-sm-3 mb-0">RBAC</dt>
+          <dd class="col-sm-9 mb-0">Role-Based Access Control — control de acceso basado en roles que restringe el panel admin solo a usuarios autorizados.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#37474F !important; background:#eceff1;">
+      <strong>Nota de alcance:</strong> Esta HU cubre el panel de gestión de reglas de negocio del backoffice del recomendador. El registro de eventos de interacción de usuarios (clics, navegación) se gestiona en HU 2.14.2. El orden de evaluación de reglas es: Exclusión Dura → Filtrado Contextual → Inclusión Dura → Ranking IA → Priorización.
     </div>
 
   </div>
@@ -85,4 +392,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #00838F;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,65 +20,358 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #005662; --hero-end: #00838F;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.8.1</div>
-      <h1 class="fw-bold fs-3 mb-0">UI de carruseles para explorar recomendaciones</h1>
+      <h1 class="fw-bold fs-3 mb-1">UI de carruseles para explorar recomendaciones</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.8 · UI Recomendador tipo Catálogo · Catálogo navegable horizontal</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #0277BD;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00838F;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #0277BD;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #00838F;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal CCB</p>
+              <p class="mb-0">usuario (empresario o ciudadano) que explora servicios en el Recomendador CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">explorar mis recomendaciones en carruseles navegables organizados por temática</p>
+              <p class="mb-0">explorar mis recomendaciones organizadas en <strong>carruseles horizontales por sección temática</strong>, con tarjetas de servicio que muestran información clave y estados del motor integrados.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">descubrir servicios de forma visual e intuitiva sin sentirme abrumado</p>
+              <p class="mb-0">descubrir servicios de forma <strong>visual e intuitiva</strong>, con un catálogo navegable que no me abrume y que refleje en tiempo real el estado del motor de recomendación.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">UI Carruseles</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>5 secciones temáticas de carrusel (ej. Formación, Legal, Financiero, etc.)</li>
-          <li>Navegación horizontal con flechas y swipe en móvil</li>
-          <li>Máximo 10 tarjetas por carrusel con paginación lazy</li>
-          <li>Responsive: 1 tarjeta en mobile, 2 en tablet, 3 en desktop</li>
-          <li>Estado de carga con skeleton screens</li>
-          <li>Accesible: navegable por teclado y compatible con lectores de pantalla</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Organizar recomendaciones en carruseles (secciones horizontales)</strong>
+            <ul class="mt-1">
+              <li>Las recomendaciones se agrupan en <strong>secciones temáticas</strong> (p. ej., Formalización, Legal, Financiero, Formación, Internacional) con título visible por sección.</li>
+              <li>Cada sección es un <strong>carrusel de scroll horizontal</strong> con flechas de navegación (&lt; / &gt;) y soporte de swipe en móvil.</li>
+              <li>El número mínimo de secciones visibles es 3; el máximo configurable por admin.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Tarjetas de servicio (cards) con información esencial</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta expone: <strong>nombre del servicio</strong>, <strong>descripción breve</strong> (máx. 2 líneas), <strong>modalidad</strong> (presencial/virtual), <strong>duración estimada</strong>, <strong>costo</strong> (gratuito / con cargo), <strong>badge de razón</strong> de recomendación.</li>
+              <li>Badges contextuales: <code>Nuevo</code>, <code>Popular en tu segmento</code>, <code>Campaña activa</code>, <code>Recomendado por tu perfil</code>.</li>
+              <li>CTA primario: botón <strong>"Ver detalle"</strong> que lleva al detalle del servicio o al formulario de inscripción.</li>
+              <li>CTA secundario: ícono de descarte (hide/dismiss, integrado con HU 2.7.2).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Integración de estados del motor</strong>
+            <ul class="mt-1">
+              <li><strong>Estado de carga:</strong> skeleton screens (placeholders animados) mientras el API responde.</li>
+              <li><strong>Estado vacío:</strong> mensaje contextual si una sección no tiene recomendaciones disponibles: <em>"No hay recomendaciones nuevas en esta área por ahora."</em></li>
+              <li><strong>Estado de error:</strong> fallback visual con botón "Reintentar"; se muestra mensaje no técnico al usuario.</li>
+              <li><strong>Estado actualizado:</strong> indicador visual cuando el motor actualiza las recomendaciones en tiempo real (badge "Actualizado").</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Prototipo UX validable y versión productiva</strong>
+            <ul class="mt-1">
+              <li>Se entrega un <strong>prototipo navegable</strong> (Figma / HTML estático) con datos mock para validación con usuarios.</li>
+              <li>La versión productiva consume el <strong>API del recomendador</strong> con datos reales (autenticado por <code>user_key_pseudo</code>).</li>
+              <li>Ambas versiones son accesibles: <strong>WCAG 2.1 AA</strong>, navegables por teclado, compatibles con lectores de pantalla.</li>
+              <li>Diseño <strong>responsive</strong>: 1 tarjeta en mobile, 2 en tablet, 3–4 en desktop.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Consumo de API del recomendador</strong>
+            <ul class="mt-1">
+              <li>La UI consume el endpoint <code>GET /recommendations?user_key_pseudo=&amp;k=&amp;canal=web</code>.</li>
+              <li>Las tarjetas se renderizan con los campos: <code>service_id</code>, <code>nombre</code>, <code>score</code>, <code>razones[]</code>, <code>estado_disponibilidad</code>.</li>
+              <li>Lazy loading: se cargan máx. 10 tarjetas por sección; "Ver más" carga el siguiente lote.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Interacción y CTAs</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta permite <strong>"Ver detalle"</strong> (modal o nueva vista) con descripción completa, razones expandidas y acceso al formulario.</li>
+              <li>Las interacciones (clic en tarjeta, CTA, dismiss) generan eventos de telemetría para el motor de aprendizaje continuo.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Componente React/Web Component reutilizable</li>
-          <li>Lazy loading de imágenes y contenido</li>
-          <li>Intersection Observer para precarga</li>
-          <li>WCAG 2.1 AA</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        2. Tecnología <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Frontend — Componente Carrusel</div>
+              <ul class="mb-0 small">
+                <li>Web Component reutilizable (o React component) <code>&lt;recommendation-carousel&gt;</code>.</li>
+                <li>Scroll horizontal nativo con CSS <code>overflow-x: auto</code> + JavaScript para flechas.</li>
+                <li>Intersection Observer para lazy load y prefetch del siguiente lote.</li>
+                <li>Soporte de swipe táctil (Touch Events / Pointer API).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">API y Datos</div>
+              <ul class="mb-0 small">
+                <li>Endpoint REST: <code>GET /recommendations</code> con parámetros <code>user_key_pseudo</code>, <code>k</code>, <code>canal</code>, <code>section</code>.</li>
+                <li>Respuesta tipada con <code>service_id</code>, <code>nombre</code>, <code>score</code>, <code>razones[]</code>, <code>modalidad</code>, <code>duracion</code>, <code>costo</code>, <code>badges[]</code>.</li>
+                <li>Caché client-side (SWR / React Query) con revalidación en foco.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Accesibilidad y Rendimiento</div>
+              <ul class="mb-0 small">
+                <li>WCAG 2.1 AA: roles ARIA (<code>role="region"</code>, <code>aria-label</code>), foco en flechas y tarjetas.</li>
+                <li>Skeleton screens con <code>aria-busy="true"</code> durante carga.</li>
+                <li>Core Web Vitals: LCP &lt; 2.5 s, CLS &lt; 0.1.</li>
+                <li>Imágenes de servicio: lazy loading con <code>loading="lazy"</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Telemetría e Integración</div>
+              <ul class="mb-0 small">
+                <li>Eventos de interacción: <code>recommendation_viewed</code>, <code>recommendation_clicked</code>, <code>cta_clicked</code>, <code>recommendation_dismissed</code>.</li>
+                <li>Integración con HU 2.7.2 (dismiss) y HU 2.9.1 (explicación por recomendación).</li>
+                <li>Logs estructurados enviados al backend de analytics.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Secuencia UI-Motor</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <p class="mb-0 small">Usuario / Actor · Motor / API · Frontend / UI</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">El usuario accede a la sección de recomendaciones del portal CCB (o el componente se monta en cualquier página que lo incluya).</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">RESULTADO</div>
+              <p class="mb-0 small">Carruseles renderizados con tarjetas de servicio personalizadas, estados de carga/error integrados y telemetría de interacción activa.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #00838F;">Pasos del Flujo (según Diagramas)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Organizar recomendaciones en carruseles:</strong> el Motor / API recibe la solicitud del usuario y devuelve recomendaciones agrupadas por sección temática.</li>
+          <li><strong>Presentar tarjetas de servicio:</strong> el Frontend / UI renderiza las tarjetas con la información del API (nombre, score, razones, badges, CTAs).</li>
+          <li><strong>Integrar estados del motor:</strong> el Motor / API informa el estado de cada sección (cargando, vacía, error, actualizada); el Frontend adapta el renderizado.</li>
+          <li><strong>Entregar prototipo UX y versión productiva:</strong> el Frontend / UI valida el prototipo con datos mock; en producción consume el API real.</li>
+          <li><strong>Verificar carruseles funcionales en prototipo:</strong> el Motor / API confirma que el prototipo puede consumir el contrato de API definido.</li>
+          <li><strong>Verificar carruseles funcionales en productivo:</strong> el Frontend / UI valida el contrato de API con datos reales.</li>
+          <li><strong>Consumo de API del recomendador:</strong> el Motor / API responde con el Top-N estructurado; el Frontend renderiza el carrusel completo.</li>
+          <li><strong>Interacción y CTAs:</strong> el usuario interactúa (clic en tarjeta, "Ver detalle", dismiss); los eventos se envían al Motor para telemetría.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #00838F;">Estructura de Respuesta API</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "sections": [
+    {
+      "id": "formalizacion",
+      "titulo": "Formalización Empresarial",
+      "items": [
+        {
+          "service_id": "S-134",
+          "nombre": "Asesoría Formalización",
+          "score": 0.82,
+          "razones": ["Alta afinidad con tu interés en formalización"],
+          "modalidad": "presencial",
+          "duracion": "2h",
+          "costo": "gratuito",
+          "badges": ["Recomendado por tu perfil"],
+          "estado_disponibilidad": "disponible"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "version_modelo": "rec-0.3.1",
+    "latencia_ms": 198
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        4. Diseño — Qué ve el Usuario
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00838F;">Prototipo (validación con datos mock)</div>
+              <ul class="mb-0 small">
+                <li>Secciones temáticas con título y contador de ítems.</li>
+                <li>Tarjetas con nombre, descripción (2 líneas), modalidad, duración y CTA.</li>
+                <li>Flechas de navegación y soporte swipe.</li>
+                <li>Skeleton screens visibles durante carga simulada.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00838F;">Versión Productiva</div>
+              <ul class="mb-0 small">
+                <li>Datos reales del Motor de Recomendación; actualización en foco o por intervalo.</li>
+                <li>Badges dinámicos generados por el motor (<code>razones[]</code>).</li>
+                <li>Integración con dismiss (HU 2.7.2) y explicación (HU 2.9.1).</li>
+                <li>Accesible y responsive para todos los dispositivos CCB.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Carga exitosa de carruseles</strong></td>
+                <td>Se muestran ≥ 3 secciones temáticas con tarjetas; skeleton desaparece al completarse la carga.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Navegación por carrusel</strong></td>
+                <td>Las flechas avanzan/retroceden entre tarjetas; el swipe funciona en móvil sin desplazar la página.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Estado vacío por sección</strong></td>
+                <td>Sección sin recomendaciones muestra mensaje contextual, no error técnico.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Error de API</strong></td>
+                <td>Se muestra fallback visual con "Reintentar"; no se bloquea el resto de secciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Lazy loading</strong></td>
+                <td>Al llegar al final del carrusel, se carga el siguiente lote de tarjetas sin recargar la página.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Accesibilidad</strong></td>
+                <td>Carrusel navegable por teclado (Tab/Enter/flechas); roles ARIA correctos; sin errores en auditoría Axe.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Telemetría de interacción</strong></td>
+                <td>Al hacer clic en "Ver detalle", el evento <code>recommendation_clicked</code> se registra con <code>service_id</code> y <code>section_id</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Carrusel</dt>
+          <dd class="col-sm-9">Componente UI de scroll horizontal que presenta múltiples tarjetas de servicio en una misma sección temática.</dd>
+
+          <dt class="col-sm-3">Skeleton screen</dt>
+          <dd class="col-sm-9">Placeholder animado que representa la estructura de una tarjeta mientras se cargan los datos reales del API.</dd>
+
+          <dt class="col-sm-3">Badge</dt>
+          <dd class="col-sm-9">Etiqueta visual en la tarjeta que comunica el contexto de la recomendación (p. ej., "Popular", "Campaña activa").</dd>
+
+          <dt class="col-sm-3">CTA</dt>
+          <dd class="col-sm-9">Call-to-Action: botón de acción principal o secundario en la tarjeta ("Ver detalle", dismiss).</dd>
+
+          <dt class="col-sm-3">Lazy loading</dt>
+          <dd class="col-sm-9">Técnica que carga contenido adicional solo cuando el usuario lo requiere (scroll hasta el final del carrusel).</dd>
+
+          <dt class="col-sm-3 mb-0">WCAG 2.1 AA</dt>
+          <dd class="col-sm-9 mb-0">Nivel de conformidad de accesibilidad web que garantiza usabilidad para personas con discapacidades visuales, motrices y cognitivas.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00838F !important; background:#e0f7fa;">
+      <strong>Nota de alcance:</strong> Esta HU cubre el componente de carrusel como presentación del catálogo navegable. La lógica de filtros y el botón "Sorpréndeme" se especifican en HU 2.8.2. La integración con dismiss (HU 2.7.2) y con la explicación por recomendación (HU 2.9.1) se realiza mediante los endpoints definidos en dichas HUs.
     </div>
 
   </div>
@@ -85,4 +380,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

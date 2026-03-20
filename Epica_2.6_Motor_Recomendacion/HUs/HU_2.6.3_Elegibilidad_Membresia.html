@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.6.3 – Recomendaciones por elegibilidad y membresía</title>
+  <title>HU 2.6.3 – Recomendaciones por elegibilidad y membresía (Círculo de Afiliados)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,60 +23,349 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.6.3</div>
-      <h1 class="fw-bold fs-3 mb-0">Recomendaciones por elegibilidad y membresía</h1>
+      <h1 class="fw-bold fs-3 mb-1">Recomendaciones por elegibilidad y membresía (Círculo de Afiliados)</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.6 · Motor de Recomendación · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1A237E;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #1A237E;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario con o sin membresía Círculo de Afiliados</p>
+              <p class="mb-0">usuario (empresario o ciudadano) que consulta el portafolio de servicios de la CCB, con o sin membresía activa en el programa <strong>Círculo de Afiliados</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver recomendaciones que se adapten a mi nivel de membresía y elegibilidad real</p>
+              <p class="mb-0">que el motor evalúe mi elegibilidad por cada servicio recomendado y mi estado de membresía, mostrando sólo los servicios a los que realmente puedo acceder y comunicando de forma clara y no sensible las restricciones cuando aplique.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">acceder a los servicios que efectivamente puedo contratar según mi estado actual</p>
+              <p class="mb-0">acceder a servicios que efectivamente puedo contratar según mi estado actual, con recomendaciones siempre relevantes y sin información sensible expuesta, con CTA adaptativos según si soy afiliado o no.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Motor consulta estado de membresía en tiempo real</li>
-          <li>Servicios exclusivos para Círculo se muestran solo a miembros</li>
-          <li>Para no miembros: muestra beneficios y ruta de afiliación</li>
-          <li>Elegibilidad validada contra criterios actualizados del catálogo</li>
-          <li>Indicador visual claro de servicios exclusivos vs. abiertos</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Evaluar la elegibilidad del usuario por cada servicio</strong>
+            <ul class="mt-1">
+              <li>Para cada ítem candidato en el Top-N, el motor consulta los criterios de elegibilidad del catálogo:
+                <ul>
+                  <li><strong>Membresía:</strong> ¿el servicio requiere ser miembro del Círculo de Afiliados?</li>
+                  <li><strong>Segmento:</strong> ¿el usuario pertenece al segmento objetivo del servicio?</li>
+                  <li><strong>Estado del cliente:</strong> ¿el cliente está activo, al día, inscrito?</li>
+                  <li><strong>Restricciones específicas:</strong> ej. sector económico, tamaño de empresa, geografía.</li>
+                </ul>
+              </li>
+              <li>Servicios para los que el usuario <strong>no es elegible</strong> pueden: excluirse del ranking O mostrarse con indicador visual de restricción (configurable por tipo de servicio).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Adjuntar metadatos de elegibilidad a cada ítem recomendado</strong>
+            <ul class="mt-1">
+              <li>Cada ítem del Top-N incluye: <code>elegibilidad</code> (elegible / no_elegible / requiere_membresia), <code>restricciones[]</code> (lista de criterios no cumplidos), <code>razon_restriccion</code> en lenguaje claro y no sensible.</li>
+              <li>Para ítems con <code>requiere_membresia</code>: se adjunta información del beneficio de ser afiliado y la ruta de afiliación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Mantener recomendaciones relevantes aunque haya restricciones</strong>
+            <ul class="mt-1">
+              <li>Si la mayoría de candidatos son inelegibles: el motor no queda vacío, sino que presenta los elegibles + los más relevantes inelegibles con su CTA de afiliación.</li>
+              <li>Mínimo de ítems elegibles en el Top-N configurable (ej. al menos 3 elegibles de 5).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Evitar exponer información sensible; usar lenguaje claro</strong>
+            <ul class="mt-1">
+              <li>Las razones de restricción se expresan en lenguaje positivo y de negocio, nunca como mensajes de error técnicos.</li>
+              <li>No se expone información de otros clientes, reglas internas de scoring ni datos de segmentación privada.</li>
+              <li>Ejemplo: <em>"Este servicio está disponible para empresas afiliadas al Círculo CCB"</em>, no <em>"segment_flag=0, membership_tier=null"</em>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Evaluación de elegibilidad por ítem (razón obligatoria)</strong>
+            <ul class="mt-1">
+              <li>Cada ítem con restricción de elegibilidad <strong>debe</strong> incluir al menos una razón legible y un CTA según estado.</li>
+              <li>Log registra por qué cada ítem fue evaluado como elegible o inelegible (<code>motivo_elegibilidad</code>).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CTA adaptativo según estado del usuario</strong>
+            <ul class="mt-1">
+              <li><strong>Usuario elegible:</strong> CTA → "Ver más" / "Solicitar" / "Inscribirme".</li>
+              <li><strong>Usuario no afiliado viendo servicio de Círculo:</strong> CTA → "Conoce los beneficios del Círculo" + "Afíliate".</li>
+              <li><strong>Usuario no elegible por segmento/estado:</strong> CTA → "Conoce los requisitos" (sin ruta de afiliación si no aplica).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Integración con CRM y catálogo en tiempo real</strong>
+            <ul class="mt-1">
+              <li>El estado de membresía se consulta en tiempo real al CRM con cache de elegibilidad (TTL ≤ 15 min).</li>
+              <li>Si la API de membresías no responde: degradación elegante → se muestran servicios abiertos y se ocultan los exclusivos de Círculo.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Integración con API de membresías</li>
-          <li>Cache de elegibilidad con TTL corto (≤ 15 min)</li>
-          <li>Degradación elegante si API de membresías no responde</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Módulo de Elegibilidad</div>
+              <ul class="mb-0 small">
+                <li>Evaluación de elegibilidad desacoplada del scoring de recomendación.</li>
+                <li>Reglas de elegibilidad definidas en el catálogo de servicios (YAML o BD).</li>
+                <li>Cache de elegibilidad por usuario × servicio con TTL ≤ 15 min.</li>
+                <li>Degradación elegante si API de membresías falla: usa último valor cacheado.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> estado de membresía Círculo, segmento, estado del cliente.</li>
+                <li><strong>SIREP:</strong> historial de servicios tomados y estado de contratos activos.</li>
+                <li><strong>Catálogo de Servicios:</strong> criterios de elegibilidad por servicio, flags de Círculo exclusivo.</li>
+                <li><strong>Motor/API:</strong> aplica elegibilidad como filtro post-scoring.</li>
+                <li><strong>Frontend/UI:</strong> muestra indicadores visuales y CTAs adaptativos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Indicadores Visuales</div>
+              <ul class="mb-0 small">
+                <li>Badge "Círculo" para servicios exclusivos de afiliados.</li>
+                <li>Badge "Disponible para ti" para servicios en que el usuario es elegible.</li>
+                <li>Ícono de candado + mensaje para servicios inelegibles con CTA de afiliación.</li>
+                <li>Sección separada opcional: "Otros servicios para empresas como la tuya" (inelegibles relevantes).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Privacidad y Lenguaje</div>
+              <ul class="mb-0 small">
+                <li>Razones de restricción en lenguaje de negocio, no técnico.</li>
+                <li>No se expone el modelo de scoring ni las reglas internas al usuario final.</li>
+                <li>Textos de restricción revisados por equipo de UX y cumplimiento.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline de Elegibilidad</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Evaluar elegibilidad por cada servicio:</strong> CRM Dynamics provee estado de membresía y segmento del usuario.</li>
+          <li><strong>Adjuntar metadatos:</strong> SIREP añade historial de contratos activos relevantes para criterios de elegibilidad.</li>
+          <li><strong>Mantener recomendaciones relevantes:</strong> Motor/API mantiene mínimo de ítems elegibles en el Top-N.</li>
+          <li><strong>Evitar información sensible:</strong> Frontend/UI recibe sólo razones en lenguaje de negocio aprobado.</li>
+          <li><strong>Evaluación de elegibilidad por ítem:</strong> CRM persiste en log el motivo de elegibilidad/inelegibilidad por ítem.</li>
+          <li><strong>Razón obligatoria:</strong> SIREP verifica que cada ítem tiene razón y CTA definidos.</li>
+          <li><strong>CTA según estado:</strong> Catálogo de Servicios retorna el CTA correcto según el tipo de restricción.</li>
+          <li><strong>Integración CRM y catálogo:</strong> CRM Dynamics confirma la integración y persiste el resultado de la recomendación con metadatos de elegibilidad.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Ejemplo de Ítem con Elegibilidad</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "service_id": "S-302",
+  "nombre": "Networking Círculo de Afiliados Premium",
+  "score": 0.79,
+  "elegibilidad": "requiere_membresia",
+  "restricciones": ["membresia_circulo_activa"],
+  "razon_restriccion": "Este servicio está disponible para empresas afiliadas al Círculo CCB.",
+  "razones": [
+    "Muy popular entre empresarios de tu segmento",
+    "Genera conexiones con más de 500 empresas locales"
+  ],
+  "cta": {
+    "tipo": "afiliacion",
+    "label": "Conoce los beneficios del Círculo",
+    "url": "/circulo-afiliados/beneficios"
+  }
+},
+{
+  "service_id": "S-134",
+  "nombre": "Asesoría Formalización Empresarial",
+  "score": 0.87,
+  "elegibilidad": "elegible",
+  "restricciones": [],
+  "razones": ["Alta afinidad con tu etapa de formalización"],
+  "cta": {
+    "tipo": "solicitar",
+    "label": "Solicitar asesoría",
+    "url": "/servicios/S-134/solicitar"
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — Indicadores de Elegibilidad y Membresía <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Frontend</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Tarjeta de Servicio Elegible</div>
+              <ul class="mb-0 small">
+                <li>Badge verde: <span style="background:#388E3C;color:white;padding:1px 6px;border-radius:3px;font-size:0.7rem;">Disponible para ti</span></li>
+                <li>Razones de recomendación en bullet points.</li>
+                <li>CTA primario: "Solicitar" / "Ver más" / "Inscribirme".</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Tarjeta de Servicio Exclusivo Círculo</div>
+              <ul class="mb-0 small">
+                <li>Badge dorado: <span style="background:#F9A825;color:#333;padding:1px 6px;border-radius:3px;font-size:0.7rem;">Círculo CCB</span></li>
+                <li>Mensaje en lenguaje positivo sobre el beneficio de afiliarse.</li>
+                <li>CTA secundario: "Conoce los beneficios del Círculo" + "Afíliate".</li>
+                <li>Ítem visible pero visualmente diferenciado (no oculto).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Usuario afiliado — servicio Círculo</strong></td>
+                <td>Servicio exclusivo del Círculo aparece con <code>elegibilidad=elegible</code>, badge "Círculo" y CTA "Solicitar".</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Usuario no afiliado — servicio Círculo</strong></td>
+                <td>Servicio aparece con <code>elegibilidad=requiere_membresia</code>, razón en lenguaje de negocio y CTA "Afíliate".</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Inelegible por segmento</strong></td>
+                <td>Servicio para segmento "Empresario" excluido del Top-N de usuario segmento "Emprendedor"; motivo en log.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Mínimo de elegibles en Top-N</strong></td>
+                <td>Motor garantiza al menos 3 ítems elegibles en Top-5; si no hay suficientes, se amplía el pool de candidatos.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Degradación elegante (API falla)</strong></td>
+                <td>Si la API de membresías no responde: se muestran sólo servicios abiertos con último estado cacheado (TTL ≤ 15 min).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Razón obligatoria</strong></td>
+                <td>Todo ítem con restricción de elegibilidad incluye <code>razon_restriccion</code> no vacía y <code>cta</code> definido.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Lenguaje no sensible</strong></td>
+                <td>Ninguna razón de restricción contiene términos técnicos (<code>flag</code>, <code>null</code>, <code>segment_id</code>); todas son legibles por el usuario final.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Elegibilidad</dt>
+          <dd class="col-sm-9">Condición que determina si un usuario específico puede acceder a un servicio dado, basada en membresía, segmento, estado del cliente y otras reglas del catálogo.</dd>
+
+          <dt class="col-sm-3">Círculo de Afiliados</dt>
+          <dd class="col-sm-9">Programa de membresía de la CCB que otorga acceso preferencial a servicios exclusivos, beneficios y eventos para empresas afiliadas.</dd>
+
+          <dt class="col-sm-3">CTA Adaptativo</dt>
+          <dd class="col-sm-9">Call to Action cuyo texto y destino cambian según el estado de elegibilidad del usuario (Solicitar, Afíliate, Conoce los requisitos).</dd>
+
+          <dt class="col-sm-3">Degradación Elegante</dt>
+          <dd class="col-sm-9">Comportamiento del sistema cuando un servicio dependiente falla: continúa funcionando con datos cacheados o un modo reducido sin interrumpir la experiencia del usuario.</dd>
+
+          <dt class="col-sm-3">Cache de Elegibilidad</dt>
+          <dd class="col-sm-9">Resultado de la evaluación de elegibilidad almacenado temporalmente (TTL ≤ 15 min) para reducir latencia y dependencia de la API de membresías.</dd>
+
+          <dt class="col-sm-3 mb-0">Golden Record</dt>
+          <dd class="col-sm-9 mb-0">Perfil unificado del usuario (ver HU 2.5.1) que incluye el estado de membresía y segmento usados en la evaluación de elegibilidad.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Nota de alcance E1:</strong> La evaluación de elegibilidad puede iniciar con reglas simples (membresía Sí/No + segmento). La integración en tiempo real con la API de membresías puede ser un mock en E1. Lo esencial es que el campo <code>elegibilidad</code> y el CTA adaptativo funcionen correctamente y que el log registre los motivos.
     </div>
 
   </div>
@@ -83,4 +374,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

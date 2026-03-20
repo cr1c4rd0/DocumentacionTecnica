@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.7.2 – Exclusión por descarte explícito</title>
+  <title>HU 2.7.2 – Exclusión por descarte explícito (hide/dismiss)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #C62828;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,63 +20,335 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #8E0000; --hero-end: #C62828;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.7.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Exclusión por descarte explícito</h1>
+      <h1 class="fw-bold fs-3 mb-1">Exclusión por descarte explícito (hide/dismiss)</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.7 · Reglas de Exclusión · Ventana temporal y control del usuario</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #B71C1C;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #C62828;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #B71C1C;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #C62828;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que no está interesado en ciertos servicios recomendados</p>
+              <p class="mb-0">usuario (empresario o ciudadano) que recibe recomendaciones del Recomendador de Servicios CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">poder descartar una recomendación para que no vuelva a aparecer por un tiempo</p>
+              <p class="mb-0">poder <strong>descartar explícitamente</strong> una recomendación (acción <em>hide/dismiss</em>) para que no vuelva a aparecer durante una ventana temporal configurable, con opción de descarte permanente y posibilidad de revertir.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">tener control sobre mi experiencia y no ver repetidamente lo que ya rechacé</p>
+              <p class="mb-0">tener <strong>control real sobre mi experiencia</strong> de recomendaciones y no ver repetidamente servicios que rechacé conscientemente.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Descarte Explícito</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Botón "No me interesa" visible en cada tarjeta de recomendación</li>
-          <li>Ventana de exclusión configurable (defecto: 30 días)</li>
-          <li>Confirmación de descarte con opción "No volver a mostrar nunca"</li>
-          <li>Recomendación desaparece de la lista inmediatamente</li>
-          <li>Usuario puede ver y gestionar su lista de descartados</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Descarte desde la lista recomendada (acción hide/dismiss)</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta de recomendación expone un botón / ícono <strong>"No me interesa"</strong> (hide/dismiss).</li>
+              <li>Al accionarlo, la tarjeta desaparece de la lista inmediatamente (feedback visual instantáneo).</li>
+              <li>Se muestra un <strong>toast de confirmación</strong>: <em>"Ocultamos esta recomendación. ¿Deshacer?"</em> con ventana de 5 s para revertir.</li>
+              <li>Opcionalmente, se invita al usuario a proveer una <strong>razón no intrusiva</strong>: <em>"No es para mí ahora", "Ya lo conozco", "Otro"</em>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Lista de exclusión con ventana temporal</strong>
+            <ul class="mt-1">
+              <li>El servicio descartado pasa a una lista de exclusión <code>dismissed_services[]</code> con:
+                <code>service_id</code>, <code>user_key_pseudo</code>, <code>dismissed_at</code>, <code>window_days</code>, <code>permanent</code>, <code>reason_opt</code>.
+              </li>
+              <li>La <strong>ventana de exclusión predeterminada</strong> es de <strong>30 días</strong>, configurable por tipo de servicio o por admin.</li>
+              <li>Transcurrida la ventana, el servicio vuelve al pool de candidatos elegibles automáticamente.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>El motor no vuelve a mostrar el servicio descartado (durante la ventana)</strong>
+            <ul class="mt-1">
+              <li>En cada solicitud de recomendaciones, el motor consulta <code>dismissed_services[]</code> y excluye los ítems vigentes.</li>
+              <li>El motivo de exclusión se registra como <code>reason: "dismissed"</code> en el log de decisiones.</li>
+              <li>El servicio descartado no aparece en ningún canal mientras la ventana esté activa.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Habilitar control y reversibilidad</strong>
+            <ul class="mt-1">
+              <li>El usuario puede acceder a un <strong>panel "Mis preferencias / Descartados"</strong> donde ve la lista de servicios ocultos, su ventana activa y fecha de expiración.</li>
+              <li>Puede <strong>restaurar</strong> un servicio descartado manualmente (antes de que expire la ventana).</li>
+              <li>Puede marcar un servicio como <strong>"No mostrar nunca"</strong> (<code>permanent: true</code>), eliminando la ventana temporal.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Registrar eventos y medir impacto</strong>
+            <ul class="mt-1">
+              <li>Cada acción de descarte genera un evento: <code>event_type: "dismiss"</code>, <code>service_id</code>, <code>reason_opt</code>, <code>timestamp</code>, <code>canal</code>.</li>
+              <li>Métricas disponibles: tasa de descarte por servicio, distribución de razones, porcentaje de reversiones, impacto en cobertura del motor.</li>
+              <li>En caso de error al registrar el descarte (p. ej., fallo de red), se notifica al usuario y se reintenta en background; la tarjeta no reaparece en la sesión activa.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Tabla de descartes por usuario con TTL</li>
-          <li>Exclusión aplicada en tiempo real sin latencia adicional</li>
-          <li>Sincronización entre canales del estado de descarte</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        2. Tecnología <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Almacenamiento de Descartes</div>
+              <ul class="mb-0 small">
+                <li>Tabla <code>user_dismissed_services</code> con campos: <code>user_key_pseudo</code>, <code>service_id</code>, <code>dismissed_at</code>, <code>window_days</code>, <code>permanent</code>, <code>reason_opt</code>, <code>restored_at</code>.</li>
+                <li>Índice optimizado por <code>(user_key_pseudo, service_id, expires_at)</code>.</li>
+                <li>TTL gestionado por job nocturno o partición por fecha de expiración.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">API de Descarte</div>
+              <ul class="mb-0 small">
+                <li><code>POST /recommendations/{service_id}/dismiss</code> — registra el descarte.</li>
+                <li><code>DELETE /dismissed/{service_id}</code> — restaura el servicio.</li>
+                <li><code>GET /dismissed</code> — lista los servicios descartados del usuario con estado y expiración.</li>
+                <li>Respuesta sincrónica con confirmación; latencia objetivo &lt; 200 ms.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Integración con el Motor</div>
+              <ul class="mb-0 small">
+                <li>El filtro de descartes se aplica en la fase de candidatos, junto al filtro <code>taken</code>.</li>
+                <li>La configuración de ventanas temporales por categoría se gestiona en YAML/tabla versionada.</li>
+                <li>Sincronización entre canales (web, app, chat) mediante store compartido.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">UX y Notificaciones</div>
+              <ul class="mb-0 small">
+                <li>Toast de confirmación con acción "Deshacer" (5 s).</li>
+                <li>Micro-interacción: la tarjeta se desliza fuera de la vista (animación CSS).</li>
+                <li>Panel "Mis preferencias": lista paginada con CTA de restaurar / hacer permanente.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Secuencia de Descarte</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <p class="mb-0 small">Usuario / Actor · Motor / API · Frontend / UI · Asistente / Chat</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">El usuario hace clic en "No me interesa" en una tarjeta de recomendación, desde cualquier canal (web, app, chat).</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">RESULTADO</div>
+              <p class="mb-0 small">Servicio excluido de futuras recomendaciones durante la ventana. Evento registrado. Control reversible en manos del usuario.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #C62828;">Pasos del Flujo (según Diagrama de Flujo y Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Descarte desde la lista recomendada:</strong> el usuario acciona el botón hide/dismiss en una tarjeta; el Motor / API recibe el evento.</li>
+          <li><strong>El servicio pasa a lista de exclusión:</strong> el Frontend / UI actualiza el estado local; el Motor persiste el registro en <code>dismissed_services[]</code>.</li>
+          <li><strong>El motor no vuelve a mostrar ese servicio:</strong> en futuras solicitudes, el Motor excluye el ítem; el Frontend no lo renderiza.</li>
+          <li><strong>Habilitar control y reversibilidad:</strong> el Motor expone el endpoint de restauración; el Frontend muestra el panel de gestión de descartados.</li>
+          <li><strong>Registrar eventos y medir impacto:</strong> el Frontend envía el evento de descarte al Asistente / Chat y a la capa de analytics.</li>
+          <li><strong>En cada tarjeta de recomendación:</strong> el Asistente / Chat confirma al Motor los eventos registrados.</li>
+          <li><strong>Toast de confirmación:</strong> el Motor envía al Frontend el mensaje de confirmación con opción "Deshacer" (5 s).</li>
+          <li><strong>Razón opcional (no intrusiva):</strong> el usuario puede seleccionar una razón; el Motor la registra en <code>reason_opt</code>.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #C62828;">Ejemplo de Registro de Descarte</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "event_type": "dismiss",
+  "user_key_pseudo": "u_9f3a",
+  "service_id": "S-405",
+  "dismissed_at": "2025-03-10T15:10:00Z",
+  "window_days": 30,
+  "permanent": false,
+  "reason_opt": "No es para mí ahora",
+  "canal": "web",
+  "version_regla": "exclusion-rules-2025.03.01"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        4. Diseño — Experiencia del Usuario
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #C62828;">Tarjeta de Recomendación con Descarte</div>
+              <ul class="mb-0 small">
+                <li>Ícono "✕" o menú "..." en esquina superior derecha de la tarjeta.</li>
+                <li>Al hacer clic: animación de deslizamiento + toast de confirmación.</li>
+                <li>Toast: <em>"Ocultamos esta recomendación"</em> + botón <strong>"Deshacer"</strong> (5 s).</li>
+                <li>Opción secundaria (no modal): selector de razón con máx. 3 opciones simples.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #C62828;">Panel "Mis preferencias / Descartados"</div>
+              <ul class="mb-0 small">
+                <li>Lista de servicios descartados con nombre, fecha de descarte y fecha de expiración.</li>
+                <li>Botón <strong>"Restaurar"</strong> por ítem para reactivar antes de que expire la ventana.</li>
+                <li>Toggle <strong>"No mostrar nunca"</strong> para hacer el descarte permanente.</li>
+                <li>Accesible desde menú de usuario / configuración de preferencias.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Descarte básico</strong></td>
+                <td>Al descartar <code>S-405</code>, la tarjeta desaparece de inmediato y el evento se registra con <code>reason: "dismissed"</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Ventana temporal activa</strong></td>
+                <td><code>S-405</code> no aparece en el Top-N durante 30 días; reaparece automáticamente el día 31.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Deshacer (Undo)</strong></td>
+                <td>El usuario hace clic en "Deshacer" dentro de 5 s; la tarjeta reaparece y el registro de descarte se elimina.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Descarte permanente</strong></td>
+                <td>Usuario activa "No mostrar nunca"; <code>permanent: true</code> persiste; el servicio no reaparece tras ningún período.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Restaurar desde panel</strong></td>
+                <td>Usuario restaura <code>S-405</code> desde el panel; en la siguiente sesión el servicio puede volver a recomendarse.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Error de registro (fallback)</strong></td>
+                <td>Si falla la persistencia, se notifica al usuario; la tarjeta no reaparece en la sesión activa y se reintenta en background.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Sincronización entre canales</strong></td>
+                <td>Servicio descartado en web no aparece en app ni en chat durante la ventana activa.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">hide/dismiss</dt>
+          <dd class="col-sm-9">Acción explícita del usuario para ocultar una recomendación de su lista activa.</dd>
+
+          <dt class="col-sm-3">dismissed_services[]</dt>
+          <dd class="col-sm-9">Tabla/lista que almacena los servicios descartados por el usuario con metadatos de ventana temporal.</dd>
+
+          <dt class="col-sm-3">window_days</dt>
+          <dd class="col-sm-9">Número de días durante los cuales el servicio descartado permanece excluido del pool de candidatos.</dd>
+
+          <dt class="col-sm-3">permanent: true</dt>
+          <dd class="col-sm-9">Flag que indica que el descarte no expira; el servicio nunca volverá a recomendarse al usuario.</dd>
+
+          <dt class="col-sm-3">reason_opt</dt>
+          <dd class="col-sm-9">Razón opcional (no obligatoria) que el usuario puede seleccionar al descartar, usada para mejorar el modelo.</dd>
+
+          <dt class="col-sm-3 mb-0">Toast</dt>
+          <dd class="col-sm-9 mb-0">Notificación emergente breve (no modal) que confirma una acción y ofrece la opción de revertirla.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#C62828 !important; background:#ffebee;">
+      <strong>Nota de alcance:</strong> El descarte explícito opera complementariamente al filtro de servicios "ya tomados" (HU 2.7.1). Ambas reglas se aplican en la fase de candidatos. La ventana temporal predeterminada (30 días) y el umbral de descarte permanente son configurables vía tabla de configuración versionada, sin redeploy del modelo.
     </div>
 
   </div>
@@ -83,4 +357,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

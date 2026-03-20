@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,14 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">← Épica 2.1</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">←
+          Épica 2.1</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
@@ -21,12 +24,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.1.3</div>
-      <h1 class="fw-bold fs-3 mb-0">Aprende de mis clics y navegación</h1>
+      <h1 class="fw-bold fs-3 mb-1">Aprende de mis clics y navegación</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.1 · Motor de Recomendación Personalizada · Aprendizaje Continuo</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
@@ -34,48 +39,309 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que navega el portal</p>
+              <p class="mb-0">usuario (anónimo con identificación mínima o autenticado).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">que el motor aprenda de mis clics, scroll y patrones de navegación en tiempo real</p>
+              <p class="mb-0">que el sistema aprenda de mis interacciones
+                (<strong>clics, desplazamiento/scroll, tiempo de permanencia/dwell time,
+                ocultar "no me interesa", inscripciones</strong>).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">que mis recomendaciones mejoren progresivamente con cada interacción</p>
+              <p class="mb-0">que las recomendaciones futuras sean más relevantes y
+                reduzcan el tiempo para encontrar lo que necesito.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Definition of Done</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Frontend captura eventos (clic, scroll, tiempo en pantalla, navegación)</li>
-          <li>Eventos enviados al stream en ≤ 200ms</li>
-          <li>Pipeline procesa eventos y actualiza perfil del usuario</li>
-          <li>Embeddings del usuario se actualizan en ≤ 1 hora</li>
-          <li>Modelo ajusta pesos y preferencias dinámicamente</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Trazabilidad completa de interacciones</strong>
+            <ul class="mt-1">
+              <li>El sistema registra: <strong>impresiones</strong> (qué se mostró),
+                <strong>clics</strong>, <strong>dwell time</strong> (tiempo en ficha de servicio),
+                <strong>scroll profundo</strong> (≥70%), <strong>ocultar / no me interesa</strong>,
+                <strong>ya lo tomé</strong>, y <strong>conversión</strong> (inscripción/uso).</li>
+              <li>Los eventos se asocian a un <code>anon_id</code> (sin login) o al perfil del usuario
+                (con consentimiento), <strong>sin PII en el payload</strong>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Aprendizaje incremental (near real-time)</strong>
+            <ul class="mt-1">
+              <li>En <strong>≤ 15 min</strong> desde la interacción, las señales actualizan el perfil de afinidad
+                (features) y reordenan el top-N en siguientes vistas (o siguiente sesión).</li>
+              <li>Si el pipeline está caído, el sistema <strong>degrada a ranking por reglas</strong>
+                (gratuitos/recientes) con etiqueta <em>"recomendación básica"</em>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Corrección de relevancia mediante feedback negativo</strong>
+            <ul class="mt-1">
+              <li>Al marcar <em>"No me interesa"</em> o <em>"Ya lo tomé"</em>, el servicio desaparece de futuras
+                recomendaciones y se agrega a la lista negra personal (editable).</li>
+              <li>Esta señal reduce la exposición de servicios similares (penalización de afinidad) durante
+                <strong>30 días</strong> (configurable).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Control de frecuencia y fatiga</strong>
+            <ul class="mt-1">
+              <li>El usuario no ve la misma recomendación más de <strong>3 veces sin interacción</strong>
+                (cap de frecuencia); después se rota por alternativas del mismo objetivo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Métricas y umbrales de calidad</strong>
+            <ul class="mt-1">
+              <li>Se calculan <strong>CTR, CR, dwell medio, tasa de ocultado</strong> y
+                <strong>time-to-first-action</strong> por segmento/rol.</li>
+              <li>Objetivo inicial (no bloqueante en E1): CTR <strong>+5%</strong> y CR <strong>+3%</strong>
+                frente al baseline de reglas; ocultados <strong>≤ 15%</strong>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Privacidad y consentimiento</strong> <span class="text-muted small">(Ley 1581)</span>
+            <ul class="mt-1">
+              <li>Banner claro que explica la finalidad del seguimiento y permite <strong>opt-out</strong>
+                del perfilado.</li>
+              <li>El usuario puede borrar su historial de señales.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Event stream con Kafka o Kinesis</li>
-          <li>Pipeline batch nocturno o streaming continuo</li>
-          <li>Feature store para embeddings</li>
-          <li>SDK de tracking con consentimiento GDPR</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Captura de Eventos</div>
+              <ul class="mb-0 small">
+                <li>Tracker de eventos en el front (widget/sitio) que envía:
+                  <code>impression</code>, <code>click</code>, <code>scroll</code>, <code>dwell</code>,
+                  <code>dismiss</code>, <code>enroll</code>.</li>
+                <li>Stream/cola de eventos (p. ej., Kafka) → procesador (streaming/batch de 15 min).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Motor de Recomendación Híbrido</div>
+              <ul class="mb-0 small">
+                <li><strong>Stage 1 (candidatos):</strong> Collaborative Filtering + Content-Based.</li>
+                <li><strong>Stage 2 (re-ranking):</strong> Learning-to-Rank con señales frescas de afinidad,
+                  popularidad, recencia y reglas (gratuitos/boost de campañas).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Feature Store &amp; Motor de Reglas</div>
+              <ul class="mb-0 small">
+                <li>Actualiza afinidades por categoría/tema (conteos ponderados por recencia).</li>
+                <li>Señales negativas (blacklist personal, penalización de similitud).</li>
+                <li>Métricas de sesión (dwell promedio, scroll). Ventanas: 7/30/90 días.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Explicabilidad</div>
+              <ul class="mb-0 small">
+                <li>Top-3 razones legibles por tarjeta, por ejemplo:
+                  <em>"Visitaste X"</em>, <em>"Empresas como la tuya eligieron Y"</em>.</li>
+                <li>Límite de frecuencia y diversidad aplicados al final del pipeline.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico de Información
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Captura (front):</strong> el widget registra <code>impression</code>, <code>click(service_id)</code>,
+            <code>scroll_depth</code>, <code>dwell_ms</code>, <code>dismiss(service_id)</code>,
+            <code>enroll(service_id)</code>. Todos llevan <code>anon_id</code> o <code>user_id</code>,
+            timestamp, locale, canal.</li>
+          <li><strong>Ingesta y procesamiento:</strong> eventos → stream (cola) → agregaciones por usuario/servicio:
+            afinidad por categoría/tema, señales negativas (blacklist), métricas de sesión.</li>
+          <li><strong>Escritura a Feature Store:</strong> ventanas 7/30/90 días con version y timestamp.</li>
+          <li><strong>Stage 1 (candidatos):</strong> CF + contenido, filtrando ya tomados/descartados y
+            elegibilidad/cupos.</li>
+          <li><strong>Stage 2 (re-ranking):</strong> modelo ligero pondera afinidades actualizadas + reglas
+            (gratuitos/boost de campañas) + límite de frecuencia y diversidad.</li>
+          <li><strong>Respuesta:</strong> top-N con tarjetas: título, badge "Gratuito" (si aplica), próxima fecha,
+            CTA ("Inscribirme/Ver"), y <em>"¿Por qué lo veo?"</em> (3 razones claras).</li>
+          <li><strong>Log de decisiones:</strong> score, reglas aplicadas, razones mostradas.</li>
+          <li><strong>Medición:</strong> tablero con CTR/CR, dwell, ocultados, tiempo a primera acción; señales
+            alimentan re-entrenos periódicos (p. ej., semanal).</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Sistemas consultados</div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm small mb-0">
+            <thead class="table-light">
+              <tr><th>Sistema</th><th>Propósito</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>CRM</strong></td><td>Perfil, segmento, rol, consumos previos → personalización y exclusión de ya tomados.</td></tr>
+              <tr><td><strong>Catálogo/Agenda</strong></td><td>Atributos, cupos, calendario → elegibilidad/fechas en la tarjeta.</td></tr>
+              <tr><td><strong>Eventos del sitio/widget</strong></td><td>Clics, dwell, scroll, ocultados → afinidad y re-ranking.</td></tr>
+              <tr><td><strong>SIREP</strong></td><td>(Indirecto) validar disponibilidad/estado si la recomendación activa un trámite concreto.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — UX/UI del Módulo "Recomendado para ti"
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Tarjeta de Servicio</div>
+              <ul class="mb-0 small">
+                <li>Título del servicio + badge <em>"Gratuito"</em> (si aplica).</li>
+                <li>Descripción 1–2 líneas + próxima fecha o "Siempre disponible".</li>
+                <li>CTA primario: "Inscribirme" / "Ver detalles".</li>
+                <li>Menú "⋮": <em>No me interesa</em> / <em>Ya lo tomé</em>.</li>
+                <li>Link <em>"¿Por qué lo veo?"</em> → mini-modal con 3 razones claras.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Accesibilidad y Privacidad</div>
+              <ul class="mb-0 small">
+                <li>Navegación por teclado, ARIA para "abierto/cerrado", contraste AA.</li>
+                <li>Enlace <em>"Gestionar personalización"</em> (ver/borrar señales, desactivar perfilado).</li>
+                <li>Textos disponibles en ES/EN (i18n).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Escenarios de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Gherkin</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">S1</td>
+                <td><strong>Ajuste por clic y dwell</strong><br><small>Hago clic y paso 60 s en "Mentoría Exportaciones"</small></td>
+                <td>Servicios de "Internacionalización" suben en mi top-N y veo "¿Por qué lo veo?" con esa razón.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S2</td>
+                <td><strong>Feedback negativo</strong><br><small>Marco "No me interesa" en un servicio</small></td>
+                <td>El servicio desaparece y se reduce por 30 días la exposición de servicios muy similares.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S3</td>
+                <td><strong>Control de frecuencia</strong><br><small>Vi el mismo servicio 3 veces sin interactuar</small></td>
+                <td>Ese servicio no aparece y se rota por otra alternativa relevante.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">S4</td>
+                <td><strong>Degradación segura</strong><br><small>El pipeline de eventos está caído</small></td>
+                <td>El sistema entrega ranking por reglas con la etiqueta <em>"recomendación básica"</em>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Dwell time</dt>
+          <dd class="col-sm-9">Tiempo real que el usuario permanece viendo una ficha de servicio.</dd>
+
+          <dt class="col-sm-3">Feature Store</dt>
+          <dd class="col-sm-9">"Bodega" donde se guardan variables del modelo (afinidades, recencias) con versión y sello de tiempo.</dd>
+
+          <dt class="col-sm-3">Re-ranking</dt>
+          <dd class="col-sm-9">Segunda etapa que reordena candidatos usando señales más recientes del usuario.</dd>
+
+          <dt class="col-sm-3">CTR / CR</dt>
+          <dd class="col-sm-9">Click-Through Rate / Conversion Rate — tasas de clic e inscripción/uso.</dd>
+
+          <dt class="col-sm-3">Cap de frecuencia</dt>
+          <dd class="col-sm-9">Límite máximo de veces que se muestra un mismo ítem sin interacción (3 por defecto).</dd>
+
+          <dt class="col-sm-3 mb-0">anon_id</dt>
+          <dd class="col-sm-9 mb-0">Identificador de sesión anónima, sin PII, para rastrear señales de usuarios no autenticados.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Parámetros iniciales -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Parámetros iniciales (ajustables en E1):</strong>
+      Ventanas de señales: 7/30/90 días · Cap de frecuencia: 3 impresiones sin interacción ·
+      Umbral scroll profundo: ≥70% · Umbral dwell: 20 s (interés) / 5 s (rebote) ·
+      Re-cómputo: cada 15 min (streaming) + refresco en siguiente vista/sesión.
     </div>
 
   </div>
@@ -84,4 +350,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

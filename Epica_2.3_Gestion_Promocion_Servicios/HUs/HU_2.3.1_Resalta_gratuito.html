@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,74 +8,454 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html">← Épica 2.3</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html">←
+          Épica 2.3</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #BF360C; --hero-end: #E65100;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.3.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Resalta lo gratuito</h1>
+      <h1 class="fw-bold fs-3 mb-1">Resalta lo gratuito</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.3 · Gestión de Promoción de Servicios · Visibilidad de Valor Gratuito</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #E65100;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #E65100;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal buscando oportunidades de valor</p>
+              <p class="mb-0">usuario (anónimo con identificación mínima o autenticado) que navega el portal
+                de la CCB buscando oportunidades de valor.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver claramente cuáles servicios son gratuitos dentro de las recomendaciones</p>
+              <p class="mb-0">ver claramente cuáles servicios son <strong>gratuitos</strong> dentro de las
+                recomendaciones personalizadas, con etiqueta visual diferenciada y filtro dedicado.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">priorizar mi atención en servicios a los que puedo acceder sin costo</p>
+              <p class="mb-0">priorizar mi atención en servicios a los que puedo acceder sin costo,
+                reducir la fricción de decisión y aumentar la tasa de adopción de la oferta gratuita de la CCB.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Definition of Done</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Etiqueta "Gratuito" visible y destacada en tarjeta del servicio</li>
-          <li>Filtro específico para mostrar solo servicios gratuitos</li>
-          <li>Ordenamiento opcional con gratuitos primero</li>
-          <li>Badge diferenciado visualmente del resto</li>
-          <li>Actualización automática cuando cambia el estado del servicio</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Badge "Gratuito" visible y consistente</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta de servicio con <code>is_free=true</code> muestra un badge
+                <strong>"Gratuito"</strong> en posición fija (esquina superior derecha o debajo del título),
+                con color diferenciado del resto de badges (p. ej., verde <code>#2E7D32</code>).</li>
+              <li>El badge es visible en modo claro y oscuro, y cumple contraste WCAG AA.</li>
+              <li>El texto del badge es configurable (p. ej., "Sin costo", "Gratuito", "Free") desde la capa
+                de catálogo, sin redeploy.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Filtro "Solo gratuitos"</strong>
+            <ul class="mt-1">
+              <li>Existe un control de filtro (checkbox o toggle) en el panel de recomendaciones que permite
+                mostrar <strong>únicamente servicios con <code>is_free=true</code></strong>.</li>
+              <li>Al activar el filtro, el listado se actualiza sin recarga completa de página (UX fluida).</li>
+              <li>El filtro persiste durante la sesión del usuario.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Ordenamiento con gratuitos primero (boost de negocio)</strong>
+            <ul class="mt-1">
+              <li>Existe una opción de ordenamiento <em>"Gratuitos primero"</em> que aplica un
+                <strong>boost configurable</strong> al score de los servicios con <code>is_free=true</code>
+                sin alterar el algoritmo base.</li>
+              <li>El boost es parametrizable por el equipo de negocio (valor entre 0 y 1) vía panel de
+                administración o archivo de configuración, sin redeploy.</li>
+              <li>El log de decisiones registra el delta del boost aplicado por cada ítem.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Actualización automática desde catálogo</strong>
+            <ul class="mt-1">
+              <li>El campo <code>is_free</code> se sincroniza desde el catálogo de servicios con una latencia
+                máxima de <strong>5 minutos</strong> (batch o near real-time).</li>
+              <li>Si un servicio cambia de gratuito a pago (o viceversa), el badge y el comportamiento del
+                filtro se actualizan automáticamente en la siguiente sincronización.</li>
+              <li>Existe una prueba de regresión que valida la consistencia entre catálogo y motor de
+                recomendación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad y explicabilidad</strong>
+            <ul class="mt-1">
+              <li>En la explicación <em>"¿Por qué lo veo?"</em>, cuando un servicio gratuito aparece en el
+                top-N por efecto del boost, se indica explícitamente:
+                <em>"Servicio gratuito priorizado por política de la CCB."</em></li>
+              <li>El log de decisiones registra: <code>is_free</code>, <code>boost_gratuito</code>,
+                <code>score_base</code>, <code>score_final</code> y <code>posicion_final</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Métricas de adopción de gratuitos</strong>
+            <ul class="mt-1">
+              <li>El tablero de métricas reporta: <strong>impresiones de gratuitos</strong>,
+                <strong>CTR gratuitos vs. pagos</strong>, <strong>CR (inscripción/uso) gratuitos</strong>
+                y <strong>% de sesiones con filtro "gratuitos" activo</strong>.</li>
+              <li>Métricas disponibles segmentadas por tipo de usuario (anónimo / autenticado) y por
+                segmento/rol de cliente.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Privacidad y accesibilidad</strong>
+            <ul class="mt-1">
+              <li>La funcionalidad opera para usuarios anónimos (<code>anon_id</code>) sin requerir PII.</li>
+              <li>Navegación por teclado y etiquetas ARIA completas en el filtro y los badges.</li>
+              <li>Textos disponibles en ES/EN (i18n).</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Campo <code>is_free</code> en catálogo de servicios</li>
-          <li>Lógica de ordenamiento configurable</li>
-          <li>Integración con catálogo de precios en tiempo real</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        2. Tecnología <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Catálogo de Servicios</div>
+              <ul class="mb-0 small">
+                <li>Campo <code>is_free: boolean</code> (y opcionalmente <code>precio</code>,
+                  <code>modalidad</code>) en el maestro de servicios.</li>
+                <li>Sincronización hacia Feature Store cada 5 minutos (job batch o webhook).</li>
+                <li>Versión y timestamp de última actualización del campo <code>is_free</code> por servicio.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Motor de Reglas — Boost Gratuitos</div>
+              <ul class="mb-0 small">
+                <li>Capa de re-ranking aplica boost configurable (<code>boost_free_weight</code>) a ítems
+                  con <code>is_free=true</code>.</li>
+                <li>Separación explícita: <code>score_organico</code> vs. <code>score_con_boost</code>
+                  en cada recomendación.</li>
+                <li>Parámetro hot-reloadable vía YAML/tabla de configuración (sin redeploy).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Frontend / UI</div>
+              <ul class="mb-0 small">
+                <li>Badge <em>"Gratuito"</em> renderizado desde el campo <code>is_free</code> en el payload
+                  de la API de recomendaciones.</li>
+                <li>Toggle/checkbox de filtro que activa parámetro <code>?filter=free</code> en el request.</li>
+                <li>Ordenamiento <em>"Gratuitos primero"</em> activable como opción de sort en la UI.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Observabilidad &amp; Métricas</div>
+              <ul class="mb-0 small">
+                <li>Evento de telemetría <code>filter_free_activated</code> al activar el filtro.</li>
+                <li>Métricas de CTR/CR segmentadas por <code>is_free</code> en el tablero de seguimiento.</li>
+                <li>Logs estructurados (JSON) con campos: <code>is_free</code>, <code>boost_applied</code>,
+                  <code>score_base</code>, <code>score_final</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ENTRADA</div>
+              <p class="mb-0 small">Usuario (anónimo o autenticado) accede al portal o widget de
+                recomendaciones. Puede activar el filtro <em>"Solo gratuitos"</em> o el orden
+                <em>"Gratuitos primero"</em>.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">FUENTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Catálogo Servicios:</strong> campo <code>is_free</code>, precio, modalidad.</li>
+                <li><strong>CRM / Dynamics:</strong> perfil, segmento, rol (si autenticado).</li>
+                <li><strong>Motor / API:</strong> score base + boost de gratuitos.</li>
+                <li><strong>Base de Datos:</strong> log de decisiones y métricas.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SALIDA</div>
+              <p class="mb-0 small">Lista de recomendaciones con badge <em>"Gratuito"</em> visible,
+                filtradas/ordenadas según preferencia del usuario; log de decisiones auditables.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #E65100;">Pasos del Pipeline</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Entrada:</strong> request del usuario llega con parámetros opcionales
+            <code>filter=free</code> y/o <code>sort=free_first</code>.</li>
+          <li><strong>Generación de candidatos (Stage 1):</strong> CF + Content-Based → Top-K inicial,
+            con campo <code>is_free</code> incluido en el payload de cada candidato.</li>
+          <li><strong>Filtro gratuitos (opcional):</strong> si <code>filter=free</code>, se eliminan
+            candidatos con <code>is_free=false</code>.</li>
+          <li><strong>Re-ranking + boost:</strong> si <code>sort=free_first</code> o está activa la
+            regla de negocio "gratuitos primero", se aplica
+            <code>score_final = score_base + (is_free ? boost_free_weight : 0)</code>.</li>
+          <li><strong>Diversidad:</strong> re-rank final para no saturar con gratuitos de una sola
+            categoría (MMR o límite por categoría).</li>
+          <li><strong>Respuesta:</strong> top-N con campo <code>is_free</code>, <code>badge_label</code>,
+            <code>score_base</code>, <code>score_final</code>, <code>razones[]</code>.</li>
+          <li><strong>Log de decisiones:</strong> se registra <code>boost_applied</code>,
+            <code>filter_active</code>, <code>posicion_final</code> por ítem.</li>
+          <li><strong>Métricas:</strong> eventos de telemetría enviados al tablero para CTR/CR
+            segmentado por <code>is_free</code>.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #E65100;">Ejemplo de Respuesta de la API</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key_pseudo": "u_4c7f",
+  "filter_active": "free",
+  "topK": [
+    {
+      "service_id": "S-021",
+      "nombre": "Capacitación en Formalización Empresarial",
+      "score_base": 0.74,
+      "boost_gratuito": 0.15,
+      "score_final": 0.89,
+      "is_free": true,
+      "badge_label": "Gratuito",
+      "razones": [
+        "Servicio gratuito priorizado por política CCB",
+        "Alta demanda en tu segmento MiPyme"
+      ]
+    },
+    {
+      "service_id": "S-045",
+      "nombre": "Asesoría de Marca Colectiva",
+      "score_base": 0.71,
+      "boost_gratuito": 0.15,
+      "score_final": 0.86,
+      "is_free": true,
+      "badge_label": "Gratuito",
+      "razones": [
+        "Servicio gratuito priorizado por política CCB",
+        "Afinidad con tu interés en propiedad intelectual"
+      ]
+    }
+  ],
+  "meta": {
+    "version_modelo": "rec-0.3.1",
+    "version_config": "rules-2025.12.10",
+    "boost_free_weight": 0.15,
+    "latencia_ms": 198
+  }
+}</pre>
+        <p class="text-muted small mt-2 mb-0">
+          <em>El campo <code>boost_gratuito</code> se registra en el decision log para trazabilidad completa.</em>
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        4. Diseño — UX/UI del Badge y Filtro "Gratuito"
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">Tarjeta de Servicio</div>
+              <ul class="mb-0 small">
+                <li>Badge <strong>"Gratuito"</strong> en color verde (<code>#2E7D32</code>), posicionado
+                  debajo del título o en esquina superior derecha de la tarjeta.</li>
+                <li>Icono opcional (p. ej. ✓ o símbolo de regalo) antes del texto del badge.</li>
+                <li>Descripción 1–2 líneas + próxima fecha o "Siempre disponible".</li>
+                <li>CTA primario: "Inscribirme" / "Ver detalles".</li>
+                <li>Razón visible: <em>"Servicio gratuito · priorizado para ti"</em>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">Controles de Filtro y Orden</div>
+              <ul class="mb-0 small">
+                <li>Toggle <em>"Ver solo gratuitos"</em> en la barra de filtros del panel de recomendaciones.</li>
+                <li>Opción de ordenamiento <em>"Gratuitos primero"</em> en el selector de orden.</li>
+                <li>Contador visible: <em>"12 servicios gratuitos disponibles para ti"</em>.</li>
+                <li>Estado del filtro persistente durante la sesión.</li>
+                <li>Accesibilidad: etiquetas ARIA (<code>aria-label="Filtrar servicios gratuitos"</code>),
+                  navegación por teclado, contraste AA.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:32%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Badge visible en servicio gratuito</strong></td>
+                <td>Servicio con <code>is_free=true</code> muestra badge "Gratuito" en la tarjeta con color
+                  verde diferenciado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Filtro "Solo gratuitos" activo</strong></td>
+                <td>Al activar el toggle, solo aparecen servicios con <code>is_free=true</code>; lista se
+                  actualiza sin recarga de página.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Ordenamiento "Gratuitos primero"</strong></td>
+                <td>Servicios gratuitos suben en el ranking; el log registra <code>boost_gratuito</code>
+                  y <code>score_final</code> para cada ítem afectado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Cambio de estado en catálogo</strong></td>
+                <td>Servicio que pasa de gratuito a pago pierde el badge y sale del filtro en la siguiente
+                  sincronización (≤ 5 min).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Razón en "¿Por qué lo veo?"</strong></td>
+                <td>La explicación incluye <em>"Servicio gratuito priorizado por política de la CCB"</em>
+                  cuando el boost aplica.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Métricas de CTR segmentado</strong></td>
+                <td>El tablero reporta CTR y CR separados para servicios <code>is_free=true</code> vs.
+                  <code>is_free=false</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Usuario anónimo</strong></td>
+                <td>El filtro y badge funcionan con <code>anon_id</code>; no se expone PII en el payload.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">is_free</dt>
+          <dd class="col-sm-9">Campo booleano en el catálogo de servicios que indica si el servicio no
+            tiene costo para el usuario.</dd>
+
+          <dt class="col-sm-3">Badge</dt>
+          <dd class="col-sm-9">Etiqueta visual pequeña que se superpone a la tarjeta del servicio para
+            comunicar una característica relevante (p. ej.: "Gratuito", "Nuevo", "Campaña").</dd>
+
+          <dt class="col-sm-3">Boost</dt>
+          <dd class="col-sm-9">Incremento configurado al score de un servicio por política de negocio,
+            sin alterar el algoritmo base de recomendación.</dd>
+
+          <dt class="col-sm-3">Score orgánico</dt>
+          <dd class="col-sm-9">Score calculado por el modelo de recomendación sin aplicar boosts ni
+            pinning de negocio.</dd>
+
+          <dt class="col-sm-3">CTR / CR</dt>
+          <dd class="col-sm-9">Click-Through Rate / Conversion Rate — tasas de clic e inscripción/uso de
+            un servicio recomendado.</dd>
+
+          <dt class="col-sm-3">anon_id</dt>
+          <dd class="col-sm-9">Identificador de sesión anónima, sin PII, para rastrear señales de usuarios
+            no autenticados.</dd>
+
+          <dt class="col-sm-3 mb-0">MMR</dt>
+          <dd class="col-sm-9 mb-0">Maximal Marginal Relevance — técnica que balancea relevancia y
+            diversidad en la lista final de recomendaciones.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#E65100 !important; background:#fff3e0;">
+      <strong>Nota de alcance E1:</strong> El badge "Gratuito" y el filtro se implementan como funcionalidad
+      base del motor de recomendación. El boost de gratuitos es configurable sin redeploy.
+      Las métricas de CTR/CR segmentadas por <code>is_free</code> quedan disponibles desde el primer sprint.
+      No se requiere front productivo completo; la validación inicial es vía sandbox/notebook y API.
     </div>
 
   </div>
@@ -83,4 +464,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.6.2 – Parametrización sin redeploy</title>
+  <title>HU 2.6.2 – Parametrización de nuevas variables en el motor de recomendación (sin redeploy)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,61 +23,329 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.6.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Parametrización sin redeploy</h1>
+      <h1 class="fw-bold fs-3 mb-1">Parametrización de nuevas variables en el motor de recomendación (sin redeploy)</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.6 · Motor de Recomendación · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1A237E;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #1A237E;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">Data Scientist o administrador técnico</p>
+              <p class="mb-0">área de negocio que administra el portafolio y los criterios de recomendación de servicios de la CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">actualizar variables y pesos del motor mediante feature flags o YAML sin hacer redeploy</p>
+              <p class="mb-0">definir variables adicionales que influyan en las recomendaciones (nuevas señales, pesos, criterios de ranking), configurar cómo se usan, declararlas en el Feature Store y activarlas <strong>sin redeploy del modelo</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">ajustar el comportamiento del motor en producción de forma ágil y segura</p>
+              <p class="mb-0">ajustar y enriquecer el motor de recomendación con nuevas dimensiones de negocio de forma ágil, segura y auditada, sin interrupciones de servicio ni intervención del equipo de ingeniería para cada cambio.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Cambios de parámetros aplicados en ≤ 5 minutos sin reiniciar</li>
-          <li>Versionamiento de cada cambio con autor y timestamp</li>
-          <li>Rollback inmediato a versión anterior</li>
-          <li>Validación de parámetros antes de aplicar (tipos, rangos)</li>
-          <li>Registro de impacto en métricas tras cada cambio</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Definir variables adicionales que puedan influir en el scoring</strong>
+            <ul class="mt-1">
+              <li>El sistema permite declarar nuevas variables (features) que el motor puede usar en el scoring sin modificar el código del modelo.</li>
+              <li>Ejemplos de nuevas variables: <code>etapa_empresa</code>, <code>meses_como_cliente</code>, <code>indice_actividad</code>, <code>score_potencial_exportador</code>.</li>
+              <li>Cada variable tiene: nombre, tipo (numérico / categórico / binario), fuente de datos, descripción de negocio.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Configurar cómo se usan</strong>
+            <ul class="mt-1">
+              <li>Para cada variable se define su <strong>rol en el scoring</strong>: boost, filtro, ponderación, señal de contexto.</li>
+              <li>Los pesos de las variables son configurables mediante archivo YAML/JSON o panel sin redeploy.</li>
+              <li>Posibilidad de activar/desactivar una variable sin eliminarla del sistema.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Declarar variables en el Feature Store</strong>
+            <ul class="mt-1">
+              <li>Las nuevas variables se declaran formalmente en el Feature Store con su esquema, fuente y periodicidad de actualización.</li>
+              <li>El Feature Store valida la disponibilidad de la variable antes de que el motor la consuma.</li>
+              <li>Si la variable no está disponible para un usuario, el motor usa un valor por defecto configurado.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Activar cambios mediante hot-reload / feature flags</strong>
+            <ul class="mt-1">
+              <li>Los cambios en variables o pesos se activan en ≤ 5 minutos sin reiniciar el servicio.</li>
+              <li>Mecanismo: config hot-reload (recarga del YAML/JSON) o feature flags.</li>
+              <li>Rollback inmediato a la versión anterior en caso de degradación de métricas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Documentación y "diccionario de variables"</strong>
+            <ul class="mt-1">
+              <li>Cada variable registrada en un <strong>diccionario de variables</strong> accesible para equipo técnico y de negocio.</li>
+              <li>Diccionario incluye: descripción, tipo, fuente, valores válidos, impacto esperado en el scoring, fecha de activación y versión.</li>
+              <li>Generación automática del diccionario desde las declaraciones del Feature Store.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Clasificar variables según su naturaleza operacional</strong>
+            <ul class="mt-1">
+              <li><strong>Variables de usuario:</strong> atributos del perfil (segmento, etapa, actividad).</li>
+              <li><strong>Variables de servicio:</strong> atributos del catálogo (categoría, vigencia, popularidad).</li>
+              <li><strong>Variables de contexto:</strong> momento, canal, campaña activa.</li>
+              <li><strong>Variables derivadas:</strong> calculadas a partir de otras (ej. afinidad = similitud coseno entre embeddings).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Catálogo de variables y editor de reglas de ranking</strong>
+            <ul class="mt-1">
+              <li>Interfaz (o archivo YAML) que lista todas las variables disponibles con su estado (activa / inactiva) y peso actual.</li>
+              <li>Editor de reglas de ranking: permite ajustar la fórmula de scoring combinando variables con pesos.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Feature flags con LaunchDarkly o similar</li>
-          <li>Config almacenado en repositorio con PR review</li>
-          <li>Hot reload de configuración</li>
-          <li>Alertas en caso de degradación de métricas post-cambio</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Feature Store Ampliable</div>
+              <ul class="mb-0 small">
+                <li>Esquema extensible: nuevas variables se agregan como columnas o entidades sin romper compatibilidad.</li>
+                <li>Validación de esquema al declarar nuevas variables.</li>
+                <li>Valores por defecto para usuarios sin la variable calculada.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Config Hot-Reload</div>
+              <ul class="mb-0 small">
+                <li>YAML de configuración con todos los pesos y variables del motor.</li>
+                <li>El Motor/API recarga la config al detectar cambio (polling o push).</li>
+                <li>Versionado semántico de la config: <code>config-YYYY.MM.DD</code>.</li>
+                <li>Feature flags para activar/desactivar variables individualmente.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> fuente de variables de usuario (segmento, etapa, actividad).</li>
+                <li><strong>Feature Store:</strong> repositorio central de todas las variables del motor.</li>
+                <li><strong>Motor/API:</strong> consume variables en tiempo de inferencia.</li>
+                <li><strong>Frontend/UI:</strong> catálogo visual de variables y editor de pesos.</li>
+                <li><strong>Formulario:</strong> interfaz de declaración de nuevas variables para el equipo de negocio.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Auditoría y Rollback</div>
+              <ul class="mb-0 small">
+                <li>Cada cambio de variable/peso auditado con: usuario, timestamp, versión anterior, versión nueva.</li>
+                <li>Rollback en un click a cualquier versión anterior del config.</li>
+                <li>Alerta automática si las métricas del motor degradan tras un cambio.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline de Parametrización</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Definir variables adicionales:</strong> equipo de negocio declara nueva variable en CRM Dynamics (nombre, tipo, fuente, descripción).</li>
+          <li><strong>Configurar cómo se usan:</strong> Feature Store registra la variable con su rol (boost/filtro/ponderación) y valor por defecto.</li>
+          <li><strong>Declarar:</strong> Motor/API incorpora la variable en la fórmula de scoring via config YAML.</li>
+          <li><strong>Activar cambios:</strong> Frontend/UI aplica el cambio vía hot-reload; Formulario confirma activación al equipo.</li>
+          <li><strong>Proveer diccionario de variables:</strong> CRM persiste la documentación actualizada con todos los metadatos de la variable.</li>
+          <li><strong>Clasificar variables:</strong> CRM Dynamics categoriza la variable (usuario / servicio / contexto / derivada).</li>
+          <li><strong>Catálogo de variables:</strong> Feature Store muestra el estado de todas las variables activas con sus pesos.</li>
+          <li><strong>Editor de reglas de ranking:</strong> Motor/API expone el editor donde se ajusta la fórmula de scoring.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Ejemplo de Declaración de Variable en YAML</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">variables:
+  - id: "VAR-018"
+    nombre: "score_potencial_exportador"
+    tipo: "numerico"
+    rango: [0.0, 1.0]
+    fuente: "CRM_Dynamics"
+    actualizacion: "semanal"
+    rol: "boost"
+    peso: 0.15
+    valor_default: 0.0
+    activa: true
+    descripcion: "Puntuación de potencial exportador calculada por el área comercial."
+    clasificacion: "variable_usuario"
+    auditoria:
+      creado_por: "mrodriguez@ccb.org.co"
+      timestamp: "2025-03-01T14:00:00Z"
+      version_config: "config-2025.03.01"</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — Catálogo de Variables y Editor de Ranking <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Admin interno</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Catálogo de Variables</div>
+              <ul class="mb-0 small">
+                <li>Tabla con: ID, nombre, tipo, clasificación, fuente, peso actual, estado (activa/inactiva).</li>
+                <li>Filtros por clasificación (usuario / servicio / contexto / derivada).</li>
+                <li>Acciones: activar/desactivar, editar peso, ver historial de cambios.</li>
+                <li>Enlace a la documentación (diccionario) de cada variable.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Editor de Reglas de Ranking</div>
+              <ul class="mb-0 small">
+                <li>Fórmula de scoring visualizada con pesos editables por variable.</li>
+                <li>Sliders de peso con validación de suma total = 1.0.</li>
+                <li>Botón "Aplicar" con hot-reload (sin redeploy).</li>
+                <li>Vista de impacto: cambio en top-5 para una muestra de usuarios de prueba.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Nueva variable declarada</strong></td>
+                <td>Variable declarada en YAML aparece en el catálogo con estado "inactiva" hasta activación explícita.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Activación sin redeploy</strong></td>
+                <td>Variable activada en ≤ 5 min; log registra nuevo <code>version_config</code>; motor la usa en inferencias siguientes.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Cambio de peso → cambio en ranking</strong></td>
+                <td>Aumentar el peso de <code>score_potencial_exportador</code> de 0.1 a 0.3 produce cambio verificable en el top-5 de usuarios exportadores.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Valor por defecto cuando falta la variable</strong></td>
+                <td>Usuario sin <code>score_potencial_exportador</code> calculado recibe <code>0.0</code> como valor; motor no falla.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Rollback</strong></td>
+                <td>Tras degradación de métricas, rollback a versión anterior del config en ≤ 2 minutos; motor restaura comportamiento previo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Diccionario de variables actualizado</strong></td>
+                <td>Cada nueva variable declarada aparece en el diccionario con todos sus metadatos; generación automática.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Feature / Variable</dt>
+          <dd class="col-sm-9">Atributo o señal que el motor de recomendación usa como entrada para calcular el score de un servicio para un usuario.</dd>
+
+          <dt class="col-sm-3">Feature Store</dt>
+          <dd class="col-sm-9">Repositorio centralizado de variables/features de usuario y servicio, precalculadas y listas para consumo en tiempo de inferencia.</dd>
+
+          <dt class="col-sm-3">Diccionario de Variables</dt>
+          <dd class="col-sm-9">Catálogo documentado de todas las variables del motor, con descripción de negocio, tipo, fuente, impacto y estado.</dd>
+
+          <dt class="col-sm-3">Config Hot-Reload</dt>
+          <dd class="col-sm-9">Mecanismo que recarga la configuración del motor (pesos, variables activas) sin reiniciar el servicio.</dd>
+
+          <dt class="col-sm-3">Feature Flag</dt>
+          <dd class="col-sm-9">Switch que permite activar o desactivar una variable o funcionalidad en tiempo de ejecución sin redeploy.</dd>
+
+          <dt class="col-sm-3 mb-0">Editor de Ranking</dt>
+          <dd class="col-sm-9 mb-0">Interfaz que permite ajustar la fórmula de scoring del motor modificando los pesos de las variables de forma visual.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Nota de alcance E1:</strong> El catálogo y editor pueden implementarse como archivos YAML en repositorio con PR review. Lo esencial es que las variables se puedan declarar, activar y desactivar sin redeploy, con diccionario documentado y auditoría de cambios. La UI visual se desarrolla en etapas posteriores.
     </div>
 
   </div>
@@ -84,4 +354,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

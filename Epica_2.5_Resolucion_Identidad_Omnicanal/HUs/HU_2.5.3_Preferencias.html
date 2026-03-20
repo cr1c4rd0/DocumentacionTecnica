@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,12 +23,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.5.3</div>
-      <h1 class="fw-bold fs-3 mb-0">Respeta mis preferencias</h1>
+      <h1 class="fw-bold fs-3 mb-1">Respeta mis preferencias</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.5 · Resolución de Identidad Omnicanal · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00695C;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #00695C;">Enunciado</h2>
@@ -34,47 +38,304 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario registrado en el sistema</p>
+              <p class="mb-0">usuario que interactúa con el Recomendador de Servicios de la CCB en distintos canales.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">que el motor respete mis preferencias de comunicación y excluya servicios que no me interesan</p>
+              <p class="mb-0">que el motor respete mis <strong>preferencias persistentes</strong> (temas de interés, servicios o categorías excluidas, canal preferido) y las aplique en el ranking y filtrado de recomendaciones, con la posibilidad de consultarlas y modificarlas fácilmente.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">recibir solo recomendaciones relevantes y no ser molestado con contenido no deseado</p>
+              <p class="mb-0">recibir únicamente recomendaciones que se alineen con mis intereses reales, sin ser molestado con contenido no deseado, y con la seguridad de que mis preferencias persisten entre sesiones y canales.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Preferencias de canal respetadas (email, SMS, push, ninguno)</li>
-          <li>Lista de exclusión de servicios o categorías por usuario</li>
-          <li>Preferencias sincronizadas entre canales en ≤ 5 minutos</li>
-          <li>Cambios de preferencias aplicados en la próxima recomendación</li>
-          <li>Sin recomendaciones de categorías explícitamente rechazadas</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Preferencias persistentes</strong>
+            <ul class="mt-1">
+              <li>Las preferencias del usuario se almacenan de forma persistente y se aplican en todas las sesiones y canales.</li>
+              <li>Preferencias soportadas:
+                <ul>
+                  <li><strong>Temas de interés:</strong> categorías o áreas de servicio que el usuario quiere ver.</li>
+                  <li><strong>Exclusiones:</strong> servicios o categorías que el usuario no quiere ver.</li>
+                  <li><strong>Canal preferido:</strong> dónde recibir notificaciones (email, SMS, push, ninguno).</li>
+                  <li><strong>Frecuencia:</strong> con qué frecuencia recibir recomendaciones proactivas.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Aplicación de preferencias en ranking y/o filtrado</strong>
+            <ul class="mt-1">
+              <li>Los servicios en la lista de exclusiones del usuario <strong>nunca</strong> aparecen en sus recomendaciones.</li>
+              <li>Las categorías de interés tienen un boost positivo en el score de ranking.</li>
+              <li>Cambios de preferencias aplicados en la <strong>próxima recomendación</strong> (≤ próxima inferencia).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Gestión de preferencias (consultar y cambiar)</strong>
+            <ul class="mt-1">
+              <li>El usuario puede consultar sus preferencias actuales desde el módulo "Mis preferencias".</li>
+              <li>Puede modificar cualquier preferencia en tiempo real.</li>
+              <li>Los cambios se sincronizan entre canales en ≤ 5 minutos.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Privacidad y consentimiento (no intrusivo)</strong>
+            <ul class="mt-1">
+              <li>Las preferencias se capturan siempre con <strong>consentimiento explícito</strong> del usuario.</li>
+              <li>No se infieren preferencias sin notificar al usuario.</li>
+              <li>El usuario puede exportar y eliminar sus preferencias en cualquier momento.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback por falta de perfil</strong>
+            <ul class="mt-1">
+              <li>Si el usuario no tiene preferencias definidas: se activa el módulo "Mis preferencias" para solicitarlas (opcionalmente).</li>
+              <li>Sin preferencias definidas: el motor usa señales de comportamiento y popularidad como proxy.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Módulo "Mis preferencias" completo</strong>
+            <ul class="mt-1">
+              <li>Interfaz accesible desde el perfil del usuario en web y chat.</li>
+              <li>Acceso a la configuración: editar temas, exclusiones, canal y frecuencia.</li>
+              <li>Feedback: el usuario puede calificar recomendaciones ("útil" / "no me interesa") que alimentan las preferencias automáticamente.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Preference store independiente del feature store</li>
-          <li>Sincronización via eventos</li>
-          <li>Integración con centro de preferencias del CRM</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        2. Tecnología <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Preference Store</div>
+              <ul class="mb-0 small">
+                <li>Almacén de preferencias independiente del Feature Store de recomendación.</li>
+                <li>Estructura: <code>user_key → { intereses[], exclusiones[], canal, frecuencia, consentimiento }</code>.</li>
+                <li>Sincronización via eventos (event-driven) entre canales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Integración con el Motor</div>
+              <ul class="mb-0 small">
+                <li>Motor/API consume el Preference Store en cada inferencia.</li>
+                <li>Exclusiones aplicadas como hard filter (igual que blacklist de negocio).</li>
+                <li>Intereses como señal de boost en el scoring de candidatos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> persiste preferencias vinculadas al perfil del cliente.</li>
+                <li><strong>Frontend/UI:</strong> módulo visual "Mis preferencias" (web).</li>
+                <li><strong>Asistente/Chat:</strong> gestión de preferencias por conversación.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Feedback Loop</div>
+              <ul class="mb-0 small">
+                <li>Acciones de feedback del usuario (útil / no me interesa) actualizan preferencias automáticamente.</li>
+                <li>Feedback persistido con timestamp para trazabilidad.</li>
+                <li>No se infieren preferencias sin notificar al usuario.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Pasos del Flujo de Preferencias</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Preferencias persistentes:</strong> CRM Dynamics carga las preferencias guardadas del usuario al inicio de cada sesión.</li>
+          <li><strong>Aplicación en ranking/filtrado:</strong> Motor/API aplica exclusiones (hard filter) e intereses (boost) en cada inferencia.</li>
+          <li><strong>Gestión (consultar y cambiar):</strong> Frontend/UI muestra el módulo "Mis preferencias"; cambios sincronizados via eventos.</li>
+          <li><strong>Privacidad y consentimiento:</strong> Asistente/Chat registra o actualiza consentimiento según interacción.</li>
+          <li><strong>Fallback / solicitud de preferencias:</strong> si no hay perfil de preferencias, CRM propone completar el módulo.</li>
+          <li><strong>Módulo "Mis preferencias":</strong> Motor/API actualiza el Preference Store con los cambios.</li>
+          <li><strong>Acceso a la configuración:</strong> Frontend/UI permite editar temas, exclusiones, canal y frecuencia.</li>
+          <li><strong>Feedback:</strong> Usuario califica recomendaciones; CRM persiste el feedback que retroalimenta las preferencias.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Estructura de Preferencias</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key": "ik_7a2f9e",
+  "preferencias": {
+    "intereses": ["formalizacion", "financiamiento", "exportacion"],
+    "exclusiones_servicios": ["S-200", "S-087"],
+    "exclusiones_categorias": ["juridico"],
+    "canal_notificacion": "email",
+    "frecuencia": "semanal",
+    "consentimiento": {
+      "personalizacion": true,
+      "comunicaciones": true,
+      "timestamp": "2025-03-01T10:00:00Z"
+    }
+  },
+  "ultima_actualizacion": "2025-03-15T08:30:00Z",
+  "version": "pref-2025.03.15"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        4. Diseño — Módulo "Mis Preferencias" <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">UI/UX</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Secciones del Módulo</div>
+              <ul class="mb-0 small">
+                <li><strong>Temas de interés:</strong> selector de categorías (chips/tags).</li>
+                <li><strong>No me interesa:</strong> lista de servicios/categorías excluidas con opción de remover.</li>
+                <li><strong>Canal y frecuencia:</strong> selector de notificaciones preferidas.</li>
+                <li><strong>Mis datos y consentimiento:</strong> ver y modificar consentimientos.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Accesibilidad y UX</div>
+              <ul class="mb-0 small">
+                <li>Compatible con WCAG 2.1 AA.</li>
+                <li>Cambios guardados automáticamente (no requiere botón "Guardar").</li>
+                <li>Confirmación visual inmediata al modificar preferencia.</li>
+                <li>Disponible tanto en web como en el asistente de chat.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Exclusión de categoría</strong></td>
+                <td>Usuario excluye categoría "jurídico"; ningún servicio de esa categoría aparece en recomendaciones siguientes.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Boost de interés</strong></td>
+                <td>Usuario marca "formalización" como interés; servicios de esa categoría suben en el ranking Top-N.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Persistencia entre sesiones</strong></td>
+                <td>Preferencias definidas en sesión anterior aplican en nueva sesión sin que el usuario las vuelva a configurar.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Sincronización omnicanal</strong></td>
+                <td>Preferencia cambiada en web se refleja en el asistente de chat en ≤ 5 minutos.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Feedback → actualización de preferencias</strong></td>
+                <td>Usuario marca recomendación como "no me interesa"; servicio queda en lista de exclusiones automáticamente.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Fallback sin preferencias</strong></td>
+                <td>Usuario sin preferencias configuradas recibe recomendaciones por popularidad y se le muestra opción de completar perfil.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Preference Store</dt>
+          <dd class="col-sm-9">Almacén de preferencias explícitas del usuario, independiente del Feature Store de señales de comportamiento.</dd>
+
+          <dt class="col-sm-3">Hard Filter (preferencias)</dt>
+          <dd class="col-sm-9">Exclusión absoluta aplicada por las preferencias del usuario: los servicios excluidos nunca aparecen en recomendaciones.</dd>
+
+          <dt class="col-sm-3">Boost de Interés</dt>
+          <dd class="col-sm-9">Incremento del score de candidatos que pertenecen a categorías marcadas como de interés por el usuario.</dd>
+
+          <dt class="col-sm-3">Feedback Loop</dt>
+          <dd class="col-sm-9">Ciclo en que las acciones del usuario (útil / no me interesa) retroalimentan y actualizan sus preferencias y el modelo.</dd>
+
+          <dt class="col-sm-3 mb-0">Sincronización Omnicanal</dt>
+          <dd class="col-sm-9 mb-0">Propagación de cambios en preferencias a todos los canales del usuario (web, chat, WhatsApp) en ≤ 5 minutos via eventos.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00695C !important; background:#e0f2f1;">
+      <strong>Nota de alcance E1:</strong> El módulo "Mis preferencias" puede ser una implementación simplificada para validación del flujo. Lo esencial es que las preferencias persistan, se apliquen en el motor (exclusiones + boost) y se sincronicen. La UI completa se entrega en producción.
     </div>
 
   </div>
@@ -83,4 +344,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

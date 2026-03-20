@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,340 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1B5E20; --hero-end: #2E7D32;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.16.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Captura de feedback en recomendador</h1>
+      <h1 class="fw-bold fs-3 mb-1">Captura de feedback en recomendador</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.16 · Aprendizaje Continuo</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1B5E20;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1B5E20;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal que recibe recomendaciones</p>
+              <p class="mb-0">usuario del Recomendador de Servicios que recibe recomendaciones personalizadas</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">indicar si una recomendación es útil o no con un gesto simple y opcional</p>
+              <p class="mb-0">indicar con un gesto simple y <strong>completamente opcional</strong> si una recomendación me resultó <strong>útil o no útil</strong></p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">ayudar al sistema a mejorar y recibir recomendaciones cada vez más relevantes</p>
+              <p class="mb-0">ayudar al sistema a aprender de mis preferencias reales y hacer que las futuras recomendaciones sean <strong>más relevantes para mí</strong>, respetando mi privacidad</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Feedback Explícito</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Botones thumbs up / thumbs down visibles pero discretos en cada tarjeta</li>
-          <li>Comentario opcional de texto libre (máximo 280 caracteres)</li>
-          <li>Registro del feedback en ≤ 500ms sin bloquear la UI</li>
-          <li>Confirmación visual inmediata al enviar feedback</li>
-          <li>Feedback neutral es válido (sin forzar interacción)</li>
-          <li>Datos de feedback anonimizables según consentimiento del usuario</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Feedback explícito por recomendación (útil / no útil)</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta de recomendación muestra controles discretos de feedback: <strong>👍 Útil / 👎 No útil</strong> (iconografía o texto, visibles pero sin ocupar espacio dominante).</li>
+              <li>El feedback es <strong>completamente opcional</strong>; no se fuerza interacción ni se penaliza la omisión.</li>
+              <li>El usuario puede cambiar su respuesta (de útil a no útil o viceversa) mientras esté en la misma sesión; el cambio reemplaza el registro anterior.</li>
+              <li>Se acepta un campo de texto libre adicional (máx. 280 caracteres) para comentario opcional sobre el motivo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Persistencia por usuario cuando exista identidad</strong>
+            <ul class="mt-1">
+              <li>Si el usuario tiene sesión activa (identificado), el feedback se persiste asociado a <code>user_key_pseudo</code> + <code>recommendation_id</code>.</li>
+              <li>Si el usuario es anónimo, el feedback se asocia a <code>session_id</code> temporal y se descarta al cerrar sesión (sin persistencia de PII).</li>
+              <li>El registro de feedback contiene: <code>feedback_id</code>, <code>recommendation_id</code>, <code>service_id</code>, <code>user_key_pseudo</code>, <code>valor</code> (<code>useful|not_useful</code>), <code>comentario</code> (opcional), <code>timestamp</code>, <code>version_modelo</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Prevención de duplicados y actualización del feedback</strong>
+            <ul class="mt-1">
+              <li>La combinación (<code>user_key_pseudo</code>, <code>recommendation_id</code>) es única en la tabla de feedback; un segundo envío <strong>actualiza</strong> el registro existente (UPSERT).</li>
+              <li>El endpoint devuelve el estado actual del feedback (<code>created</code> o <code>updated</code>) para que la UI muestre el estado correcto.</li>
+              <li>Si se actualiza el feedback, el timestamp de modificación se registra por separado del timestamp de creación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y resiliencia</strong>
+            <ul class="mt-1">
+              <li>El envío de feedback es <strong>asíncrono (fire-and-forget)</strong>; la UI muestra confirmación visual inmediata sin esperar respuesta del servidor.</li>
+              <li>Latencia de registro: el servidor persiste el feedback en ≤ 500 ms (p95).</li>
+              <li>Si el servidor no responde, el cliente reintenta silenciosamente hasta 3 veces con backoff; si falla, el feedback se descarta sin notificar al usuario (experiencia no interrumpida).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Disponibilidad para analítica y aprendizaje</strong>
+            <ul class="mt-1">
+              <li>Los registros de feedback están disponibles en el Data Lake en ≤ 15 min para consumo analítico.</li>
+              <li>Agregación diaria automática: suma de útil/no útil por <code>service_id</code> y <code>version_modelo</code> para alimentar el pipeline de reentrenamiento.</li>
+              <li>Los datos de feedback se conservan durante el período de retención configurado (defecto 24 meses) antes de archivado.</li>
+              <li>Si el usuario revoca consentimiento, sus registros de feedback se anonimizan en el siguiente ciclo batch.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>API POST /feedback con payload mínimo</li>
-          <li>Fire-and-forget desde el cliente con retry silencioso</li>
-          <li>Almacenamiento en tabla de feedback con recommendationId</li>
-          <li>Agregación diaria para alimentar pipeline de reentrenamiento</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        2. Tecnología <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">API de Feedback</div>
+              <ul class="mb-0 small">
+                <li><code>POST /feedback</code> con payload mínimo: <code>recommendation_id</code>, <code>service_id</code>, <code>valor</code>, <code>comentario</code> (opcional).</li>
+                <li>Semántica UPSERT en base de datos: crea o actualiza según existencia de (<code>user_key_pseudo</code>, <code>recommendation_id</code>).</li>
+                <li>Respuesta inmediata: HTTP 200/201 con <code>{"status": "created"|"updated"}</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Almacenamiento y Agregación</div>
+              <ul class="mb-0 small">
+                <li>Tabla de feedback en base de datos relacional (PostgreSQL / Cloud SQL) para baja latencia.</li>
+                <li>Replicación a Data Lake (Parquet/Delta) para ML pipeline.</li>
+                <li>Job de agregación diaria: tabla <code>feedback_daily_agg</code> con conteos por servicio y modelo.</li>
+                <li>Retención configurable; job nocturno de anonimización por revocación de consentimiento.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Frontend / UI</div>
+              <ul class="mb-0 small">
+                <li>Componente de feedback discreto en cada tarjeta: botones 👍/👎 + campo de texto colapsable.</li>
+                <li>Confirmación visual inmediata (toast o cambio de estado del botón) sin esperar respuesta del servidor.</li>
+                <li>Estado sincronizado: al recargar la página, la UI refleja el feedback previamente dado (para usuarios identificados).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Privacidad y Cumplimiento</div>
+              <ul class="mb-0 small">
+                <li>No se persiste PII en registros de feedback; se usa <code>user_key_pseudo</code>.</li>
+                <li>Consentimiento verificado en el backend antes de persistir feedback de usuarios identificados.</li>
+                <li>Usuarios anónimos: feedback de sesión descartado al cerrar; no se persiste.</li>
+                <li>Alineado con Ley 1581 y lineamientos internos CCB.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> usuario del recomendador.</li>
+                <li><strong>Motor / API:</strong> captura feedback explícito y lo persiste.</li>
+                <li><strong>Frontend / UI:</strong> persistencia por usuario cuando exista identidad.</li>
+                <li><strong>Asistente / Chat:</strong> prevención de duplicados y actualización.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">HAPPY PATH</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>Motor / API recibe feedback explícito (útil/no útil) desde el usuario.</li>
+                <li>Frontend / UI verifica persistencia por usuario cuando exista identidad y consentimiento.</li>
+                <li>Asistente / Chat aplica prevención de duplicados y actualización del feedback (UPSERT).</li>
+                <li>Motor / API aplica rendimiento y resiliencia (fire-and-forget).</li>
+                <li>Frontend / UI confirma disponibilidad para analítica y aprendizaje al Usuario.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">BRANCH: SIN IDENTIDAD</div>
+              <ul class="mb-0 small ps-3">
+                <li>Si no existe identidad (usuario anónimo) → Error / Fallback: notificar al usuario que el feedback no puede persistirse.</li>
+                <li>Feedback de sesión se mantiene temporalmente en <code>session_id</code>.</li>
+                <li>Al cerrar sesión o expirar token, el feedback temporal se descarta.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #1B5E20;">Ejemplo de Payload de Feedback</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "feedback_id": "fb_3a8c2d",
+  "recommendation_id": "rec_u9f3a_S134_20250820",
+  "service_id": "S-134",
+  "user_key_pseudo": "u_9f3a",
+  "valor": "not_useful",
+  "comentario": "Ya conozco este servicio, necesito algo nuevo",
+  "timestamp_creacion": "2025-08-20T14:35:00Z",
+  "timestamp_modificacion": null,
+  "version_modelo": "rec-0.3.1",
+  "status": "created"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        4. Diseño — Controles de Feedback en Tarjeta
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1B5E20;">Componente de Feedback (por tarjeta)</div>
+              <ul class="mb-0 small">
+                <li>Botones discretos en esquina inferior de cada tarjeta: 👍 / 👎.</li>
+                <li>Al hacer clic: confirmación visual inmediata (botón seleccionado se activa, cambia color).</li>
+                <li>Tooltip al pasar el cursor: "¿Esta recomendación es útil para ti?".</li>
+                <li>Campo de texto colapsable (opcional): aparece al dar clic en cualquier botón, permite agregar comentario.</li>
+                <li>Botón "Omitir" para cerrar el campo de texto sin enviar comentario.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1B5E20;">Estados del Componente</div>
+              <ul class="mb-0 small">
+                <li><strong>Sin interacción:</strong> botones visibles pero tenues (no distrae del contenido principal).</li>
+                <li><strong>Útil seleccionado:</strong> 👍 activo (verde), 👎 tenue. Toast: "¡Gracias por tu feedback!"</li>
+                <li><strong>No útil seleccionado:</strong> 👎 activo (naranja), 👍 tenue. Toast: "Gracias, mejoraremos tus recomendaciones."</li>
+                <li><strong>Usuario anónimo:</strong> botones visibles, al hacer clic se sugiere crear cuenta para guardar preferencias.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Feedback útil con usuario identificado</strong></td>
+                <td>Se crea registro con <code>valor=useful</code>, <code>user_key_pseudo</code> y <code>recommendation_id</code>. La UI muestra 👍 activo con confirmación.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Cambio de feedback (UPSERT)</strong></td>
+                <td>Segundo envío con <code>valor=not_useful</code> para mismo <code>recommendation_id</code> actualiza el registro; <code>status=updated</code>, <code>timestamp_modificacion</code> registrado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Usuario anónimo</strong></td>
+                <td>Feedback se asocia solo a <code>session_id</code>; no persiste <code>user_key_pseudo</code>. Al cerrar sesión, el registro temporal se descarta.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Latencia de persistencia ≤ 500 ms</strong></td>
+                <td>Servidor confirma persistencia del feedback en ≤ 500 ms (p95).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Resiliencia ante fallo del servidor</strong></td>
+                <td>Si el servidor no responde, la UI muestra confirmación inmediata de todas formas; el cliente reintenta silenciosamente hasta 3 veces.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Disponibilidad analítica ≤ 15 min</strong></td>
+                <td>Feedback persistido a las 10:00 es consultable en el Data Lake antes de las 10:15.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Anonimización por revocación</strong></td>
+                <td>Tras revocación de consentimiento, el job batch anonimiza registros de feedback del usuario en ≤ 24 h.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Feedback explícito</dt>
+          <dd class="col-sm-9">Señal de preferencia directa del usuario (útil/no útil), en contraste con el feedback implícito (clics, tiempo de visualización).</dd>
+
+          <dt class="col-sm-3">UPSERT</dt>
+          <dd class="col-sm-9">Operación de base de datos que inserta un registro si no existe o lo actualiza si ya existe, usando una clave única.</dd>
+
+          <dt class="col-sm-3">Recommendation ID</dt>
+          <dd class="col-sm-9">Identificador único de una recomendación específica entregada a un usuario en un momento dado (<code>user + service + timestamp</code>).</dd>
+
+          <dt class="col-sm-3">Fire-and-forget</dt>
+          <dd class="col-sm-9">Patrón asíncrono donde el cliente no espera la respuesta del servidor; minimiza el impacto percibido en la UX.</dd>
+
+          <dt class="col-sm-3">Agregación diaria</dt>
+          <dd class="col-sm-9">Job batch que consolida conteos de feedback por servicio y versión de modelo, generando una tabla de resumen para el pipeline de ML.</dd>
+
+          <dt class="col-sm-3 mb-0">Aprendizaje continuo</dt>
+          <dd class="col-sm-9 mb-0">Ciclo iterativo en el que los datos de feedback capturados alimentan el reentrenamiento del modelo para mejorar su precisión con el tiempo.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1B5E20 !important; background:#e8f5e9;">
+      <strong>Nota de alcance:</strong> Esta HU cubre la captura, persistencia y disponibilidad del feedback explícito del usuario (útil/no útil) sobre las recomendaciones recibidas. El uso de ese feedback para reentrenar el modelo y desplegar una nueva versión se gestiona en HU 2.16.2. El feedback es siempre opcional; no se fuerza al usuario a interactuar.
     </div>
 
   </div>
@@ -85,4 +362,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.6.1 – Modelo de recomendación de servicios</title>
+  <title>HU 2.6.1 – Modelo de recomendación de servicios (perfil + historial + segmento + intereses)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,61 +23,343 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.6.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Modelo de recomendación de servicios</h1>
+      <h1 class="fw-bold fs-3 mb-1">Modelo de recomendación de servicios (perfil + historial + segmento + intereses)</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.6 · Motor de Recomendación · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1A237E;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #1A237E;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal CCB</p>
+              <p class="mb-0">empresario (usuario de la CCB) que busca orientación y servicios acordes a su situación empresarial y etapa de desarrollo.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">recibir una lista Top-N de servicios con scores explicables según mi perfil completo</p>
+              <p class="mb-0">recibir recomendaciones personalizadas de servicios CCB generadas a partir de <strong>señales combinadas</strong>: perfil, historial, segmento e intereses explícitos, usando estrategias híbridas (contenido + colaborativo + popularidad).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">descubrir los servicios más relevantes para mi situación empresarial</p>
+              <p class="mb-0">descubrir servicios que realmente me sirven en este momento, con explicaciones claras, trazabilidad, control de privacidad y continuidad entre canales.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Motor genera lista Top-N (N configurable, defecto 5)</li>
-          <li>Scores basados en: perfil, historial, segmento e intereses</li>
-          <li>Cada recomendación incluye razón legible en lenguaje natural</li>
-          <li>Filtros de elegibilidad aplicados antes de retornar resultados</li>
-          <li>Latencia p99 ≤ 1 segundo</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Generar recomendaciones personalizadas (cuando existe perfil)</strong>
+            <ul class="mt-1">
+              <li>Si existe un perfil resuelto (HU 2.5.1), el motor genera una lista <strong>Top-N personalizada</strong> (N configurable, defecto 5).</li>
+              <li>Si no hay perfil suficiente: fallback a recomendaciones por popularidad de segmento con notificación al usuario.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Señales de entrada utilizadas</strong>
+            <ul class="mt-1">
+              <li><strong>Perfil:</strong> sector, tamaño empresa, etapa, rol del usuario (CRM Dynamics).</li>
+              <li><strong>Historial:</strong> servicios tomados (<code>taken[]</code>), servicios declinados (<code>declined[]</code>), servicios vistos (SIREP).</li>
+              <li><strong>Segmento:</strong> segmentación comercial de la CCB (MiPyme, Emprendedor, Empresario, Ciudadano).</li>
+              <li><strong>Intereses:</strong> preferencias explícitas del usuario (HU 2.5.3) + señales de comportamiento implícitas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Combinación de estrategias (modelo híbrido)</strong>
+            <ul class="mt-1">
+              <li><strong>Basado en contenido:</strong> similitud entre embeddings del perfil del usuario y metadatos de servicios.</li>
+              <li><strong>Colaborativo:</strong> usuarios similares del mismo segmento que tomaron servicios que el usuario no ha visto.</li>
+              <li><strong>Popularidad/novedad:</strong> señal de refuerzo para servicios trending en el segmento.</li>
+              <li><strong>Reglas de negocio:</strong> aplica listas blancas/negras y exclusiones de las HU 2.4.x.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Lista disponible con metadatos completos</strong>
+            <ul class="mt-1">
+              <li>Cada ítem retorna: <code>service_id</code>, <code>nombre</code>, <code>score</code>, <code>razones[]</code>, <code>elegibilidad</code>, <code>estado_disponibilidad</code>.</li>
+              <li>Mínimo 1 razón legible y trazable por ítem (ej. <em>"Servicio popular en tu segmento MiPyme"</em>).</li>
+              <li>Latencia p99 ≤ 1 segundo en entorno de desarrollo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad, métricas y control de privacidad</strong>
+            <ul class="mt-1">
+              <li>Log por request: <code>user_key</code>, <code>señales_usadas</code>, <code>estrategia</code>, <code>top_N</code>, <code>latencia_ms</code>, <code>version_modelo</code>.</li>
+              <li>Métricas offline: coverage, diversity, novelty, precision/recall en set de prueba.</li>
+              <li>Control de privacidad: si el usuario desactivó personalización (HU 2.5.4), el motor usa sólo popularidad global.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Sección "Recomendado para ti" (Frontend)</strong>
+            <ul class="mt-1">
+              <li>Lista visual de servicios recomendados con nombre, razón y CTA.</li>
+              <li>Controles para refinar: filtrar por categoría, marcar "no me interesa".</li>
+              <li>Continuidad: el usuario retoma la lista al volver desde otro canal.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Modelo híbrido (colaborativo + contenido)</li>
-          <li>Feature store con features precalculadas</li>
-          <li>API asíncrona con fallback sincrónico</li>
-          <li>Versionamiento semántico del modelo</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Motor Híbrido de Ranking</div>
+              <ul class="mb-0 small">
+                <li>Embeddings de servicios (TF-IDF o sentence transformers) para similitud de contenido.</li>
+                <li>Vecindarios de usuarios similares (KNN) para señal colaborativa.</li>
+                <li>Señal de popularidad/novedad ponderada por segmento.</li>
+                <li>Re-ranking con MMR para diversidad intra-lista.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Feature Store</div>
+              <ul class="mb-0 small">
+                <li>Tabla/Delta con: perfil (CRM), historial (SIREP), intereses (Preference Store), señales de comportamiento.</li>
+                <li>Features precalculadas con actualización incremental.</li>
+                <li>Ventanas temporales configurables para señales de historial.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> perfil, segmento, rol.</li>
+                <li><strong>Catálogo de Servicios:</strong> metadatos, elegibilidad, vigencia.</li>
+                <li><strong>SIREP:</strong> servicios tomados y declinados.</li>
+                <li><strong>Frontend/UI &amp; Asistente/Chat:</strong> presentación de recomendaciones.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Logs estructurados JSON por request.</li>
+                <li>Métricas offline exportadas a CSV/Parquet.</li>
+                <li>Versionamiento semántico del modelo: <code>rec-X.Y.Z</code>.</li>
+                <li>Script de reproducibilidad de recomendaciones para lote de usuarios.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Pipeline</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Generar recomendaciones personalizadas:</strong> CRM Dynamics provee el perfil; se verifica si existe perfil resuelto.</li>
+          <li><strong>Usar señales:</strong> Catálogo de Servicios aporta metadatos y elegibilidad; Feature Store reúne todas las señales.</li>
+          <li><strong>Combinar estrategias:</strong> Motor/API aplica modelo híbrido (contenido + colaborativo + popularidad + reglas).</li>
+          <li><strong>Entregar lista al Frontend:</strong> Asistente/Chat recibe la lista Top-N con metadatos completos.</li>
+          <li><strong>Trazabilidad y métricas:</strong> CRM persiste el log de la inferencia y métricas offline.</li>
+          <li><strong>Sección "Recomendado para ti":</strong> CRM muestra la lista en el Frontend del usuario.</li>
+          <li><strong>Controles para refinar:</strong> Catálogo de Servicios permite filtrar y actualizar la lista según feedback.</li>
+          <li><strong>Continuidad:</strong> CRM persiste el estado de la lista para continuidad omnicanal.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Ejemplo de Respuesta Top-N</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key": "ik_7a2f9e",
+  "estrategia": "hibrida",
+  "topK": [
+    {
+      "service_id": "S-134",
+      "nombre": "Asesoría Formalización Empresarial",
+      "score": 0.87,
+      "razones": [
+        "Alta afinidad con tu interés en formalización",
+        "Tomado por 78% de empresarios de tu segmento MiPyme"
+      ],
+      "elegibilidad": "disponible",
+      "estado_disponibilidad": "activo"
+    },
+    {
+      "service_id": "S-219",
+      "nombre": "Programa de Financiamiento CCB",
+      "score": 0.81,
+      "razones": [
+        "Popular en empresas de tu sector y tamaño",
+        "Nuevo este trimestre — alta novedad"
+      ],
+      "elegibilidad": "disponible",
+      "estado_disponibilidad": "activo"
+    }
+  ],
+  "meta": {
+    "version_modelo": "rec-1.2.0",
+    "version_config": "rules-2025.03.10",
+    "latencia_ms": 312,
+    "señales": ["perfil", "historial", "segmento", "intereses", "popularidad"]
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Diseño — Sección "Recomendado para Ti" <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Frontend</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Tarjetas de Recomendación</div>
+              <ul class="mb-0 small">
+                <li>Nombre del servicio + categoría (badge).</li>
+                <li>Razones en bullet points: <em>"Por qué te lo recomendamos"</em>.</li>
+                <li>Badge de novedad / campaña / elegibilidad si aplica.</li>
+                <li>CTA: "Ver más" / "Solicitar" según estado del servicio.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1565C0;">Controles para Refinar</div>
+              <ul class="mb-0 small">
+                <li>Filtro por categoría de servicio.</li>
+                <li>Botón "No me interesa" por ítem → actualiza Preference Store.</li>
+                <li>Botón "Más como este" → refina el perfil de intereses.</li>
+                <li>Continuidad: lista persiste entre sesiones y canales.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Perfil completo → personalización</strong></td>
+                <td>Usuario con perfil completo recibe Top-5 personalizados con ≥ 1 razón por ítem; estrategia=híbrida.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Fallback sin perfil</strong></td>
+                <td>Sin perfil resuelto: Top-5 por popularidad de segmento; razón indica <em>"popular en tu segmento"</em>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Exclusión de historial (taken)</strong></td>
+                <td>Servicios ya tomados (<code>taken[]</code>) no aparecen en el Top-N; motivo <code>taken</code> en log.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Aplicación de reglas de negocio</strong></td>
+                <td>Servicio en blacklist (HU 2.4.1) excluido aunque tenga score alto; motivo <code>blacklist</code> en log.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Diversidad intra-lista</strong></td>
+                <td>Las 5 recomendaciones pertenecen a al menos 3 categorías distintas (MMR activo).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Latencia</strong></td>
+                <td>Pipeline completo (señales + scoring + reglas + explicabilidad) retorna en ≤ 1 segundo p99.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Métricas offline</strong></td>
+                <td>Script genera CSV con coverage, diversity, novelty, precision y recall para el set de prueba.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Modelo Híbrido</dt>
+          <dd class="col-sm-9">Motor que combina recomendación basada en contenido, filtrado colaborativo y señales de popularidad/novedad para producir el ranking final.</dd>
+
+          <dt class="col-sm-3">Embedding</dt>
+          <dd class="col-sm-9">Representación vectorial densa de un servicio o perfil de usuario que permite calcular similitud semántica en un espacio vectorial.</dd>
+
+          <dt class="col-sm-3">MMR</dt>
+          <dd class="col-sm-9">Maximal Marginal Relevance — técnica de re-ranking que balancea relevancia y diversidad en la lista final.</dd>
+
+          <dt class="col-sm-3">Coverage</dt>
+          <dd class="col-sm-9">Porcentaje de usuarios para los que el motor genera al menos una recomendación válida.</dd>
+
+          <dt class="col-sm-3">Novelty</dt>
+          <dd class="col-sm-9">Grado en que las recomendaciones incluyen servicios poco conocidos o no previamente explorados por el usuario.</dd>
+
+          <dt class="col-sm-3 mb-0">Diversity (intra-list)</dt>
+          <dd class="col-sm-9 mb-0">Disimilitud entre los ítems de una misma lista de recomendaciones; evita que todos los ítems sean de la misma categoría.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Nota de alcance E1:</strong> En desarrollo, los datos son seudonimizados o mockeados. El modelo híbrido puede iniciar con versión simplificada (contenido + popularidad) y agregar la señal colaborativa en iteraciones siguientes. Se exige reproducibilidad y trazabilidad desde el primer sprint.
     </div>
 
   </div>
@@ -84,4 +368,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

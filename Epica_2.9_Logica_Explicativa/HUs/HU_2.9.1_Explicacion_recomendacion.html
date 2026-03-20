@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #4527A0;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1A0070; --hero-end: #4527A0;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.9.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Explicación por recomendación</h1>
+      <h1 class="fw-bold fs-3 mb-1">Explicación por recomendación</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.9 · Lógica Explicativa · Panel de auditoría y trazabilidad por ítem</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #4527A0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #4527A0;">Enunciado</h2>
@@ -34,49 +38,354 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador o analista del sistema</p>
+              <p class="mb-0">administrador del Recomendador de Servicios CCB (o analista autorizado).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver qué variables, reglas y fuentes influyeron en cada recomendación individual</p>
+              <p class="mb-0">consultar una <strong>explicación detallada por cada recomendación individual</strong>: qué variables, reglas y fuentes influyeron en la decisión, con trazabilidad completa de IDs de modelo y versión.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">auditar las decisiones del modelo con trazabilidad completa de IDs de modelo y versión</p>
+              <p class="mb-0"><strong>auditar las decisiones del motor</strong>, detectar sesgos, validar que las reglas de negocio se aplican correctamente y generar confianza en el sistema entre los equipos de negocio y tecnología.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Explicabilidad</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Cada recomendación expone factores con peso relativo</li>
-          <li>ID de modelo, versión y timestamp registrados</li>
-          <li>Distinción entre explicaciones por reglas, ML o híbrido</li>
-          <li>Vista de detalle por recomendación accesible desde el panel</li>
-          <li>Exportación de explicación individual en JSON</li>
-          <li>Latencia de consulta de explicación ≤ 500ms</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Header Global CCB y acceso al panel</strong>
+            <ul class="mt-1">
+              <li>El administrador accede al Panel de Administración del Recomendador desde el <strong>Header Global CCB</strong> con autenticación de rol <code>admin</code> o <code>analyst</code>.</li>
+              <li>El panel está disponible en la intranet CCB; no expuesto al usuario final.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Sidebar de Navegación del Panel</strong>
+            <ul class="mt-1">
+              <li>El panel incluye un <strong>sidebar de navegación</strong> con secciones: Recomendaciones, Explicaciones, Reportes, Configuración.</li>
+              <li>La sección "Explicaciones" es accesible directamente desde el sidebar.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Panel de Filtros para búsqueda de explicaciones</strong>
+            <ul class="mt-1">
+              <li>El panel de filtros permite buscar explicaciones por:
+                <ul>
+                  <li><code>user_key_pseudo</code> (identificador seudonimizado del usuario).</li>
+                  <li><code>service_id</code> (servicio recomendado).</li>
+                  <li>Rango de fechas (<code>from_date</code> / <code>to_date</code>).</li>
+                  <li>Versión del modelo (<code>version_modelo</code>).</li>
+                  <li>Tipo de motor: Reglas, ML, Híbrido.</li>
+                </ul>
+              </li>
+              <li>Los filtros son combinables; los resultados se actualizan al aplicar.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Grid de Resultados</strong>
+            <ul class="mt-1">
+              <li>Los resultados de búsqueda se presentan en un <strong>grid/tabla</strong> con columnas:
+                <code>recommendation_id</code>, <code>user_key_pseudo</code>, <code>service_id</code>, <code>nombre</code>, <code>score</code>, <code>tipo_motor</code>, <code>timestamp</code>.
+              </li>
+              <li>El grid es paginado (máx. 50 registros por página) y ordenable por columna.</li>
+              <li>Latencia de consulta del grid ≤ 500 ms.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Modal de Explicación — botón "Ver explicación"</strong>
+            <ul class="mt-1">
+              <li>Cada fila del grid expone un botón <strong>"Ver explicación"</strong> que abre un modal o panel lateral con el detalle completo:
+                <ul>
+                  <li><strong>Variables influyentes:</strong> lista de features con peso relativo (%) ordenada de mayor a menor impacto.</li>
+                  <li><strong>Reglas aplicadas:</strong> lista de reglas de negocio que se ejecutaron (nombre, resultado, efecto en score).</li>
+                  <li><strong>Fuentes de datos:</strong> qué sistemas contribuyeron (CRM, SIREP, Catálogo).</li>
+                  <li><strong>Tipo de motor:</strong> Reglas / ML / Híbrido.</li>
+                  <li><strong>Trazabilidad:</strong> <code>recommendation_id</code>, <code>version_modelo</code>, <code>version_config</code>, <code>timestamp</code>, <code>latencia_ms</code>.</li>
+                  <li><strong>Razones legibles:</strong> mismas <code>razones[]</code> que recibió el usuario, en lenguaje natural.</li>
+                </ul>
+              </li>
+              <li>El modal permite <strong>exportar la explicación individual en JSON</strong>.</li>
+              <li>Latencia de carga del modal ≤ 500 ms.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Privacidad y seguridad</strong>
+            <ul class="mt-1">
+              <li>Solo se muestran identificadores seudonimizados (<code>user_key_pseudo</code>); nunca PII en el panel.</li>
+              <li>Las explicaciones se retienen por un período configurable (defecto: 90 días).</li>
+              <li>El acceso al panel queda auditado en log de accesos.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Motor de explicabilidad SHAP/LIME desacoplado</li>
-          <li>Almacenamiento de explicaciones en store separado</li>
-          <li>API /explanations/{recommendationId}</li>
-          <li>Retención de explicaciones configurable (defecto 90 días)</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        2. Tecnología <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Motor de Explicabilidad</div>
+              <ul class="mb-0 small">
+                <li><strong>SHAP</strong> (SHapley Additive exPlanations) para modelos ML: calcula contribuciones por feature.</li>
+                <li><strong>LIME</strong> como alternativa para modelos de caja negra.</li>
+                <li>Para motores basados en reglas: traza directamente qué condiciones se dispararon y su efecto en el score.</li>
+                <li>Motor desacoplado del pipeline principal: genera y almacena explicaciones de forma asíncrona.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Almacenamiento de Explicaciones</div>
+              <ul class="mb-0 small">
+                <li>Store separado (tabla / colección NoSQL) indexado por <code>recommendation_id</code>.</li>
+                <li>Retención configurable con TTL (defecto: 90 días).</li>
+                <li>Particionado por fecha para consultas eficientes en rangos temporales.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">API de Explicaciones</div>
+              <ul class="mb-0 small">
+                <li><code>GET /explanations?filters...</code> — lista de explicaciones con paginación.</li>
+                <li><code>GET /explanations/{recommendation_id}</code> — detalle completo de una recomendación.</li>
+                <li><code>GET /explanations/{recommendation_id}/export</code> — descarga JSON de la explicación.</li>
+                <li>Latencia objetivo: ≤ 500 ms para detalle individual.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Panel Admin — Frontend</div>
+              <ul class="mb-0 small">
+                <li>SPA interna (React / Vue) con sidebar de navegación y panel de filtros.</li>
+                <li>Grid de resultados con paginación server-side.</li>
+                <li>Modal de detalle con renderizado de features en gráfico de barras horizontal (peso relativo).</li>
+                <li>Botón de exportación JSON por recomendación.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Secuencia Panel Admin</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <p class="mb-0 small">Usuario / Actor (Admin) · CRM / Dynamics · Motor / API · Panel Admin · Frontend / UI · Formulario</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">El administrador necesita auditar una recomendación específica: identifica al usuario (pseudo), el servicio y el momento en que se generó la recomendación.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">RESULTADO</div>
+              <p class="mb-0 small">Explicación completa de la recomendación auditada: features, reglas, fuentes, trazabilidad y razones legibles. Exportable en JSON.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #4527A0;">Pasos del Flujo (según Diagramas)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Header Global CCB:</strong> el Admin se autentica en el portal CCB; el CRM / Dynamics valida rol y permisos.</li>
+          <li><strong>Sidebar de Navegación:</strong> el Admin selecciona "Explicaciones" en el sidebar; el Motor / API carga el contexto del panel.</li>
+          <li><strong>Panel de Filtros:</strong> el Admin configura los filtros de búsqueda; el Panel Admin envía la consulta al Frontend / UI.</li>
+          <li><strong>Grid de Resultados:</strong> el Frontend / UI llama a <code>GET /explanations?filters</code>; el Formulario renderiza el grid paginado.</li>
+          <li><strong>Modal de Explicación:</strong> el Admin hace clic en "Ver explicación"; el sistema llama a <code>GET /explanations/{id}</code> y renderiza el modal con features, reglas y trazabilidad. El Admin puede exportar el JSON.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #4527A0;">Ejemplo de Respuesta de Explicación</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "recommendation_id": "rec_u9f3a_S134_20250310",
+  "user_key_pseudo": "u_9f3a",
+  "service_id": "S-134",
+  "nombre": "Asesoría Formalización",
+  "score": 0.82,
+  "tipo_motor": "hibrido",
+  "features": [
+    { "nombre": "afinidad_formalizacion", "peso": 0.41, "pct": 50 },
+    { "nombre": "segmento_mipyme", "peso": 0.25, "pct": 30 },
+    { "nombre": "novedad_servicio", "peso": 0.16, "pct": 20 }
+  ],
+  "reglas_aplicadas": [
+    { "nombre": "boost_campana_Q1", "efecto": "+0.10", "resultado": "aplicada" },
+    { "nombre": "filtro_elegibilidad_mipyme", "efecto": "incluido", "resultado": "pasó" }
+  ],
+  "fuentes": ["CRM Dynamics", "Catálogo de Servicios"],
+  "razones": [
+    "Alta afinidad con tu interés en formalización",
+    "Campaña activa Q1 para MiPyme"
+  ],
+  "version_modelo": "rec-0.3.1",
+  "version_config": "rules-2025.03.01",
+  "timestamp": "2025-03-10T14:32:00Z",
+  "latencia_ms": 245
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        4. Diseño — Panel de Administración
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #4527A0;">Grid de Explicaciones</div>
+              <ul class="mb-0 small">
+                <li>Tabla con columnas: ID recomendación, Usuario (pseudo), Servicio, Score, Tipo Motor, Fecha.</li>
+                <li>Fila expandible o botón "Ver explicación" por registro.</li>
+                <li>Paginación (50/página), orden por columna, búsqueda global en la tabla.</li>
+                <li>Exportación del grid completo en CSV.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #4527A0;">Modal de Detalle</div>
+              <ul class="mb-0 small">
+                <li>Gráfico de barras horizontal: features con peso relativo (%).</li>
+                <li>Lista de reglas aplicadas con efecto en score (badge verde/naranja).</li>
+                <li>Sección de trazabilidad: IDs, versiones, timestamp, latencia.</li>
+                <li>Razones legibles (las mismas que recibió el usuario) en caja destacada.</li>
+                <li>Botón "Exportar JSON" en la parte inferior del modal.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Búsqueda por user_key_pseudo</strong></td>
+                <td>El grid muestra todas las recomendaciones del usuario filtrado; latencia ≤ 500 ms.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Ver explicación de un ítem</strong></td>
+                <td>El modal se abre con features, reglas, fuentes y trazabilidad completa; latencia ≤ 500 ms.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Exportar explicación en JSON</strong></td>
+                <td>Se descarga un archivo JSON válido con todos los campos de la explicación.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Filtros combinados</strong></td>
+                <td>Filtrar por <code>version_modelo</code> + rango de fechas devuelve solo registros que cumplen ambos criterios.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Distinción tipo motor</strong></td>
+                <td>El modal indica claramente si la recomendación fue generada por Reglas, ML o Híbrido.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Sin PII</strong></td>
+                <td>En ninguna vista del panel aparecen nombres, emails u otros datos personales; solo <code>user_key_pseudo</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Expiración de explicación</strong></td>
+                <td>Una explicación con antigüedad mayor al TTL configurado no aparece en resultados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">SHAP</dt>
+          <dd class="col-sm-9">SHapley Additive exPlanations — método matemáticamente riguroso para asignar contribuciones de cada feature a la predicción del modelo.</dd>
+
+          <dt class="col-sm-3">LIME</dt>
+          <dd class="col-sm-9">Local Interpretable Model-agnostic Explanations — método que aproxima localmente el comportamiento de un modelo complejo para explicar predicciones individuales.</dd>
+
+          <dt class="col-sm-3">recommendation_id</dt>
+          <dd class="col-sm-9">Identificador único de cada recomendación generada, usado para vincular la predicción con su explicación almacenada.</dd>
+
+          <dt class="col-sm-3">Peso relativo</dt>
+          <dd class="col-sm-9">Proporción (%) en que cada feature contribuyó al score final de la recomendación.</dd>
+
+          <dt class="col-sm-3">TTL</dt>
+          <dd class="col-sm-9">Time-to-Live — período máximo de retención de las explicaciones en el store antes de ser purgadas automáticamente.</dd>
+
+          <dt class="col-sm-3 mb-0">user_key_pseudo</dt>
+          <dd class="col-sm-9 mb-0">Identificador seudonimizado del usuario, no reversible, usado en el panel para preservar la privacidad de datos personales.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#4527A0 !important; background:#ede7f6;">
+      <strong>Nota de alcance:</strong> El motor de explicabilidad opera de forma asíncrona y desacoplada del pipeline principal de recomendaciones. Las explicaciones se almacenan en un store separado indexado por <code>recommendation_id</code>. El panel es exclusivo para administradores y analistas; no expone PII en ninguna vista. La latencia de consulta objetivo es ≤ 500 ms por recomendación individual.
     </div>
 
   </div>
@@ -85,4 +394,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.5.2 – Identificación mínima y progresiva</title>
+  <title>HU 2.5.2 – Solicitud de identificación mínima y progresiva cuando no se pueda identificar</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,12 +23,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.5.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Identificación mínima y progresiva</h1>
+      <h1 class="fw-bold fs-3 mb-1">Solicitud de identificación mínima y progresiva cuando no se pueda identificar</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.5 · Resolución de Identidad Omnicanal · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00695C;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #00695C;">Enunciado</h2>
@@ -34,47 +38,297 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario anónimo o parcialmente identificado</p>
+              <p class="mb-0">usuario que interactúa con el Recomendador de servicios de la CCB en cualquier canal <strong>sin identificación previa</strong> o con identificación insuficiente.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">recibir recomendaciones relevantes con la mínima información que puedo compartir</p>
+              <p class="mb-0">que el sistema detecte que no puede identificarme, solicite el dato mínimo necesario de forma no intrusiva y, con ese dato, resuelva mi identidad para poder recomendarme servicios relevantes.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">obtener valor del sistema sin exponer más datos de los necesarios</p>
+              <p class="mb-0">recibir recomendaciones personalizadas sin tener que proporcionar más información de la estrictamente necesaria, con una experiencia de baja fricción y con dos rutas claras de respuesta.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Máximo 2 preguntas de perfilamiento inicial</li>
-          <li>Recomendaciones generadas con datos mínimos disponibles</li>
-          <li>Mejora progresiva conforme el usuario comparte más información</li>
-          <li>Transición fluida de anónimo a identificado</li>
-          <li>Datos mínimos nunca se combinan sin consentimiento explícito</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Detección de no-identificación</strong>
+            <ul class="mt-1">
+              <li>El sistema detecta cuándo <strong>no es posible identificar al usuario</strong> con los datos disponibles (sin cookie válida, sin sesión, sin identificador en el canal).</li>
+              <li>También aplica cuando la identificación es posible pero el perfil es insuficiente para generar recomendaciones personalizadas de calidad.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Dato mínimo según el caso</strong>
+            <ul class="mt-1">
+              <li>El sistema determina cuál es el <strong>dato mínimo necesario</strong> según el canal y contexto:
+                <ul>
+                  <li>Web: correo electrónico o NIT.</li>
+                  <li>WhatsApp/Chat: número de teléfono o correo.</li>
+                  <li>Presencial: cédula o NIT capturado por el asesor.</li>
+                </ul>
+              </li>
+              <li>Nunca se solicitan más de <strong>2 datos</strong> en la primera interacción.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Solicitud no intrusiva del dato</strong>
+            <ul class="mt-1">
+              <li>El dato se solicita mediante un <strong>banner o modal no intrusivo</strong> (no bloquea el contenido principal).</li>
+              <li>Mensaje claro sobre por qué se solicita el dato y qué mejora en la experiencia.</li>
+              <li>Opción explícita de <em>"Continuar sin identificarme"</em> siempre visible.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Resolución de identidad con el dato mínimo</strong>
+            <ul class="mt-1">
+              <li>Con el dato proporcionado, el sistema intenta match contra CRM u otros identificadores (SIREP).</li>
+              <li>Si el match es exitoso: se activa el perfil personalizado y se generan recomendaciones Top-N.</li>
+              <li>Si el match falla: se genera un perfil anónimo mejorado con el dato como señal y se ofrecen recomendaciones de segmento.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Registro y prueba del flujo end-to-end</strong>
+            <ul class="mt-1">
+              <li>Cada intento de identificación progresiva queda registrado: canal, dato solicitado, resultado (match / no match), latencia.</li>
+              <li>Script/test de integración que valida el flujo completo de no-identificación → solicitud → resolución → recomendación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Dos rutas claras</strong>
+            <ul class="mt-1">
+              <li><strong>Ruta A — Identificarse:</strong> usuario proporciona dato mínimo → match → recomendaciones personalizadas.</li>
+              <li><strong>Ruta B — Continuar anónimo:</strong> usuario declina → recomendaciones genéricas por popularidad/segmento detectado.</li>
+              <li>En ambas rutas el usuario recibe recomendaciones inmediatamente.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Sesiones anónimas con ID temporal</li>
-          <li>Progressive profiling con consentimiento</li>
-          <li>Modelo degradado para usuarios poco conocidos</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        2. Tecnología <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Detección y Decisión</div>
+              <ul class="mb-0 small">
+                <li>Lógica de detección de no-identificación en el Motor/API.</li>
+                <li>Regla de selección del dato mínimo según canal (configurable en YAML).</li>
+                <li>Umbral de confianza configurable: si score &lt; threshold → activar flujo progresivo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> match del dato mínimo con registros existentes.</li>
+                <li><strong>SIREP:</strong> validación cruzada si CRM no tiene coincidencia.</li>
+                <li><strong>Motor/API:</strong> activa perfil personalizado o genérico según resultado.</li>
+                <li><strong>Frontend/UI &amp; Asistente/Chat:</strong> presenta el banner/modal no intrusivo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Perfil Anónimo Mejorado</div>
+              <ul class="mb-0 small">
+                <li>Si el match falla pero se tiene el dato: se crea un perfil temporal enriquecido.</li>
+                <li>Sesión anónima con ID temporal que puede vincularse a identidad real en interacciones futuras.</li>
+                <li>Progressive profiling: cada dato adicional mejora la calidad de las recomendaciones.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Privacidad</div>
+              <ul class="mb-0 small">
+                <li>Datos mínimos nunca se persisten sin consentimiento explícito.</li>
+                <li>En E1: datos seudonimizados o mockeados.</li>
+                <li>Cumplimiento Ley 1581 en todos los canales.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Pasos del Pipeline de Identificación Progresiva</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Inicio:</strong> usuario interactúa con el sistema. Se evalúa si hay identificación disponible (HU 2.5.1 primera parte).</li>
+          <li><strong>Detectar no-identificación:</strong> SIREP verifica si los identificadores disponibles son insuficientes para resolver identidad con certeza.</li>
+          <li><strong>Determinar dato mínimo:</strong> Motor/API selecciona qué dato solicitar según el canal (Frontend/UI).</li>
+          <li><strong>Solicitar dato:</strong> Frontend/UI o Asistente/Chat presenta el banner/modal no intrusivo con dos rutas claras.</li>
+          <li><strong>Resolver identidad:</strong> con el dato proporcionado, se hace match contra CRM y otros sistemas; resultado persiste.</li>
+          <li><strong>Registrar flujo end-to-end:</strong> métricas de resolución guardadas en log estructurado.</li>
+          <li><strong>Banner o modal no intrusivo:</strong> confirmación al usuario del resultado y mejora en personalización.</li>
+          <li><strong>Dos rutas claras:</strong> Ruta A (identificado → recomendaciones personalizadas) o Ruta B (anónimo → recomendaciones genéricas).</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Ejemplo de Solicitud Mínima (Web)</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">// Banner no intrusivo — HTML simplificado
+{
+  "tipo": "banner_identificacion",
+  "canal": "web",
+  "mensaje": "Para recomendarte servicios a tu medida, ingresa tu correo o NIT.",
+  "dato_solicitado": "email_o_nit",
+  "rutas": [
+    { "id": "A", "label": "Mejorar mis recomendaciones", "accion": "mostrar_campo_input" },
+    { "id": "B", "label": "Continuar sin identificarme", "accion": "recomendaciones_genericas" }
+  ],
+  "bloquea_contenido": false
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        4. Diseño — Banner / Modal No Intrusivo <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Baja fricción</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Principios de UX</div>
+              <ul class="mb-0 small">
+                <li>No interrumpe el flujo del usuario: aparece como banner inferior o lateral.</li>
+                <li>Mensaje en lenguaje positivo: <em>"Mejora tus recomendaciones con un solo dato."</em></li>
+                <li>Campo de entrada mínimo (un solo input) + botón CTA + botón de cierre visible.</li>
+                <li>Compatible con accesibilidad WCAG 2.1 AA.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Comportamiento Post-Dato</div>
+              <ul class="mb-0 small">
+                <li>Si match exitoso: banner reemplazado por confirmación y recomendaciones se actualizan en tiempo real.</li>
+                <li>Si match fallido: recomendaciones de segmento mejoradas, sin exponer el error al usuario.</li>
+                <li>Si usuario declina: banner desaparece por 24 horas (no vuelve a molestar en la misma sesión).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Detección de no-identificación</strong></td>
+                <td>Usuario sin cookie ni sesión activa → sistema detecta no-identificación y activa flujo progresivo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Solicitud de dato mínimo (web)</strong></td>
+                <td>Banner aparece solicitando email/NIT; no bloquea el contenido principal; botón "Continuar sin identificarme" visible.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Match exitoso con email</strong></td>
+                <td>Email ingresado coincide con CRM; recomendaciones personalizadas activadas en ≤ 300 ms; log registra <code>resultado=match</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Match fallido</strong></td>
+                <td>Dato no coincide con CRM ni SIREP; recomendaciones de segmento generadas; log registra <code>resultado=no_match</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Ruta B — Continuar anónimo</strong></td>
+                <td>Usuario declina → recomendaciones genéricas mostradas; banner no vuelve a aparecer en la misma sesión.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Máximo 2 datos solicitados</strong></td>
+                <td>En ningún caso el sistema solicita más de 2 datos en la primera interacción.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Identificación Progresiva</dt>
+          <dd class="col-sm-9">Estrategia de recopilación de datos de usuario de forma incremental y no intrusiva, solicitando sólo el mínimo necesario en cada interacción.</dd>
+
+          <dt class="col-sm-3">Dato Mínimo</dt>
+          <dd class="col-sm-9">El único dato que el sistema solicita al usuario para intentar resolver su identidad (ej. email, NIT, teléfono).</dd>
+
+          <dt class="col-sm-3">Perfil Anónimo Mejorado</dt>
+          <dd class="col-sm-9">Perfil temporal enriquecido con el dato mínimo cuando el match con CRM/SIREP falla; mejora recomendaciones sin identificar al usuario.</dd>
+
+          <dt class="col-sm-3">Banner No Intrusivo</dt>
+          <dd class="col-sm-9">Componente de UI que solicita información sin bloquear el contenido principal ni forzar al usuario a responder.</dd>
+
+          <dt class="col-sm-3 mb-0">Progressive Profiling</dt>
+          <dd class="col-sm-9 mb-0">Técnica para enriquecer el perfil de un usuario gradualmente a través de múltiples interacciones, pidiendo un dato diferente cada vez.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00695C !important; background:#e0f2f1;">
+      <strong>Nota de alcance E1:</strong> El banner/modal puede ser una implementación simplificada para validación. Lo esencial es el flujo de detección → solicitud mínima → resolución → dos rutas, con registro end-to-end. El diseño visual final se refina en etapas de producción.
     </div>
 
   </div>
@@ -83,4 +337,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

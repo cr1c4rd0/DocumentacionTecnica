@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,374 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #01579B; --hero-end: #0277BD;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.12.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Navegación integrada con asistente</h1>
+      <h1 class="fw-bold fs-3 mb-1">Navegación integrada con asistente</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.12 · Micro-frontend Recomendador · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #37474F;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #0277BD;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #37474F;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #0277BD;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que alterna entre el asistente conversacional y el recomendador</p>
+              <p class="mb-0">usuario del portal (empresario) que <strong>interactúa con el asistente conversacional y el Recomendador</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">moverme fluidamente entre ambas experiencias manteniendo mi contexto y sesión</p>
+              <p class="mb-0">moverme <strong>fluidamente entre el asistente y el recomendador</strong> manteniendo mi contexto de sesión y conversación.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">continuar mi exploración sin interrupciones ni necesidad de reautenticarme</p>
+              <p class="mb-0">continuar mi exploración <strong>sin interrupciones</strong> ni necesidad de reautenticarme o repetir información.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Sesión compartida entre asistente y recomendador vía token JWT</li>
-          <li>Contexto de conversación transferido al abrir el recomendador</li>
-          <li>Botón "Ver en recomendador" en respuestas del asistente</li>
-          <li>Regreso al asistente preserva el hilo de conversación</li>
-          <li>Transición visual fluida (≤ 300ms)</li>
-          <li>Sin doble login entre componentes</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Sesiones enlazadas y contexto persistente</strong>
+            <ul class="mt-1">
+              <li>La sesión del usuario es <strong>compartida</strong> entre el asistente conversacional y el recomendador: un único token de sesión válido para ambos.</li>
+              <li>El contexto de la conversación (intenciones identificadas, servicios mencionados, preferencias expresadas) se <strong>transfiere al recomendador</strong> al navegar desde el asistente.</li>
+              <li>El recomendador puede recibir el contexto de conversación como parámetro de entrada para personalizar las recomendaciones mostradas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Traspaso de "handoff" con evidencia (deep link + payload)</strong>
+            <ul class="mt-1">
+              <li>Cuando el asistente recomienda que el usuario explore el recomendador, genera un <strong>deep link</strong> con payload de contexto (JWT corto): intención detectada, entidades mencionadas, historial resumido.</li>
+              <li>El recomendador usa el payload del handoff para presentar recomendaciones relevantes al contexto de la conversación previa.</li>
+              <li>La transición visual entre asistente y recomendador ocurre en <strong>≤ 300 ms</strong> (animación de transición fluida).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Señales derivadas de la navegación</strong>
+            <ul class="mt-1">
+              <li>Las acciones del usuario en el recomendador (servicios vistos, CTA clicados, tiempo en tarjeta) se <strong>retroalimentan al asistente</strong> como señales de comportamiento.</li>
+              <li>El asistente puede usar estas señales para refinar sugerencias en la conversación posterior.</li>
+              <li>Las señales se transmiten de forma asíncrona y no bloquean la navegación del usuario.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y consistencia UX</strong>
+            <ul class="mt-1">
+              <li>La transición asistente → recomendador preserva el <strong>estado visual</strong> del portal (menú, encabezado, sesión activa visible).</li>
+              <li>El regreso al asistente (botón "Volver al asistente") preserva el <strong>hilo de conversación</strong> exactamente donde se dejó.</li>
+              <li>No existe "doble login" entre el asistente y el recomendador.</li>
+              <li>Tiempo de transición total (asistente → recomendador con contexto cargado): <strong>≤ 300 ms</strong>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Seguridad: no exponer datos sensibles en URL</strong>
+            <ul class="mt-1">
+              <li>El contexto de conversación <strong>no se expone en la URL</strong> de forma legible; viaja en un JWT firmado de vida corta (TTL ≤ 10 minutos) o en el body de un PostMessage.</li>
+              <li>No se incluye PII del usuario en el payload del handoff; solo <code>user_key_pseudo</code> e intenciones genéricas.</li>
+              <li>El token de handoff es de <strong>uso único</strong>: se invalida tras ser consumido por el recomendador.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback cuando no se puede recuperar el contexto</strong>
+            <ul class="mt-1">
+              <li>Si el payload de contexto del handoff no puede desencriptarse o está expirado, el recomendador <strong>carga de forma genérica</strong> (sin contexto de conversación) sin mostrar error al usuario.</li>
+              <li>Si el asistente no está disponible al intentar regresar, el usuario permanece en el recomendador con un mensaje informativo.</li>
+              <li>Se registra en log el motivo del fallback: <code>token_expirado</code>, <code>asistente_no_disponible</code>, <code>contexto_invalido</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Prevención de loops exploratorios</strong>
+            <ul class="mt-1">
+              <li>El sistema detecta si el usuario lleva más de <strong>N transiciones</strong> (configurable, default 5) entre asistente y recomendador en la misma sesión sin completar ninguna acción.</li>
+              <li>Si se detecta el patrón, el asistente ofrece proactivamente un resumen y una acción directa (p. ej., <em>"¿Quieres inscribirte directamente en estos 3 servicios?"</em>).</li>
+              <li>La detección de loops no interrumpe la navegación; es una sugerencia, no un bloqueo.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Shared session store (Redis)</li>
-          <li>Evento customizado postMessage para handshake</li>
-          <li>JWT con claims de contexto de conversación</li>
-          <li>Coordinación de estados vía BroadcastChannel API</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        2. Tecnología <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Sesión Compartida</div>
+              <ul class="mb-0 small">
+                <li>Shared session store (Redis) accesible tanto por el asistente como por el recomendador.</li>
+                <li>JWT con claims de contexto de conversación: <code>intent</code>, <code>entities</code>, <code>session_id</code>, <code>user_key_pseudo</code>.</li>
+                <li>BroadcastChannel API para sincronización de estado entre tabs del mismo origen.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Handoff Asistente → Recomendador</div>
+              <ul class="mb-0 small">
+                <li>PostMessage API para traspaso de contexto cuando ambos están en el mismo documento.</li>
+                <li>JWT de handoff (uso único, TTL 10 min) cuando la navegación implica cambio de URL.</li>
+                <li>El recomendador consume el token de handoff en el primer request y lo invalida.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Señales de Navegación</div>
+              <ul class="mb-0 small">
+                <li>Custom Events del componente recomendador (<code>ccb-rec-view</code>, <code>ccb-rec-cta-click</code>) capturados por el asistente.</li>
+                <li>Pipeline asíncrono: señales encoladas y procesadas sin bloquear la UI.</li>
+                <li>Motor de Recomendación consume señales para actualizar el perfil de sesión.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #0277BD;">Detección de Loops</div>
+              <ul class="mb-0 small">
+                <li>Contador de transiciones asistente ↔ recomendador en sesión (almacenado en Redis).</li>
+                <li>Umbral configurable (default N=5) en tabla de config; hot-reload.</li>
+                <li>Al detectar loop: el asistente emite sugerencia de acción directa, no un bloqueo.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Usuario del portal (empresario) que alterna entre el asistente conversacional y el recomendador.</p>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (recomendador + gestión de sesión)</li>
+                <li><strong>Frontend / UI</strong> (portal + componente recomendador)</li>
+                <li><strong>Asistente / Chat</strong> (sistema conversacional)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">CONTRATO DE HANDOFF</div>
+              <pre class="mb-0 small" style="font-size:0.72rem;">// JWT Payload (handoff)
+{
+  "session_id": "sess-42",
+  "user_key_pseudo": "u_9f3a",
+  "intent": "formalizacion",
+  "entities": ["MiPyme", "Bogotá"],
+  "use_once": true,
+  "exp": 1703163900
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #0277BD;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Sesiones enlazadas y contexto persistente:</strong> el Usuario interactúa con el asistente; el Motor/API crea y comparte la sesión en Redis con el recomendador desde el inicio.</li>
+          <li><strong>Traspaso de handoff:</strong> el Asistente/Chat genera el JWT de handoff con contexto de conversación y lo pasa al Frontend/UI para la transición al recomendador.</li>
+          <li><strong>Señales derivadas de la navegación:</strong> el Asistente/Chat recibe señales de comportamiento del usuario en el recomendador (servicios vistos, clics) y las envía al Motor/API para retroalimentación.</li>
+          <li><strong>Rendimiento y consistencia UX:</strong> el Motor/API actualiza el perfil de sesión con las señales y devuelve recomendaciones actualizadas al Frontend/UI en ≤ 300ms.</li>
+          <li><strong>Seguridad — no exponer datos en URL:</strong> el Frontend/UI valida que el contexto no viaja en query string; usa PostMessage o JWT de uso único; el Asistente/Chat confirma token consumido.</li>
+          <li><strong>Fallback cuando no se puede recuperar contexto:</strong> el Asistente/Chat detecta contexto inválido o expirado; el Motor/API devuelve respuesta de fallback (carga genérica del recomendador).</li>
+          <li><strong>Prevención de loops exploratorios:</strong> el Motor/API detecta el patrón de N transiciones sin acción; el sistema devuelve sugerencia de acción directa al usuario.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #0277BD;">Ejemplo de Flujo de Handoff</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">// 1. Usuario en asistente pregunta por servicios de formalización
+// Asistente detecta intención y genera handoff:
+
+POST /sessions/handoff
+{
+  "session_id": "sess-42",
+  "intent": "formalizacion",
+  "entities": ["MiPyme", "Bogotá"],
+  "recommended_service_ids": ["S-134", "S-201"]
+}
+// Respuesta: JWT de uso único (TTL 10min)
+
+// 2. Asistente presenta botón "Ver en recomendador"
+// Usuario hace clic → transición ≤ 300ms
+
+// 3. Recomendador consume el JWT:
+GET /recommendations?handoff_token=eyJhbG...
+// Motor valida token, invalida uso único, carga recomendaciones
+// contextualizadas con intent=formalizacion
+
+// 4. Usuario regresa al asistente:
+// BroadcastChannel notifica al asistente → hilo restaurado</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Transición asistente ↔ recomendador</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #0277BD;">Desde el Asistente</div>
+              <ul class="mb-0 small">
+                <li>Botón <em>"Ver en recomendador"</em> en las respuestas del asistente que incluyen sugerencias de servicios.</li>
+                <li>Transición visual fluida (fade/slide ≤ 300ms) hacia el recomendador.</li>
+                <li>Indicador visual de que el contexto de conversación se transfirió.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #0277BD;">Desde el Recomendador</div>
+              <ul class="mb-0 small">
+                <li>Botón <em>"Volver al asistente"</em> visible en la interfaz del recomendador.</li>
+                <li>Al volver, el hilo de conversación se restaura en el punto exacto donde se dejó.</li>
+                <li>Indicador de sesión activa compartida (sin doble login).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#0277BD;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Transición asistente → recomendador</strong></td>
+                <td>Recomendador carga en ≤ 300ms con recomendaciones contextualizadas por la intención del asistente.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Regreso al asistente</strong></td>
+                <td>Hilo de conversación restaurado exactamente en el punto donde se dejó; sin re-login.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Token de handoff expirado</strong></td>
+                <td>Recomendador carga de forma genérica (sin contexto); log registra <code>token_expirado</code>; sin error visible al usuario.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Token de uso único (reintento)</strong></td>
+                <td>Segundo intento de usar el mismo token resulta en rechazo silencioso; recomendador carga genéricamente.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Señales de navegación retroalimentadas</strong></td>
+                <td>Clic en servicio desde el recomendador es capturado por el asistente como señal; próxima respuesta del asistente refleja el interés.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Detección de loop (N=5 transiciones)</strong></td>
+                <td>Al alcanzar el umbral, el asistente presenta sugerencia de acción directa; la navegación no se bloquea.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Asistente no disponible al volver</strong></td>
+                <td>El usuario permanece en el recomendador con mensaje informativo; log registra <code>asistente_no_disponible</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #0277BD;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Handoff</dt>
+          <dd class="col-sm-9">Traspaso de contexto y control entre dos sistemas (asistente y recomendador); incluye la evidencia del contexto de conversación previa.</dd>
+
+          <dt class="col-sm-3">Sesión compartida</dt>
+          <dd class="col-sm-9">Sesión de usuario única válida para ambos sistemas (asistente y recomendador), almacenada en Redis y referenciada por <code>session_id</code>.</dd>
+
+          <dt class="col-sm-3">BroadcastChannel</dt>
+          <dd class="col-sm-9">API del navegador para comunicación entre pestañas/ventanas del mismo origen sin necesidad de servidor.</dd>
+
+          <dt class="col-sm-3">Token de uso único</dt>
+          <dd class="col-sm-9">Token que se invalida automáticamente tras ser consumido por primera vez, previniendo su reutilización o replay.</dd>
+
+          <dt class="col-sm-3">Loop exploratorio</dt>
+          <dd class="col-sm-9">Patrón de comportamiento en el que el usuario alterna repetidamente entre el asistente y el recomendador sin completar ninguna acción concreta.</dd>
+
+          <dt class="col-sm-3">Señal de navegación</dt>
+          <dd class="col-sm-9">Evento de comportamiento del usuario en el recomendador (vista de tarjeta, clic en CTA) que se retroalimenta al asistente para refinar sus sugerencias.</dd>
+
+          <dt class="col-sm-3 mb-0">Contexto de conversación</dt>
+          <dd class="col-sm-9 mb-0">Información extraída del hilo de chat con el asistente: intenciones detectadas, entidades mencionadas, preferencias expresadas.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#0277BD !important; background:#e1f5fe;">
+      <strong>Nota de alcance E1:</strong> La navegación integrada entre asistente y recomendador requiere que ambos sistemas compartan la infraestructura de sesión (Redis) desde E1. La retroalimentación de señales al motor de recomendación para personalización en tiempo real es parte de etapas posteriores; en E1 las señales se capturan y almacenan para análisis futuro.
     </div>
 
   </div>
@@ -85,4 +396,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

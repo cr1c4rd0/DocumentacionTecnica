@@ -1,80 +1,554 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.3.2 – Negocio puede destacar servicios</title>
+  <title>HU 2.3.2 – Negocio puede "destacar" servicios y ajustar el ranking</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html">← Épica 2.3</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html">←
+          Épica 2.3</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #BF360C; --hero-end: #E65100;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.3.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Negocio puede destacar servicios</h1>
+      <h1 class="fw-bold fs-3 mb-1">Negocio puede "destacar" servicios y ajustar el ranking</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.3 · Gestión de Promoción de Servicios · Panel de Campañas y Pinning</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #E65100;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #E65100;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador de campañas del negocio</p>
+              <p class="mb-0">administrador/a de negocio de la CCB responsable de campañas
+                y promoción de servicios.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">seleccionar servicios para promover estratégicamente con período e intensidad configurables</p>
+              <p class="mb-0">poder <strong>definir reglas desde el panel</strong> para destacar
+                ("pinear" o hacer boost a) servicios estratégicos con período, intensidad y
+                segmento de audiencia configurables.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">aumentar la visibilidad de servicios prioritarios midiendo el impacto de cada campaña</p>
+              <p class="mb-0">aumentar la visibilidad de servicios prioritarios para la CCB,
+                medir el impacto de cada campaña y garantizar que el motor de recomendación
+                respete la estrategia comercial sin perder la relevancia personalizada.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Definition of Done</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Panel para crear/editar/pausar campañas de promoción</li>
-          <li>Configuración de fecha inicio, fecha fin e intensidad de boost</li>
-          <li>Métricas de impacto: impresiones, clics, conversiones por campaña</li>
-          <li>Límite de servicios promocionados simultáneos configurable</li>
-          <li>Alertas cuando campaña está por expirar</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Panel de gestión de reglas (campañas)</strong>
+            <ul class="mt-1">
+              <li>Existe un panel web de administración que permite <strong>crear, editar, pausar y eliminar</strong>
+                reglas de promoción ("campañas de destaque").</li>
+              <li>Cada regla define:
+                <ul>
+                  <li><code>service_id</code> o lista de servicios a destacar.</li>
+                  <li><code>fecha_inicio</code> y <code>fecha_fin</code> (con hora, UTC).</li>
+                  <li><code>boost_weight</code>: intensidad del boost (valor entre 0.0 y 1.0).</li>
+                  <li><code>pinning_position</code> (opcional): forzar posición exacta en el top-N (1–N).</li>
+                  <li><code>segmentos_objetivo</code>: a qué perfiles/segmentos aplica la regla
+                    (o "todos").</li>
+                  <li><code>badge_label</code>: etiqueta visual opcional (p. ej.: "Destacado", "Campaña Q1").</li>
+                </ul>
+              </li>
+              <li>Los cambios en el panel aplican <strong>sin redeploy del modelo</strong> (hot-reload o
+                config flag).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Separación score orgánico / boost promocional</strong>
+            <ul class="mt-1">
+              <li>El motor mantiene y registra por separado:
+                <code>score_organico</code> (del modelo) y <code>boost_promocional</code> (de la regla).</li>
+              <li>El score final es la composición de ambos:
+                <code>score_final = score_organico + boost_promocional</code> (o fórmula configurable).</li>
+              <li>El boost <strong>no reemplaza</strong> el algoritmo base; solo modifica el orden de
+                presentación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Pinning — posición fija en el top-N</strong>
+            <ul class="mt-1">
+              <li>Si se activa <code>pinning_position</code>, el servicio se fija en esa posición
+                independientemente de su score orgánico, siempre que cumpla con la elegibilidad
+                del usuario.</li>
+              <li>Si el usuario ya tomó/descartó el servicio, el pinning <strong>no se aplica</strong>
+                (respeto de exclusiones personales).</li>
+              <li>El log registra <code>pinning_active=true</code> y <code>posicion_forzada</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Límites de campañas simultáneas</strong>
+            <ul class="mt-1">
+              <li>El número máximo de servicios "destacados" simultáneos en el top-N es configurable
+                (por defecto: <strong>2</strong> por usuario por sesión).</li>
+              <li>Si hay más reglas activas que el límite, se aplican las de mayor prioridad
+                (<code>boost_weight</code> más alto o <code>fecha_inicio</code> más reciente).</li>
+              <li>El panel muestra un aviso cuando se alcanza el límite de reglas simultáneas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Métricas de impacto por campaña</strong>
+            <ul class="mt-1">
+              <li>El tablero reporta por cada regla/campaña activa o histórica:
+                <strong>impresiones</strong>, <strong>clics (CTR)</strong>, <strong>conversiones (CR)</strong>,
+                <strong>posición media</strong> y <strong>ratio de boost efectivo</strong> (% veces que el
+                boost cambió la posición final).</li>
+              <li>Las métricas son segmentadas por tipo de usuario y período temporal.</li>
+              <li>Alerta automática cuando una campaña está por vencer (configurable: p. ej., 48 h antes).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Auditoría y trazabilidad completa</strong>
+            <ul class="mt-1">
+              <li>Todo cambio en el panel (crear/editar/pausar/eliminar regla) queda registrado en una
+                bitácora con: <code>usuario_admin</code>, <code>accion</code>, <code>timestamp</code>,
+                <code>estado_anterior</code>, <code>estado_nuevo</code>.</li>
+              <li>El decision log de cada recomendación incluye la regla activa que generó el boost o
+                pinning, con su <code>rule_id</code> y <code>version</code>.</li>
+              <li>Existe un endpoint <code>GET /rules/active</code> que devuelve todas las reglas vigentes
+                con su metadatos.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Explicabilidad para el usuario final</strong>
+            <ul class="mt-1">
+              <li>Cuando una recomendación fue afectada por una campaña, en la explicación
+                <em>"¿Por qué lo veo?"</em> se incluye:
+                <em>"Servicio destacado por la CCB para este período."</em></li>
+              <li>No se expone el valor de <code>boost_weight</code> ni el nombre interno de la campaña
+                al usuario final.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Accesibilidad y rendimiento del panel</strong>
+            <ul class="mt-1">
+              <li>Panel WCAG 2.1 AA; idioma ES/EN.</li>
+              <li>Carga de la lista de campañas activas: <strong>≤ 1.0 s</strong> (p95).</li>
+              <li>Cambios de reglas efectivos en el motor en <strong>≤ 1 minuto</strong> tras guardar.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Sistema de boost scores que no sobreescribe el algoritmo base</li>
-          <li>Separación clara entre score orgánico y boost promocional</li>
-          <li>Registro de auditoría de cambios en campañas</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        2. Tecnología <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Panel de Administración (Frontend / UI)</div>
+              <ul class="mb-0 small">
+                <li>Aplicación web con formulario para CRUD de reglas de campaña.</li>
+                <li>Vista de campañas activas con estado, período y métricas resumidas.</li>
+                <li>Alertas de expiración configurables (banner + notificación email/Slack).</li>
+                <li>Atajos de teclado y etiquetas ARIA para accesibilidad.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Motor de Reglas — Boost &amp; Pinning</div>
+              <ul class="mb-0 small">
+                <li>Capa de post-ranking que aplica boosts y pinning desde tabla/YAML de reglas activas.</li>
+                <li>Hot-reload: el motor lee la tabla de reglas en cada inferencia (o con caché TTL de 60 s).</li>
+                <li>Fórmula: <code>score_final = score_organico + boost_weight</code>; pinning sobreescribe posición.</li>
+                <li>Respeto de exclusiones personales (ya tomados/descartados) sobre el pinning.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Base de Datos — Campañas &amp; Auditoría</div>
+              <ul class="mb-0 small">
+                <li>Tabla <code>promotion_rules</code>: <code>rule_id</code>, <code>service_ids[]</code>,
+                  <code>fecha_inicio</code>, <code>fecha_fin</code>, <code>boost_weight</code>,
+                  <code>pinning_position</code>, <code>segmentos</code>, <code>badge_label</code>,
+                  <code>estado</code>, <code>created_by</code>, <code>version</code>.</li>
+                <li>Tabla <code>audit_log</code>: registro completo de cambios con estado anterior/nuevo.</li>
+                <li>Índice por <code>estado + fecha_fin</code> para recuperación eficiente de reglas activas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #E65100;">Observabilidad &amp; Métricas</div>
+              <ul class="mb-0 small">
+                <li>Evento de telemetría <code>boost_applied</code> con <code>rule_id</code>,
+                  <code>service_id</code>, <code>boost_weight</code>, <code>posicion_final</code>.</li>
+                <li>Tablero de impacto por campaña: impresiones, CTR, CR, posición media, boost efectivo.</li>
+                <li>Alerta automática (configurable) cuando campaña expira en N horas.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">INICIO (ADMIN)</div>
+              <p class="mb-0 small">El administrador de negocio accede al panel y define una regla
+                ("campaña") con servicio(s) a destacar, período, boost e intensidad. La regla se
+                guarda en la Base de Datos y se audita.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">INICIO (MOTOR)</div>
+              <p class="mb-0 small">En cada request de recomendación, el Motor / API lee las reglas
+                activas, aplica boost o pinning sobre el ranking, y registra el decision log con
+                la regla aplicada.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SISTEMAS INVOLUCRADOS</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>CRM / Dynamics:</strong> segmento/rol del usuario para filtrar reglas.</li>
+                <li><strong>Motor / API:</strong> aplica boost y pinning.</li>
+                <li><strong>Base de Datos:</strong> almacena reglas y audit log.</li>
+                <li><strong>Frontend / UI:</strong> panel de administración de campañas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #E65100;">Pasos del Pipeline — Flujo Administrador</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Definir regla (panel):</strong> el admin completa el formulario (servicio, período,
+            boost, pinning, segmento, badge) y presiona "Guardar".</li>
+          <li><strong>Validación:</strong> el sistema valida coherencia (fecha_fin &gt; fecha_inicio,
+            boost_weight en rango, service_id válido en catálogo).</li>
+          <li><strong>Persistencia:</strong> la regla se guarda en <code>promotion_rules</code> con
+            <code>estado=activa</code> y se registra en <code>audit_log</code>.</li>
+          <li><strong>Hot-reload:</strong> el Motor / API detecta el cambio (TTL de caché ≤ 60 s) y
+            comienza a aplicar la regla en los siguientes requests.</li>
+          <li><strong>Monitoreo:</strong> el panel muestra métricas en tiempo diferido (impresiones,
+            CTR, CR) por campaña.</li>
+          <li><strong>Alerta de expiración:</strong> notificación automática N horas antes de
+            <code>fecha_fin</code>.</li>
+          <li><strong>Cierre:</strong> al llegar <code>fecha_fin</code>, la regla pasa a
+            <code>estado=expirada</code> automáticamente; el motor deja de aplicarla.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #E65100;">Pasos del Pipeline — Flujo Motor de Recomendación</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Generación de candidatos (Stage 1):</strong> CF + Content-Based → Top-K inicial.</li>
+          <li><strong>Carga de reglas activas:</strong> el motor consulta <code>promotion_rules</code>
+            filtrando por <code>estado=activa</code>, <code>fecha_inicio ≤ now ≤ fecha_fin</code>
+            y <code>segmento</code> del usuario.</li>
+          <li><strong>Aplicación de boost:</strong>
+            <code>score_final = score_organico + boost_weight</code> para los service_ids de la regla;
+            se registra el delta.</li>
+          <li><strong>Aplicación de pinning:</strong> si la regla define <code>pinning_position</code>
+            y el usuario no ha tomado/descartado el servicio, se fija en esa posición.</li>
+          <li><strong>Límite de destacados:</strong> máximo 2 servicios destacados por usuario por sesión
+            (configurable); se aplican los de mayor prioridad.</li>
+          <li><strong>Diversidad:</strong> re-rank final para no saturar con servicios de campaña de una
+            sola categoría.</li>
+          <li><strong>Respuesta:</strong> top-N con campos <code>boost_promocional</code>,
+            <code>pinning_active</code>, <code>rule_id</code>, <code>badge_label</code>,
+            <code>razones[]</code>.</li>
+          <li><strong>Log de decisiones:</strong> <code>rule_id</code>, <code>boost_weight</code>,
+            <code>pinning_active</code>, <code>score_organico</code>, <code>score_final</code>,
+            <code>posicion_final</code>.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #E65100;">Ejemplo de Respuesta de la API</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key_pseudo": "u_8a2d",
+  "topK": [
+    {
+      "service_id": "S-087",
+      "nombre": "Programa de Exportación para MiPymes",
+      "score_organico": 0.65,
+      "boost_promocional": 0.20,
+      "score_final": 0.85,
+      "pinning_active": false,
+      "rule_id": "CAMP-2025-Q1-EXPORT",
+      "badge_label": "Destacado",
+      "razones": [
+        "Servicio destacado por la CCB para este período",
+        "Alta afinidad con tu perfil exportador"
+      ]
+    },
+    {
+      "service_id": "S-012",
+      "nombre": "Certificado de Existencia y Representación",
+      "score_organico": 0.80,
+      "boost_promocional": 0.0,
+      "score_final": 0.80,
+      "pinning_active": false,
+      "rule_id": null,
+      "badge_label": null,
+      "razones": [
+        "Alta demanda en tu segmento",
+        "Servicio más consultado este mes"
+      ]
+    }
+  ],
+  "meta": {
+    "version_modelo": "rec-0.3.1",
+    "version_config": "rules-2025.12.10",
+    "reglas_activas": ["CAMP-2025-Q1-EXPORT"],
+    "latencia_ms": 213
+  }
+}</pre>
+        <p class="text-muted small mt-2 mb-0">
+          <em>El campo <code>rule_id</code> permite correlacionar la recomendación con la campaña en el
+            tablero de métricas y en la auditoría.</em>
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        4. Diseño — Panel de Administración de Campañas y UI para el Usuario Final
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">Panel Administrador — Formulario de Regla</div>
+              <ul class="mb-0 small">
+                <li>Selector de servicio(s) (búsqueda por nombre o ID del catálogo).</li>
+                <li>DatePicker: <code>fecha_inicio</code> y <code>fecha_fin</code> (con hora).</li>
+                <li>Slider de <code>boost_weight</code> (0.0–1.0) con preview de impacto estimado.</li>
+                <li>Campo opcional <code>pinning_position</code> (número entre 1 y N).</li>
+                <li>Selector de <code>segmentos_objetivo</code> (multi-select: Todos, MiPyme, Grande,
+                  Emprendedor, etc.).</li>
+                <li>Campo <code>badge_label</code>: texto del badge visible al usuario.</li>
+                <li>Botones: <em>"Guardar y activar"</em>, <em>"Guardar como borrador"</em>,
+                  <em>"Cancelar"</em>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">Panel Administrador — Vista de Campañas</div>
+              <ul class="mb-0 small">
+                <li>Tabla de campañas activas/históricas con: nombre, servicio(s), período, estado,
+                  impresiones, CTR, CR.</li>
+                <li>Indicador de estado: <span class="badge" style="background:#2E7D32;">Activa</span>
+                  / <span class="badge bg-warning text-dark">Por expirar</span>
+                  / <span class="badge bg-secondary">Expirada</span>
+                  / <span class="badge bg-secondary">Pausada</span>.</li>
+                <li>Acción rápida: Pausar / Reactivar / Editar / Ver detalle de métricas.</li>
+                <li>Alerta visual cuando campaña expira en ≤ 48 h.</li>
+                <li>Exportar reporte de campaña (CSV/PDF).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">UI Usuario Final — Tarjeta Destacada</div>
+              <ul class="mb-0 small">
+                <li>Badge <strong>"Destacado"</strong> (o el <code>badge_label</code> configurado) visible
+                  en la tarjeta del servicio, con color diferenciado.</li>
+                <li>En <em>"¿Por qué lo veo?"</em>: <em>"Servicio destacado por la CCB para este período."</em></li>
+                <li>No se expone el boost_weight ni el nombre interno de la campaña.</li>
+                <li>CTA primario: "Ver detalles" / "Inscribirme".</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #E65100;">Accesibilidad y Seguridad</div>
+              <ul class="mb-0 small">
+                <li>Panel de administración con autenticación y control de acceso (solo roles autorizados).</li>
+                <li>WCAG 2.1 AA en panel admin y en badges del usuario final.</li>
+                <li>Todas las acciones del panel quedan en bitácora de auditoría.</li>
+                <li>Textos disponibles en ES/EN (i18n).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#E65100;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:32%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Crear campaña y verificar boost</strong></td>
+                <td>Regla guardada. En los siguientes requests, el servicio destacado aparece con
+                  <code>boost_promocional &gt; 0</code> y badge visible.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Pinning respeta exclusiones personales</strong></td>
+                <td>Si el usuario ya tomó el servicio pineado, el pinning no se aplica y el servicio
+                  no aparece en el top-N.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Límite de destacados simultáneos</strong></td>
+                <td>Si hay 5 campañas activas, solo se aplican las 2 de mayor prioridad; el log
+                  registra las reglas ignoradas y el motivo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Score orgánico no se sobreescribe</strong></td>
+                <td>El campo <code>score_organico</code> en el log coincide con el score del modelo
+                  sin boost; <code>score_final = score_organico + boost_weight</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Campaña expira automáticamente</strong></td>
+                <td>Al llegar <code>fecha_fin</code>, la regla pasa a <code>estado=expirada</code>
+                  y el boost ya no se aplica en nuevos requests.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Auditoría de cambios en panel</strong></td>
+                <td>Editar o pausar una regla genera un registro en <code>audit_log</code> con
+                  <code>usuario_admin</code>, <code>accion</code>, <code>timestamp</code> y
+                  estado anterior/nuevo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Métricas de campaña en tablero</strong></td>
+                <td>El tablero muestra impresiones, CTR y CR para la campaña activa, segmentadas
+                  por período y segmento de usuario.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">8</td>
+                <td><strong>Alerta de expiración</strong></td>
+                <td>Notificación enviada al administrador 48 h antes de <code>fecha_fin</code>;
+                  banner visible en el panel.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #E65100;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Boost promocional</dt>
+          <dd class="col-sm-9">Incremento al score de un servicio aplicado por una regla de campaña del
+            negocio, separado del score orgánico del modelo.</dd>
+
+          <dt class="col-sm-3">Score orgánico</dt>
+          <dd class="col-sm-9">Score calculado exclusivamente por el modelo de recomendación, sin
+            intervención de reglas de negocio ni boosts promocionales.</dd>
+
+          <dt class="col-sm-3">Pinning</dt>
+          <dd class="col-sm-9">Fijación de un servicio en una posición específica del top-N, independientemente
+            de su score, por política de campaña (siempre respetando exclusiones personales).</dd>
+
+          <dt class="col-sm-3">Campaña</dt>
+          <dd class="col-sm-9">Regla de negocio que define qué servicios destacar, con qué intensidad,
+            durante qué período y para qué segmentos de usuarios.</dd>
+
+          <dt class="col-sm-3">Hot-reload</dt>
+          <dd class="col-sm-9">Mecanismo que permite que el motor de recomendación adopte cambios de
+            configuración (p. ej., nuevas reglas de campaña) sin necesidad de redeploy del servicio.</dd>
+
+          <dt class="col-sm-3">rule_id</dt>
+          <dd class="col-sm-9">Identificador único de una regla de campaña, usado para correlacionar
+            recomendaciones con la campaña que las afectó en el tablero de métricas y la auditoría.</dd>
+
+          <dt class="col-sm-3">CTR / CR</dt>
+          <dd class="col-sm-9">Click-Through Rate / Conversion Rate — tasas de clic e inscripción/uso
+            de un servicio recomendado.</dd>
+
+          <dt class="col-sm-3 mb-0">Audit Log</dt>
+          <dd class="col-sm-9 mb-0">Bitácora inmutable que registra cada cambio realizado en las reglas
+            de campaña desde el panel de administración, incluyendo usuario, acción y estado antes/después.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#E65100 !important; background:#fff3e0;">
+      <strong>Nota de alcance E1:</strong> El panel de campañas y el motor de boost/pinning se implementan
+      como capa de negocio sobre el algoritmo base. Los cambios aplican en ≤ 1 minuto (hot-reload).
+      Las métricas de impacto por campaña están disponibles desde el primer sprint.
+      El número máximo de servicios destacados simultáneos (por defecto 2) es configurable sin redeploy.
+      La separación score orgánico / boost promocional es requisito no negociable para mantener la
+      integridad del motor de recomendación.
     </div>
 
   </div>
@@ -83,4 +557,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

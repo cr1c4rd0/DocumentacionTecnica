@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,12 +23,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.5.4</div>
-      <h1 class="fw-bold fs-3 mb-0">Preferencias y privacidad en UI</h1>
+      <h1 class="fw-bold fs-3 mb-1">Preferencias y privacidad en UI</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.5 · Resolución de Identidad Omnicanal · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00695C;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #00695C;">Enunciado</h2>
@@ -34,48 +38,335 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal</p>
+              <p class="mb-0">usuario del Recomendador de Servicios (en web y/o chat) que tiene datos personales y de comportamiento almacenados en el sistema.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">gestionar mis preferencias de privacidad, consentimiento y canales desde la interfaz</p>
+              <p class="mb-0">gestionar mis <strong>preferencias de privacidad y memoria</strong>, mis <strong>temas de interés</strong> y mis <strong>notificaciones</strong> desde una interfaz clara y accesible, con opciones de exportar y desactivar el uso de mis datos.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">tener control total sobre cómo se usan mis datos y cómo me contactan</p>
+              <p class="mb-0">ejercer control real sobre cómo el sistema usa mis datos, con trazabilidad y cumplimiento de la Ley 1581 (Habeas Data), sin tener que contactar a un asesor para modificar mis preferencias.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Panel de privacidad accesible desde perfil de usuario</li>
-          <li>Opciones de consentimiento granulares (personalización, comunicaciones, terceros)</li>
-          <li>Descarga de mis datos en ≤ 72 horas</li>
-          <li>Solicitud de borrado con confirmación y seguimiento</li>
-          <li>UI compatible con WCAG 2.1 AA</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Gestión de privacidad/memoria (consultar y cambiar)</strong>
+            <ul class="mt-1">
+              <li>Panel accesible desde el perfil de usuario (web y/o chat).</li>
+              <li>El usuario puede ver qué datos tiene el sistema sobre él: perfil, historial, preferencias, consentimientos.</li>
+              <li>Opciones de consentimiento <strong>granulares</strong>: personalización, comunicaciones, datos para terceros.</li>
+              <li>Cambios de consentimiento aplicados en tiempo real y registrados en log inmutable.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Preferencias de temas y notificaciones</strong>
+            <ul class="mt-1">
+              <li>Sección de <strong>temas de interés</strong>: el usuario selecciona categorías de servicios que le interesan.</li>
+              <li>Sección de <strong>notificaciones</strong>: configuración de canal (email, SMS, push, ninguno) y frecuencia.</li>
+              <li>Cambios guardados automáticamente y sincronizados entre canales en ≤ 5 minutos.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Exportar y desactivar (control del usuario)</strong>
+            <ul class="mt-1">
+              <li><strong>Exportar mis datos:</strong> descarga en formato legible (JSON/PDF) disponible en ≤ 72 horas.</li>
+              <li><strong>Desactivar personalización:</strong> el usuario puede desactivar el uso de su historial para recomendaciones; el sistema usa sólo popularidad global.</li>
+              <li><strong>Solicitar eliminación:</strong> flujo de eliminación con confirmación, seguimiento de estado y plazo máximo definido.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Seguridad, trazabilidad y cumplimiento</strong>
+            <ul class="mt-1">
+              <li>Todos los cambios de privacidad y consentimiento quedan en un <strong>log inmutable</strong> (timestamp + acción + resultado).</li>
+              <li>Autenticación requerida para acceder al panel de privacidad.</li>
+              <li>Cumplimiento de Ley 1581 (Habeas Data Colombia): derechos ARCO (Acceso, Rectificación, Cancelación, Oposición).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Sección: Privacidad y memoria</strong>
+            <ul class="mt-1">
+              <li>Muestra al usuario el resumen de datos almacenados: perfil, historial de interacciones, servicios vistos.</li>
+              <li>Toggle para activar/desactivar el historial de navegación como señal de recomendación.</li>
+              <li>Botón visible de "Eliminar mi historial" con confirmación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Sección: Temas de interés</strong>
+            <ul class="mt-1">
+              <li>Chips/tags seleccionables de categorías del catálogo de servicios CCB.</li>
+              <li>Categorías seleccionadas afectan positivamente el ranking de recomendaciones.</li>
+              <li>El usuario puede deseleccionar en cualquier momento.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Sección: Notificaciones</strong>
+            <ul class="mt-1">
+              <li>Selector de canal preferido: email, SMS, push, ninguno.</li>
+              <li>Selector de frecuencia: diaria, semanal, mensual, nunca.</li>
+              <li>Opción de opt-out total de notificaciones proactivas.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Integración con Consent Management Platform (CMP)</li>
-          <li>API de derechos ARCO</li>
-          <li>Logs de consentimiento inmutables</li>
-          <li>Flujo de borrado coordinado entre sistemas</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        2. Tecnología <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Backend de Privacidad</div>
+              <ul class="mb-0 small">
+                <li>API de derechos ARCO: endpoints para consulta, modificación y eliminación de datos.</li>
+                <li>Logs de consentimiento inmutables (append-only) en almacenamiento seguro.</li>
+                <li>Integración con el Preference Store (HU 2.5.3) para sincronización de preferencias.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>Motor/API:</strong> desactiva personalización cuando el usuario así lo configura.</li>
+                <li><strong>CRM Dynamics:</strong> persiste consentimientos y preferencias en el perfil del cliente.</li>
+                <li><strong>Frontend/UI:</strong> panel visual de privacidad y preferencias (web).</li>
+                <li><strong>Asistente/Chat:</strong> permite modificar preferencias por conversación.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Seguridad</div>
+              <ul class="mb-0 small">
+                <li>Autenticación obligatoria para acceder al panel de privacidad.</li>
+                <li>Acciones sensibles (eliminar datos, revocar consentimiento) requieren confirmación adicional.</li>
+                <li>Comunicaciones de confirmación enviadas al canal de contacto registrado del usuario.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Cumplimiento Legal</div>
+              <ul class="mb-0 small">
+                <li>Ley 1581 de 2012 (Protección de Datos Personales Colombia).</li>
+                <li>Derechos ARCO implementados con flujos de confirmación y plazo máximo.</li>
+                <li>Registro de consentimientos con timestamp, versión de política y acción del usuario.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Pasos del Flujo de Privacidad en UI</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Acceso al panel:</strong> Motor/API verifica que el usuario está autenticado antes de mostrar el panel.</li>
+          <li><strong>Gestión de privacidad/memoria:</strong> CRM Dynamics carga el estado actual de datos y consentimientos del usuario.</li>
+          <li><strong>Preferencias de temas y notificaciones:</strong> Frontend/UI y Asistente/Chat muestran las secciones de configuración.</li>
+          <li><strong>Exportar y desactivar:</strong> usuario solicita exportación o desactivación; Asistente/Chat registra la acción.</li>
+          <li><strong>Seguridad y trazabilidad:</strong> Motor/API persiste todos los cambios en el log inmutable de CRM.</li>
+          <li><strong>Sección Privacidad y memoria:</strong> CRM Dynamics actualiza el perfil con los cambios de consentimiento.</li>
+          <li><strong>Sección Temas de interés:</strong> Frontend/UI sincroniza temas seleccionados con el Preference Store.</li>
+          <li><strong>Sección Notificaciones:</strong> Asistente/Chat confirma las preferencias de notificación y sincroniza entre canales.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Estructura de Configuración de Privacidad</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key": "ik_7a2f9e",
+  "privacidad": {
+    "personalizacion_activa": true,
+    "historial_activo": true,
+    "compartir_terceros": false,
+    "consentimientos": [
+      { "tipo": "personalizacion", "valor": true, "timestamp": "2025-03-01T10:00:00Z" },
+      { "tipo": "comunicaciones", "valor": true, "timestamp": "2025-03-01T10:00:00Z" }
+    ]
+  },
+  "notificaciones": {
+    "canal": "email",
+    "frecuencia": "semanal",
+    "opt_out_total": false
+  },
+  "temas_interes": ["formalizacion", "financiamiento"],
+  "exportacion": {
+    "ultima_solicitud": null,
+    "estado": "no_solicitada"
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        4. Diseño — Panel de Privacidad <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">3 secciones</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Sección 1: Privacidad y Memoria</div>
+              <ul class="mb-0 small">
+                <li>Resumen de datos almacenados (perfil, historial).</li>
+                <li>Toggle: <em>Usar mi historial para recomendaciones.</em></li>
+                <li>Botón: <em>Eliminar mi historial.</em></li>
+                <li>Botón: <em>Exportar mis datos.</em></li>
+                <li>Consentimientos granulares con toggle por tipo.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Sección 2: Temas de Interés</div>
+              <ul class="mb-0 small">
+                <li>Chips/tags de categorías: Formalización, Financiamiento, Exportación, Jurídico, etc.</li>
+                <li>Selección múltiple; deseleccionar en cualquier momento.</li>
+                <li>Descripción breve de cada categoría al hacer hover.</li>
+                <li>Cambios guardados en tiempo real.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Sección 3: Notificaciones</div>
+              <ul class="mb-0 small">
+                <li>Selector de canal: Email / SMS / Push / Ninguno.</li>
+                <li>Selector de frecuencia: Diaria / Semanal / Mensual / Nunca.</li>
+                <li>Botón de opt-out total con confirmación.</li>
+                <li>Vista previa de ejemplo de notificación según configuración.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Acceso autenticado</strong></td>
+                <td>Solo usuarios autenticados acceden al panel; usuario no autenticado es redirigido a login.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Desactivar personalización</strong></td>
+                <td>Al desactivar, el motor usa sólo popularidad global en la próxima recomendación; log registra el cambio.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Exportar datos</strong></td>
+                <td>Solicitud de exportación genera tarea en cola; usuario recibe descarga en ≤ 72 horas en su canal de contacto.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Opt-out total de notificaciones</strong></td>
+                <td>Usuario activa opt-out total; no recibe ninguna notificación proactiva; cambio persistido y sincronizado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Temas de interés → ranking</strong></td>
+                <td>Usuario selecciona "Exportación"; en la siguiente recomendación, servicios de exportación tienen posición más alta.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Log inmutable de consentimiento</strong></td>
+                <td>Cada cambio de consentimiento genera una entrada en el log con timestamp, acción y estado; no modificable.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Sincronización web → chat</strong></td>
+                <td>Preferencia de notificación cambiada en web reflejada en el asistente de chat en ≤ 5 minutos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Derechos ARCO</dt>
+          <dd class="col-sm-9">Acceso, Rectificación, Cancelación y Oposición: derechos de los titulares de datos personales bajo la Ley 1581.</dd>
+
+          <dt class="col-sm-3">Consentimiento Granular</dt>
+          <dd class="col-sm-9">Modelo de consentimiento donde el usuario puede aceptar o rechazar usos específicos de sus datos de forma independiente.</dd>
+
+          <dt class="col-sm-3">Log Inmutable</dt>
+          <dd class="col-sm-9">Registro de auditoría de solo escritura (append-only) que no puede ser modificado, garantizando la trazabilidad de consentimientos.</dd>
+
+          <dt class="col-sm-3">Opt-out Total</dt>
+          <dd class="col-sm-9">Opción que permite al usuario desactivar completamente las notificaciones proactivas del sistema.</dd>
+
+          <dt class="col-sm-3">Personalización Activa</dt>
+          <dd class="col-sm-9">Estado en que el sistema usa el historial y perfil del usuario para generar recomendaciones personalizadas (opuesto: modo de popularidad global).</dd>
+
+          <dt class="col-sm-3 mb-0">Ley 1581</dt>
+          <dd class="col-sm-9 mb-0">Ley de Protección de Datos Personales de Colombia (2012), equivalente al Habeas Data; regula la recolección, almacenamiento y uso de datos personales.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00695C !important; background:#e0f2f1;">
+      <strong>Nota de alcance E1:</strong> El panel de privacidad puede ser una implementación básica con las tres secciones esenciales. Los flujos de exportación y eliminación pueden ser manuales en E1. Lo crítico es que los consentimientos queden auditados y los cambios afecten el motor en tiempo real.
     </div>
 
   </div>
@@ -84,4 +375,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #C62828;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,63 +20,324 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #8E0000; --hero-end: #C62828;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.7.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Exclusión de servicios ya consumidos</h1>
+      <h1 class="fw-bold fs-3 mb-1">Exclusión de servicios ya consumidos</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.7 · Reglas de Exclusión · No recomendar "lo que ya hice"</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #B71C1C;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #C62828;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #B71C1C;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #C62828;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que ya ha contratado servicios de CCB</p>
+              <p class="mb-0">usuario (empresario o ciudadano) que recibe recomendaciones de servicios CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">que el motor no me recomiende servicios que ya he tomado</p>
+              <p class="mb-0">que el motor <strong>no me recomiende servicios que ya he tomado</strong> (contratado, inscrito o completado), con posibilidad de configurar excepciones para servicios renovables.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">ver solo opciones nuevas y relevantes para mi situación actual</p>
+              <p class="mb-0">ver solo opciones nuevas y relevantes para mi situación actual, sin ruido de servicios ya aprovechados.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Reglas de Exclusión</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Validación contra historial de transacciones antes de recomendar</li>
-          <li>Exclusión de servicios con estado: contratado, inscrito, completado</li>
-          <li>Período de exclusión configurable por tipo de servicio</li>
-          <li>Registro del motivo "taken" en log de exclusiones</li>
-          <li>Opción administrativa para override puntual de la exclusión</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Identificación de servicios "ya consumidos"</strong>
+            <ul class="mt-1">
+              <li>El motor consulta el historial del usuario contra la fuente de verdad (SIREP / CRM Dynamics) antes de generar el Top-N.</li>
+              <li>Se consideran "consumidos" los servicios con estado: <code>contratado</code>, <code>inscrito</code>, <code>completado</code>, <code>en_curso</code>.</li>
+              <li>La consulta se realiza por <code>user_key_pseudo</code> para preservar seudonimización en entorno de desarrollo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Exclusión del Top-N recomendado por defecto</strong>
+            <ul class="mt-1">
+              <li>Todo servicio con estado "consumido" queda excluido del conjunto candidato antes del scoring.</li>
+              <li>El motivo de exclusión se registra como <code>reason: "taken"</code> en el log de decisiones.</li>
+              <li>El Top-N resultante no contiene ningún ítem presente en <code>services_taken[]</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Manejo de excepciones y casos especiales</strong>
+            <ul class="mt-1">
+              <li><strong>Servicios renovables:</strong> aquellos marcados con <code>renovable: true</code> en el catálogo pueden volver a recomendarse tras un período de "cooling-off" configurable (p. ej., 6 meses).</li>
+              <li><strong>Override administrativo:</strong> un operador puede marcar manualmente un servicio como "re-recomendable" para un usuario específico, registrando justificación y timestamp.</li>
+              <li><strong>Servicio actualizado:</strong> si un servicio tiene una nueva edición/cohorte, se trata como ítem diferente y puede recomendarse aunque exista historial de la versión anterior.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad</strong>
+            <ul class="mt-1">
+              <li>El log de cada request incluye: <code>user_key_pseudo</code>, <code>services_excluded[]</code> (con motivo <code>taken</code>), <code>version_regla</code>, <code>timestamp</code>.</li>
+              <li>Se puede reproducir qué servicios fueron excluidos para un usuario y momento dados.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Experiencia UX coherente</strong>
+            <ul class="mt-1">
+              <li>La lista de recomendaciones mostrada al usuario es "limpia": solo contiene ítems no tomados previamente.</li>
+              <li>Si todos los servicios elegibles ya fueron tomados, se muestra un mensaje contextual: <em>"Has aprovechado todo lo disponible para tu perfil. Pronto habrá nuevas opciones."</em></li>
+              <li>El usuario puede acceder a un panel de "mis servicios tomados" para referencia propia (control del usuario).</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Join con tabla de transacciones en consulta de recomendaciones</li>
-          <li>Índice optimizado para búsqueda por userId y serviceId</li>
-          <li>TTL de exclusión configurable por categoría de servicio</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        2. Tecnología <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Fuente de Historial</div>
+              <ul class="mb-0 small">
+                <li><strong>SIREP</strong> (Sistema de Registro de Servicios): fuente primaria de <code>services_taken[]</code>.</li>
+                <li><strong>CRM Dynamics</strong>: fuente secundaria para validar estado del cliente y registros históricos.</li>
+                <li>En E1 (dev): extracto seudonimizado o mock con datos representativos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Filtro de Exclusión</div>
+              <ul class="mb-0 small">
+                <li>Aplicado en la fase de <strong>candidatos</strong> del pipeline, antes del scoring.</li>
+                <li>Join entre conjunto candidato y tabla <code>user_service_history</code> indexada por <code>(user_key_pseudo, service_id)</code>.</li>
+                <li>TTL de exclusión configurable por categoría de servicio (YAML/tabla de configuración).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Logging y Auditoría</div>
+              <ul class="mb-0 small">
+                <li>Logs estructurados en JSON con campo <code>exclusion_reasons[]</code>.</li>
+                <li>Almacenamiento en Data Lake / tabla de auditoría con retención configurable.</li>
+                <li>Dashboard de monitoreo: % de candidatos excluidos por motivo <code>taken</code> por sesión.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #C62828;">Configuración de Excepciones</div>
+              <ul class="mb-0 small">
+                <li>Tabla <code>service_exclusion_config</code>: <code>service_id</code>, <code>renovable</code>, <code>cooling_off_days</code>, <code>override_allowed</code>.</li>
+                <li>Cambios auditados con versión y timestamp; hot-reload sin redeploy del modelo.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Pipeline de Exclusión</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <p class="mb-0 small">Usuario / Actor (empresario o ciudadano) · Motor / API · CRM / Dynamics · Frontend / UI</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">Solicitud de recomendaciones (on-demand o proactiva). El sistema identifica los servicios "ya consumidos" por el usuario antes de generar el Top-N.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">RESULTADO</div>
+              <p class="mb-0 small">Lista Top-N "limpia" sin servicios ya tomados, con log de exclusiones trazable y mensaje contextual cuando aplique.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #C62828;">Pasos del Flujo (según Diagrama de Flujo y Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Identificar servicios "ya consumidos":</strong> el Motor / API consulta SIREP y CRM para obtener <code>services_taken[]</code> del usuario.</li>
+          <li><strong>Excluir del Top-N:</strong> CRM / Dynamics confirma estados; el motor filtra los candidatos eliminando todos los servicios en <code>services_taken[]</code>.</li>
+          <li><strong>Manejar excepciones y casos especiales:</strong> el Frontend / UI envía señales de servicios renovables u overrides; el motor aplica las reglas de excepción configuradas.</li>
+          <li><strong>Mantener trazabilidad:</strong> el motor registra en CRM / Dynamics cada decisión de exclusión con motivo, versión de regla y timestamp.</li>
+          <li><strong>Garantizar experiencia UX coherente:</strong> CRM envía al Frontend la lista limpia y los metadatos de contexto (mensaje si lista vacía).</li>
+          <li><strong>Recomendaciones "limpias":</strong> el Frontend / UI recibe y renderiza el Top-N filtrado.</li>
+          <li><strong>Mensaje contextual (cuando aplique):</strong> el Motor envía al Frontend el mensaje adecuado si todos los elegibles fueron tomados.</li>
+          <li><strong>Control del usuario:</strong> el usuario confirma recepción; puede acceder a panel de "mis servicios tomados".</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #C62828;">Ejemplo de Log de Exclusión</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "user_key_pseudo": "u_9f3a",
+  "request_id": "req_20250310_001",
+  "candidates_total": 48,
+  "excluded_taken": [
+    { "service_id": "S-200", "reason": "taken", "fecha_consumo": "2024-08-15" },
+    { "service_id": "S-312", "reason": "taken", "fecha_consumo": "2025-01-03" }
+  ],
+  "candidates_after_filter": 46,
+  "topN_returned": 5,
+  "version_regla": "exclusion-rules-2025.03.01",
+  "timestamp": "2025-03-10T14:32:00Z"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        4. Diseño — Experiencia del Usuario
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #C62828;">Lista de Recomendaciones (estado normal)</div>
+              <ul class="mb-0 small">
+                <li>Top-N renderizado sin servicios ya tomados.</li>
+                <li>Cada tarjeta muestra nombre, descripción breve, razón de recomendación y CTA.</li>
+                <li>Badge <code>Nuevo para ti</code> en servicios nunca visitados.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #C62828;">Estado: Sin recomendaciones nuevas</div>
+              <ul class="mb-0 small">
+                <li>Mensaje contextual: <em>"Has aprovechado todo lo disponible para tu perfil. Pronto habrá nuevas opciones."</em></li>
+                <li>Enlace a "Mis servicios tomados" para que el usuario revise su historial.</li>
+                <li>Sugerencia de contacto con asesor si necesita orientación adicional.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#C62828;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Servicio en <code>services_taken[]</code></strong></td>
+                <td>El servicio <code>S-200</code> no aparece en el Top-N; log registra <code>reason: "taken"</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Todos los elegibles tomados</strong></td>
+                <td>Top-N retorna lista vacía; UI muestra mensaje contextual de "todo aprovechado".</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Servicio renovable fuera de cooling-off</strong></td>
+                <td>Servicio con <code>renovable: true</code> y <code>cooling_off</code> expirado reaparece en candidatos.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Override administrativo</strong></td>
+                <td>Operador activa override; el servicio es incluido en candidatos y el log registra <code>reason: "admin_override"</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Reproducibilidad del log</strong></td>
+                <td>Dado el <code>request_id</code>, se puede reconstruir qué servicios fueron excluidos y por qué.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Nueva edición de servicio tomado</strong></td>
+                <td>Servicio con nueva edición/cohorte (<code>service_id</code> diferente) se recomienda aunque exista historial de la versión anterior.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #C62828;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">services_taken[]</dt>
+          <dd class="col-sm-9">Lista de IDs de servicios que el usuario ya ha contratado, inscrito o completado según el historial.</dd>
+
+          <dt class="col-sm-3">reason: "taken"</dt>
+          <dd class="col-sm-9">Código de motivo de exclusión registrado en el log cuando un servicio se descarta por haber sido previamente consumido.</dd>
+
+          <dt class="col-sm-3">Cooling-off</dt>
+          <dd class="col-sm-9">Período mínimo de tiempo que debe transcurrir antes de que un servicio renovable pueda volver a recomendarse.</dd>
+
+          <dt class="col-sm-3">Override administrativo</dt>
+          <dd class="col-sm-9">Acción manual de un operador para permitir la recomendación de un servicio normalmente excluido, con justificación auditada.</dd>
+
+          <dt class="col-sm-3">Top-N limpio</dt>
+          <dd class="col-sm-9">Lista de recomendaciones filtrada donde ningún ítem pertenece al historial de consumo del usuario.</dd>
+
+          <dt class="col-sm-3 mb-0">user_key_pseudo</dt>
+          <dd class="col-sm-9 mb-0">Identificador seudonimizado del usuario, no reversible, utilizado en entorno de desarrollo para preservar privacidad.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#C62828 !important; background:#ffebee;">
+      <strong>Nota de alcance:</strong> Esta regla de exclusión opera en la fase de generación de candidatos (pre-scoring), garantizando que el motor nunca puntúe ni devuelva servicios ya consumidos. Las excepciones (renovables, overrides) están controladas por configuración versionada sin redeploy.
     </div>
 
   </div>
@@ -83,4 +346,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

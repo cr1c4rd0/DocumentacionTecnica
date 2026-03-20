@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.8.2 – Filtros y botón Sorpréndeme</title>
+  <title>HU 2.8.2 – Filtros (modalidad/temática) y botón "Sorpréndeme"</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #00838F;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,63 +20,355 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #005662; --hero-end: #00838F;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.8.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Filtros y botón Sorpréndeme</h1>
+      <h1 class="fw-bold fs-3 mb-1">Filtros (modalidad/temática) y botón "Sorpréndeme"</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.8 · UI Recomendador tipo Catálogo · Exploración controlada por umbral</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #0277BD;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00838F;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #0277BD;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #00838F;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario explorando el catálogo de recomendaciones</p>
+              <p class="mb-0">usuario (empresario o ciudadano) que explora el catálogo de recomendaciones en el portal CCB.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">filtrar por modalidad o temática y usar un botón "Sorpréndeme" para descubrir algo inesperado</p>
+              <p class="mb-0"><strong>filtrar las recomendaciones</strong> por modalidad (presencial/virtual) y temática, y usar un botón <strong>"Sorpréndeme"</strong> que active una exploración diversa con umbral configurable para descubrir servicios fuera de mi zona habitual.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">controlar mi exploración o salir de mi zona de confort según mi estado de ánimo</p>
+              <p class="mb-0">controlar mi exploración con filtros precisos <strong>o</strong> salir de mi zona de confort con una selección sorpresiva, según mi estado de ánimo y necesidades del momento.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Filtros y Sorpréndeme</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Filtros por: modalidad (presencial/virtual), temática, duración, gratuito/pagado</li>
-          <li>Filtros combinables con resultado en tiempo real (≤ 300ms)</li>
-          <li>Botón "Sorpréndeme" activa exploración con umbral de diversidad configurable</li>
-          <li>Estado de filtros persistido en URL para compartir</li>
-          <li>Contador de resultados actualizado dinámicamente</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Panel de filtros por modalidad y temática</strong>
+            <ul class="mt-1">
+              <li>Filtros disponibles:
+                <ul>
+                  <li><strong>Modalidad:</strong> Presencial, Virtual, Híbrido.</li>
+                  <li><strong>Temática:</strong> Formalización, Legal, Financiero, Formación, Internacional, Innovación (lista configurable por admin).</li>
+                  <li><strong>Duración:</strong> Menos de 1 hora, 1–4 horas, Más de 4 horas.</li>
+                  <li><strong>Costo:</strong> Gratuito, Con cargo.</li>
+                </ul>
+              </li>
+              <li>Los filtros son <strong>combinables</strong>: al seleccionar varios, se aplica lógica AND entre categorías y OR dentro de cada categoría.</li>
+              <li>Los resultados se actualizan en <strong>tiempo real</strong> (≤ 300 ms) sin recarga de página.</li>
+              <li>Un <strong>contador dinámico</strong> muestra el número de servicios que coinciden con los filtros activos.</li>
+              <li>El estado de los filtros se <strong>persiste en la URL</strong> (query params) para permitir compartir búsquedas filtradas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Botón "Sorpréndeme"</strong>
+            <ul class="mt-1">
+              <li>Botón prominente en el panel de exploración, fuera de los filtros habituales.</li>
+              <li>Al activarlo, el motor devuelve una selección de servicios con <strong>alto umbral de diversidad</strong>: ítems que el usuario no habría descubierto con su perfil habitual.</li>
+              <li>El umbral de diversidad es <strong>configurable por admin</strong> (parámetro <code>surprise_threshold</code> en config YAML/tabla).</li>
+              <li>La selección respeta las reglas de exclusión vigentes (no incluye servicios <code>taken</code> ni <code>dismissed</code>).</li>
+              <li>Cada activación genera un conjunto diferente; la respuesta incluye una etiqueta <code>"¡Algo nuevo para ti!"</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Interacción entre filtros y "Sorpréndeme"</strong>
+            <ul class="mt-1">
+              <li>Al activar "Sorpréndeme" con filtros seleccionados, el modo sorpresa opera <strong>dentro del subconjunto filtrado</strong> (diversidad dentro de los criterios del usuario).</li>
+              <li>Al activar "Sorpréndeme" sin filtros, opera sobre el catálogo completo elegible.</li>
+              <li>Un badge visual indica que el resultado proviene del modo "Sorpréndeme" (distinguible del resultado normal).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y UX</strong>
+            <ul class="mt-1">
+              <li>Los filtros se aplican en <strong>cliente</strong> (sobre el conjunto ya cargado) para la respuesta inmediata (≤ 300 ms).</li>
+              <li>Si el conjunto filtrado en cliente queda vacío, se realiza una nueva llamada al API con los parámetros de filtro para buscar más candidatos en el servidor.</li>
+              <li>Botón "Limpiar filtros" restablece todos los filtros y la URL al estado inicial.</li>
+              <li>El estado de filtros se mantiene al navegar entre secciones dentro del catálogo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Registro de eventos y métricas</strong>
+            <ul class="mt-1">
+              <li>Cada activación de filtro genera el evento: <code>filter_applied</code> con <code>filter_type</code>, <code>filter_value</code>, <code>result_count</code>.</li>
+              <li>Cada activación del botón "Sorpréndeme" genera: <code>surprise_activated</code> con <code>filters_active</code>, <code>surprise_threshold</code>, <code>result_count</code>.</li>
+              <li>Métricas de uso disponibles: frecuencia de activación por filtro, tasa de uso de "Sorpréndeme", conversión (clic a "Ver detalle") desde modo sorpresa vs. filtro normal.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Filtros aplicados en cliente para rapidez</li>
-          <li>Umbral de diversidad del algoritmo Sorpréndeme configurable por admin</li>
-          <li>Estado de filtros en query params de URL</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        2. Tecnología <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Componente de Filtros</div>
+              <ul class="mb-0 small">
+                <li>Checkboxes / toggles agrupados por categoría con gestión de estado local (React State / store ligero).</li>
+                <li>Sincronización bidireccional con URL via <code>URLSearchParams</code>.</li>
+                <li>Debounce de 150 ms en filtros de texto libre; sin debounce en selecciones discretas.</li>
+                <li>Lista de opciones de temática configurable desde admin (endpoint <code>GET /filters/options</code>).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Botón "Sorpréndeme" — Backend</div>
+              <ul class="mb-0 small">
+                <li>Endpoint: <code>GET /recommendations/surprise?user_key_pseudo=&amp;filters=&amp;threshold=</code>.</li>
+                <li>El motor aplica MMR (Maximal Marginal Relevance) con un <code>lambda</code> bajo (alta diversidad).</li>
+                <li>Parámetro <code>surprise_threshold</code> en tabla de configuración versionada; hot-reload sin redeploy.</li>
+                <li>Respuesta: Top-K diversos con campo <code>surprise: true</code> y razones alternativas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Filtrado en Cliente</div>
+              <ul class="mb-0 small">
+                <li>Filtros aplicados sobre el array local de recomendaciones cargadas (sin nueva llamada al API).</li>
+                <li>Si resultado local &lt; 3 ítems, se lanza llamada server-side con parámetros de filtro.</li>
+                <li>Contador dinámico actualizado en cada cambio de filtro.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00838F;">Persistencia de Estado</div>
+              <ul class="mb-0 small">
+                <li>Filtros activos codificados en query params: <code>?modalidad=virtual&amp;tematica=legal,formacion</code>.</li>
+                <li>Al compartir la URL, el receptor ve el catálogo ya filtrado.</li>
+                <li>Session storage como fallback si la URL no está disponible (p. ej., modo app).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Filtros y Sorpréndeme</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">FLUJO FILTROS</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.8;">
+                <li>Usuario selecciona uno o más filtros en el panel.</li>
+                <li>El componente actualiza el estado local y la URL (query params).</li>
+                <li>Se filtra el array local de recomendaciones (≤ 300 ms).</li>
+                <li>El contador dinámico refleja el número de resultados.</li>
+                <li>Si el resultado local es insuficiente (&lt; 3), se lanza llamada al API con los filtros.</li>
+                <li>Se registra el evento <code>filter_applied</code>.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">FLUJO SORPRÉNDEME</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.8;">
+                <li>Usuario hace clic en "Sorpréndeme".</li>
+                <li>El Frontend llama a <code>GET /recommendations/surprise</code> con filtros activos y <code>surprise_threshold</code>.</li>
+                <li>El Motor aplica MMR con lambda bajo; excluye <code>taken</code> y <code>dismissed</code>.</li>
+                <li>El Frontend renderiza el resultado con badge <code>"¡Algo nuevo para ti!"</code>.</li>
+                <li>Se registra el evento <code>surprise_activated</code>.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #00838F;">Ejemplo de Llamada Sorpréndeme</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">GET /recommendations/surprise
+  ?user_key_pseudo=u_9f3a
+  &amp;filters=modalidad:virtual,tematica:internacional
+  &amp;threshold=0.75
+  &amp;k=5
+
+Respuesta:
+{
+  "surprise": true,
+  "items": [
+    {
+      "service_id": "S-512",
+      "nombre": "Taller Exportación Avanzada",
+      "score_diversidad": 0.91,
+      "razones": ["Fuera de tu zona habitual — ¡puedes sorprenderte!"],
+      "modalidad": "virtual",
+      "badges": ["¡Algo nuevo para ti!"]
+    }
+  ],
+  "meta": { "surprise_threshold": 0.75, "latencia_ms": 221 }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        4. Diseño — Qué ve el Usuario
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00838F;">Panel de Filtros</div>
+              <ul class="mb-0 small">
+                <li>Barra horizontal o sidebar con grupos de filtros colapsables.</li>
+                <li>Chips activos visibles en la parte superior del catálogo.</li>
+                <li>Botón "Limpiar filtros" visible solo cuando hay filtros activos.</li>
+                <li>Contador: <em>"X servicios disponibles"</em> actualizado en tiempo real.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00838F;">Botón "Sorpréndeme"</div>
+              <ul class="mb-0 small">
+                <li>Botón destacado con ícono de dados / estrella, color de acento de la épica.</li>
+                <li>Al activarse: animación de "shuffle" + spin de 0.5 s mientras carga.</li>
+                <li>Resultado mostrado en una sección separada: <em>"Tu selección sorpresa"</em>.</li>
+                <li>Badge <code>"¡Algo nuevo para ti!"</code> en cada tarjeta del resultado sorpresa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00838F;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Filtro por modalidad</strong></td>
+                <td>Al seleccionar "Virtual", solo aparecen tarjetas con <code>modalidad: "virtual"</code>; contador se actualiza en ≤ 300 ms.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Filtros combinados</strong></td>
+                <td>Seleccionar "Virtual" + "Gratuito" muestra solo ítems que cumplen ambas condiciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Persistencia en URL</strong></td>
+                <td>La URL refleja los filtros activos; al copiar y abrir en otra pestaña, el catálogo aparece filtrado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Limpiar filtros</strong></td>
+                <td>Al hacer clic en "Limpiar", todos los filtros se desactivan, la URL se limpia y el catálogo completo reaparece.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Sorpréndeme sin filtros</strong></td>
+                <td>Se devuelve un Top-K de alta diversidad; cada ítem tiene el badge <code>"¡Algo nuevo para ti!"</code> y no pertenece a <code>taken/dismissed</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Sorpréndeme con filtros</strong></td>
+                <td>El resultado sorpresa respeta los filtros activos y maximiza la diversidad dentro de ese subconjunto.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Cambio de umbral por admin</strong></td>
+                <td>Al modificar <code>surprise_threshold</code> en config, el próximo "Sorpréndeme" usa el nuevo valor sin redeploy.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">8</td>
+                <td><strong>Resultado vacío tras filtros</strong></td>
+                <td>Si ningún ítem cumple los filtros, se muestra mensaje: <em>"No hay servicios con estos criterios. Prueba ajustando los filtros."</em></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00838F;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Modalidad</dt>
+          <dd class="col-sm-9">Forma de entrega del servicio: presencial (en sede CCB), virtual (en línea) o híbrido.</dd>
+
+          <dt class="col-sm-3">Temática</dt>
+          <dd class="col-sm-9">Categoría temática del servicio (Formalización, Legal, Financiero, etc.), configurable por admin.</dd>
+
+          <dt class="col-sm-3">surprise_threshold</dt>
+          <dd class="col-sm-9">Parámetro que controla el grado de diversidad del modo "Sorpréndeme"; a mayor valor, más alejados del perfil habitual del usuario.</dd>
+
+          <dt class="col-sm-3">MMR</dt>
+          <dd class="col-sm-9">Maximal Marginal Relevance — algoritmo que balancea relevancia y diversidad en el ranking de recomendaciones.</dd>
+
+          <dt class="col-sm-3">Query params</dt>
+          <dd class="col-sm-9">Parámetros en la URL que persisten el estado de los filtros activos para compartir o recargar la vista filtrada.</dd>
+
+          <dt class="col-sm-3 mb-0">Chip de filtro</dt>
+          <dd class="col-sm-9 mb-0">Etiqueta visual compacta que representa un filtro activo, con opción de eliminarla individualmente.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00838F !important; background:#e0f7fa;">
+      <strong>Nota de alcance:</strong> Los filtros se aplican en cliente sobre el conjunto ya cargado por HU 2.8.1 (carruseles). El botón "Sorpréndeme" requiere una llamada adicional al Motor con el endpoint <code>/recommendations/surprise</code>. Ambas funcionalidades respetan las reglas de exclusión de HU 2.7.1 y HU 2.7.2. El umbral de diversidad es configurable vía tabla versionada sin redeploy.
     </div>
 
   </div>
@@ -83,4 +377,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #E65100; --hero-end: #F57F17;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.10.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Moderación básica de contenido</h1>
+      <h1 class="fw-bold fs-3 mb-1">Moderación básica de contenido</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.10 · Prueba Social · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #F57F17;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #F57F17;">Enunciado</h2>
@@ -34,49 +38,335 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador de contenido de la plataforma</p>
+              <p class="mb-0"><strong>CCB</strong> (equipo responsable de reputación y cumplimiento del Recomendador).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">que las reseñas pasen por un filtro automático y humano antes de publicarse</p>
+              <p class="mb-0">que las reseñas pasen por un <strong>flujo de moderación</strong> (automático + humano) antes de publicarse.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">garantizar que el contenido sea apropiado, veraz y libre de datos personales o spam</p>
+              <p class="mb-0">garantizar que el contenido sea apropiado, veraz y libre de datos personales, spam o lenguaje ofensivo.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Filtro automático de: spam, datos PII (email, teléfono), lenguaje ofensivo</li>
-          <li>Reseñas en cola de revisión humana si pasan umbral de riesgo</li>
-          <li>Panel de moderación con aprobación/rechazo con un clic</li>
-          <li>Notificación al autor sobre decisión de moderación</li>
-          <li>Tiempo máximo de publicación ≤ 48 horas laborables</li>
-          <li>Modelo de clasificación con accuracy ≥ 85%</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Estados y flujo de moderación operativos</strong>
+            <ul class="mt-1">
+              <li>Toda reseña recién enviada entra con estado <code>pendiente</code>.</li>
+              <li>El flujo de estados es: <code>pendiente</code> → <code>en_revision_automatica</code> → <code>aprobada</code> / <code>rechazada</code> / <code>en_revision_humana</code>.</li>
+              <li>Solo las reseñas con estado <code>aprobada</code> son públicas y afectan el rating.</li>
+              <li>Los cambios de estado quedan <strong>auditados</strong> con: actor (sistema o moderador), timestamp y motivo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Reglas básicas automáticas (mínimo viable)</strong>
+            <ul class="mt-1">
+              <li>Filtro automático detecta y rechaza o escala a revisión humana reseñas con:
+                <ol type="a" class="mt-1">
+                  <li><strong>PII</strong>: email, teléfono, NIT, número de cédula (regex + NLP básico).</li>
+                  <li><strong>Spam</strong>: texto repetido, links externos, patrones de bot.</li>
+                  <li><strong>Lenguaje ofensivo</strong>: lista de palabras prohibidas + modelo de clasificación.</li>
+                </ol>
+              </li>
+              <li>El filtro produce un <strong>score de riesgo</strong> (0–1); umbral configurable (default 0.6) para escalar a revisión humana.</li>
+              <li>Reseñas con score &lt; umbral y sin detección de PII se aprueban <strong>automáticamente</strong>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Revisión manual y trazabilidad</strong>
+            <ul class="mt-1">
+              <li>Las reseñas en <code>en_revision_humana</code> aparecen en un <strong>panel de moderación</strong> (interfaz interna) con aprobación/rechazo en un clic.</li>
+              <li>El moderador puede añadir un <strong>motivo de rechazo</strong> seleccionable (spam, PII, inapropiado, otro).</li>
+              <li>Tiempo máximo de revisión humana: <strong>≤ 48 horas laborables</strong> (con alerta al moderador si se acerca el límite).</li>
+              <li>Todos los actos de moderación se registran en log de auditoría: <code>moderador_id</code>, <code>accion</code>, <code>motivo</code>, <code>timestamp</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y disponibilidad</strong>
+            <ul class="mt-1">
+              <li>El pipeline de moderación automática procesa una reseña en <strong>≤ 5 segundos</strong>.</li>
+              <li>El módulo de moderación es <strong>asíncrono</strong>: el usuario recibe confirmación de "reseña recibida" sin esperar el resultado de moderación.</li>
+              <li>Disponibilidad del servicio de moderación: <strong>99%</strong> en horas laborables.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback por incertidumbre</strong>
+            <ul class="mt-1">
+              <li>Si el servicio de moderación automática no está disponible, la reseña se coloca directamente en <code>en_revision_humana</code> (nunca se publica sin moderación).</li>
+              <li>Si el modelo de clasificación produce score en zona de incertidumbre (p. ej. 0.45–0.65), escala automáticamente a revisión humana.</li>
+              <li>Se registra en log el motivo del fallback: <code>servicio_no_disponible</code>, <code>score_incierto</code>.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>NLP para detección de PII y contenido inapropiado</li>
-          <li>Cola de moderación en sistema de tareas</li>
-          <li>Integración con servicio de moderación de contenido (Azure Content Moderator o similar)</li>
-          <li>Logs de moderación para auditoría</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        2. Tecnología <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Motor de Moderación Automática</div>
+              <ul class="mb-0 small">
+                <li>Regex + NLP básico para detección de PII (email, teléfono, documentos).</li>
+                <li>Lista de palabras prohibidas configurable (sin redeploy).</li>
+                <li>Modelo de clasificación de texto (Azure Content Moderator, OpenAI Moderation API o similar) para lenguaje ofensivo y spam.</li>
+                <li>Score de riesgo 0–1; umbral configurable en tabla de config.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Cola de Moderación y Panel Humano</div>
+              <ul class="mb-0 small">
+                <li>Cola de tareas (p. ej. Celery + Redis o Azure Service Bus) para procesar reseñas de forma asíncrona.</li>
+                <li>Panel de moderación interno (interfaz web simple) con vista de cola, filtros y acciones de aprobación/rechazo.</li>
+                <li>Notificaciones al moderador (email o Teams) cuando la cola supera umbral de tiempo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM / Dynamics</strong>: verificación de que el autor es un usuario registrado antes de aceptar la reseña.</li>
+                <li><strong>Frontend / UI</strong>: notificación al autor sobre el resultado de moderación (aprobada/rechazada + motivo genérico).</li>
+                <li><strong>Motor de reseñas</strong> (HU 2.10.1): invalidación de cache de rating al aprobar una nueva reseña.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Auditoría y Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Log de auditoría inmutable: todos los actos de moderación (automáticos y humanos).</li>
+                <li>Métricas: tasa de auto-aprobación, tasa de rechazo automático, tiempo promedio de revisión humana.</li>
+                <li>Alerta si tiempo de revisión humana se acerca a 48h sin resolución.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">CCB — equipo responsable de reputación y cumplimiento del Recomendador.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li>Usuario / Actor</li>
+                <li>Motor / API</li>
+                <li>CRM / Dynamics</li>
+                <li>Frontend / UI</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ESTADOS DE RESEÑA</div>
+              <div class="d-flex flex-wrap gap-2 small">
+                <span class="badge" style="background:#6c757d;">pendiente</span>
+                <span>→</span>
+                <span class="badge" style="background:#0277BD;">en_revision_automatica</span>
+                <span>→</span>
+                <span class="badge" style="background:#2E7D32;">aprobada</span>
+                <span>/</span>
+                <span class="badge" style="background:#C62828;">rechazada</span>
+                <span>/</span>
+                <span class="badge" style="background:#F57F17;">en_revision_humana</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #F57F17;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Estados y flujo de moderación operativos:</strong> el Usuario/Actor envía la reseña; el Motor/API la recibe con estado <code>pendiente</code> y responde confirmación inmediata al usuario.</li>
+          <li><strong>Reglas básicas automáticas (mínimo viable):</strong> el Motor/API envía la reseña al servicio CRM/Dynamics para verificar que el autor es usuario registrado y al motor NLP para scoring de riesgo (PII, spam, lenguaje).</li>
+          <li><strong>Revisión manual y trazabilidad:</strong> el Frontend/UI (panel de moderación) recibe las reseñas que superan el umbral de riesgo; el moderador humano aprueba o rechaza con motivo.</li>
+          <li><strong>Rendimiento y disponibilidad:</strong> el Motor/API actualiza el estado en CRM/Dynamics y confirma disponibilidad del servicio de moderación.</li>
+          <li><strong>Fallback por incertidumbre:</strong> si el servicio no está disponible o el score es incierto, el Motor devuelve respuesta de fallback y la reseña queda en <code>en_revision_humana</code> de forma segura.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #F57F17;">Ejemplo de Payload de Moderación</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "resena_id": "r-00234",
+  "service_id": "S-134",
+  "autor_key_pseudo": "u_9f3a",
+  "texto": "Muy buen servicio, me ayudaron con la formalización.",
+  "rating": 5,
+  "moderacion": {
+    "score_riesgo": 0.12,
+    "flags": [],
+    "decision_automatica": "aprobada",
+    "timestamp": "2025-11-21T09:15:00Z",
+    "version_modelo": "mod-v1.1"
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        4. Diseño — Panel de Moderación (Interno) <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Vista interna CCB</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #F57F17;">Cola de Revisión Humana</div>
+              <ul class="mb-0 small">
+                <li>Lista de reseñas pendientes con: score de riesgo, flags detectados, texto completo.</li>
+                <li>Filtros por servicio, fecha, score de riesgo y tipo de flag.</li>
+                <li>Contador de tiempo en cola (alerta visual si se acerca al límite de 48h).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #F57F17;">Acciones del Moderador</div>
+              <ul class="mb-0 small">
+                <li>Botón <em>"Aprobar"</em> (verde) y <em>"Rechazar"</em> (rojo) en un clic.</li>
+                <li>Selección de motivo de rechazo: <code>spam</code>, <code>PII</code>, <code>inapropiado</code>, <code>otro</code>.</li>
+                <li>Vista de historial de decisiones del moderador actual.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Reseña limpia — auto-aprobación</strong></td>
+                <td>Score &lt; umbral y sin flags: estado pasa a <code>aprobada</code> automáticamente en ≤ 5s.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Reseña con PII detectada</strong></td>
+                <td>Estado pasa a <code>en_revision_humana</code>; flag <code>PII</code> registrado; reseña no visible públicamente.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Reseña con lenguaje ofensivo</strong></td>
+                <td>Score &gt; umbral; estado <code>en_revision_humana</code> o <code>rechazada</code> automáticamente según configuración.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Moderador rechaza manualmente</strong></td>
+                <td>Estado pasa a <code>rechazada</code>; log de auditoría registra <code>moderador_id</code>, motivo y timestamp.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Servicio de moderación no disponible</strong></td>
+                <td>Reseña entra en <code>en_revision_humana</code> (nunca se publica sin revisar); log registra <code>servicio_no_disponible</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Score en zona de incertidumbre</strong></td>
+                <td>Reseña escala a revisión humana; log registra <code>score_incierto</code> con valor exacto.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>SLA revisión humana</strong></td>
+                <td>Alerta disparada al moderador cuando una reseña en <code>en_revision_humana</code> supera 40h sin resolución.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Score de riesgo</dt>
+          <dd class="col-sm-9">Valor 0–1 que indica la probabilidad de que una reseña contenga contenido inapropiado; mayor valor = mayor riesgo.</dd>
+
+          <dt class="col-sm-3">PII</dt>
+          <dd class="col-sm-9">Personally Identifiable Information — datos que permiten identificar a una persona (email, teléfono, NIT, cédula).</dd>
+
+          <dt class="col-sm-3">Umbral de riesgo</dt>
+          <dd class="col-sm-9">Valor configurable del score a partir del cual una reseña escala a revisión humana en vez de aprobarse automáticamente.</dd>
+
+          <dt class="col-sm-3">Cola de moderación</dt>
+          <dd class="col-sm-9">Sistema de tareas asíncrono que mantiene las reseñas pendientes de revisión humana ordenadas por tiempo de espera.</dd>
+
+          <dt class="col-sm-3">Log de auditoría</dt>
+          <dd class="col-sm-9">Registro inmutable de todas las acciones de moderación, tanto automáticas como humanas, para trazabilidad y cumplimiento.</dd>
+
+          <dt class="col-sm-3 mb-0">Degradación grácil</dt>
+          <dd class="col-sm-9 mb-0">Comportamiento del sistema que ante un fallo parcial mantiene operativa la funcionalidad principal (las recomendaciones) y escala el problema de moderación a revisión humana.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#F57F17 !important; background:#fff8e1;">
+      <strong>Nota de alcance E1:</strong> El módulo de moderación es asíncrono y no interrumpe la experiencia del usuario al enviar una reseña. La moderación avanzada con ML de alta precisión es parte de etapas posteriores; en E1 se implementa el mínimo viable con regex + modelo preentrenado y revisión humana como red de seguridad.
     </div>
 
   </div>
@@ -85,4 +375,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

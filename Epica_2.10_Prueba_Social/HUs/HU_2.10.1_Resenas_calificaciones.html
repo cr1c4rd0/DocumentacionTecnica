@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #E65100; --hero-end: #F57F17;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.10.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Módulo de reseñas y calificaciones</h1>
+      <h1 class="fw-bold fs-3 mb-1">Módulo de reseñas y calificaciones</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.10 · Prueba Social · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #F57F17;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #F57F17;">Enunciado</h2>
@@ -34,49 +38,335 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario del portal que evalúa servicios</p>
+              <p class="mb-0">usuario empresario que consulta el <strong>Recomendador de Servicios</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ver el rating promedio y reseñas de otros empresarios para cada servicio recomendado</p>
+              <p class="mb-0">ver el <strong>rating promedio y las reseñas</strong> de otros empresarios para cada servicio recomendado.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">tomar decisiones más informadas basadas en experiencias reales de la comunidad</p>
+              <p class="mb-0">tomar decisiones más informadas basadas en experiencias reales de la comunidad empresarial.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Rating promedio visible en tarjeta del servicio (estrella + número)</li>
-          <li>Listado de reseñas con lazy load (10 por página)</li>
-          <li>Indicador de confiabilidad (número de reseñas)</li>
-          <li>Fallback elegante cuando no hay reseñas</li>
-          <li>Tiempo de carga del módulo ≤ 1 segundo</li>
-          <li>Reseñas muestran: rating, texto, fecha y perfil básico del autor</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Visualización por servicio (rating + reseñas)</strong>
+            <ul class="mt-1">
+              <li>Cada tarjeta de servicio recomendado muestra: <strong>rating promedio</strong> (estrella + valor numérico, p. ej. ★ 4.2) y <strong>número de reseñas</strong> como indicador de confiabilidad.</li>
+              <li>Listado de reseñas con <strong>paginación lazy load</strong> (10 reseñas por página); cada reseña muestra: rating individual, texto, fecha y perfil básico del autor (sin exponer PII completo).</li>
+              <li>Módulo carga de forma <strong>asíncrona</strong> para no bloquear la visualización de las recomendaciones principales.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Cálculo correcto y trazable del rating</strong>
+            <ul class="mt-1">
+              <li>El rating promedio se calcula como <strong>media ponderada</strong> de todas las calificaciones aprobadas para el servicio.</li>
+              <li>El cálculo es <strong>reproducible y auditable</strong>: se puede trazar qué calificaciones componen el promedio actual.</li>
+              <li>Se registra en log: <code>service_id</code>, <code>rating_calculado</code>, <code>num_resenas</code>, <code>timestamp_calculo</code>, <code>version_algoritmo</code>.</li>
+              <li>Cambios en el algoritmo de cálculo quedan <strong>versionados</strong> y solo aplican hacia adelante (sin alterar histórico).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento</strong>
+            <ul class="mt-1">
+              <li>Tiempo de carga del módulo de reseñas: <strong>≤ 1 segundo</strong> (p95) desde que el usuario solicita ver las reseñas de un servicio.</li>
+              <li>Cache de ratings con <strong>TTL configurable</strong> (valor de referencia: 1 hora); se invalida automáticamente al publicarse una nueva reseña aprobada.</li>
+              <li>Imágenes de perfil de autores servidas vía <strong>CDN</strong>; tamaño optimizado.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Moderación y seguridad (contenido)</strong>
+            <ul class="mt-1">
+              <li>Solo se muestran reseñas con estado <code>aprobada</code>; las reseñas en estado <code>pendiente</code> o <code>rechazada</code> nunca son visibles para otros usuarios.</li>
+              <li>El contenido de las reseñas no expone <strong>PII</strong> (email, teléfono, NIT); si se detecta PII en texto libre, la reseña va a revisión humana (ver HU 2.10.2).</li>
+              <li>La API de reseñas es <strong>independiente del motor de recomendación</strong>; un fallo en reseñas no interrumpe las recomendaciones.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback por ausencia de reseñas</strong>
+            <ul class="mt-1">
+              <li>Cuando un servicio no tiene reseñas aprobadas, se muestra un mensaje <strong>elegante</strong>: <em>"Sé el primero en calificar este servicio"</em> con CTA para dejar reseña.</li>
+              <li>Si el módulo de reseñas no responde en tiempo, se muestra el bloque de servicio <strong>sin el módulo de reseñas</strong> (degradación grácil).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Eventos a registrar</strong>
+            <ul class="mt-1">
+              <li><code>review_module_viewed</code>: usuario abre la sección de reseñas de un servicio.</li>
+              <li><code>review_rating_calculated</code>: se recalcula el promedio de un servicio.</li>
+              <li><code>review_page_loaded</code>: se carga una página de reseñas (con número de página).</li>
+              <li><code>review_fallback_shown</code>: se muestra el mensaje de "sin reseñas".</li>
+              <li>Todos los eventos incluyen: <code>service_id</code>, <code>user_key_pseudo</code>, <code>timestamp</code>, <code>canal</code>.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>API de reseñas independiente del motor</li>
-          <li>Carga asíncrona para no bloquear las recomendaciones</li>
-          <li>Cache de ratings con TTL de 1 hora</li>
-          <li>CDN para imágenes de perfil</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        2. Tecnología <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">API de Reseñas (independiente)</div>
+              <ul class="mb-0 small">
+                <li>Microservicio REST desacoplado del motor de recomendación.</li>
+                <li>Endpoints: <code>GET /services/{id}/reviews</code>, <code>GET /services/{id}/rating</code>, <code>POST /reviews</code>.</li>
+                <li>Paginación con cursor para lazy load eficiente.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Almacenamiento y Cache</div>
+              <ul class="mb-0 small">
+                <li>Base de datos relacional para reseñas (PostgreSQL o similar) con índice por <code>service_id</code> y <code>estado</code>.</li>
+                <li>Cache de ratings en Redis con TTL configurable (default 1h).</li>
+                <li>CDN para imágenes de perfil de autores.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Cálculo de Rating</div>
+              <ul class="mb-0 small">
+                <li>Media ponderada sobre calificaciones con estado <code>aprobada</code>.</li>
+                <li>Versionado del algoritmo de cálculo en tabla de configuración.</li>
+                <li>Job batch para recalcular promedios tras moderación masiva.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #F57F17;">Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Logs estructurados (JSON) por cada cálculo de rating y carga de reseñas.</li>
+                <li>Métricas: latencia p95 del módulo, tasa de cache hit, tasa de fallback activado.</li>
+                <li>Alertas por degradación del SLA de carga (> 1s p95).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Usuario empresario que consulta el Recomendador de Servicios y solicita ver el detalle de reseñas de un servicio recomendado.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (recomendador + API de reseñas)</li>
+                <li><strong>Base de Datos</strong> (reseñas + cache)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SALIDA ESPERADA</div>
+              <p class="mb-0 small">Rating promedio + lista paginada de reseñas aprobadas, o mensaje de fallback elegante si no hay reseñas disponibles.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #F57F17;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Visualización por servicio (rating + reseñas):</strong> el usuario solicita al Motor/API la información de rating y reseñas para un servicio específico.</li>
+          <li><strong>Cálculo correcto y trazable del rating:</strong> la Base de Datos devuelve las calificaciones aprobadas; el Motor calcula el promedio ponderado y lo versiona en log.</li>
+          <li><strong>Rendimiento:</strong> el Motor consulta el cache (Redis); si hay hit, devuelve desde cache; si no, recalcula y almacena con TTL.</li>
+          <li><strong>Moderación y seguridad (contenido):</strong> la Base de Datos filtra solo reseñas con estado <code>aprobada</code>; el Motor verifica ausencia de PII antes de serializar la respuesta.</li>
+          <li><strong>Fallback por ausencia de reseñas:</strong> si no existen reseñas aprobadas para el servicio, el Motor devuelve estructura de fallback con mensaje y CTA.</li>
+          <li><strong>Eventos a registrar:</strong> se emite el evento analítico correspondiente (<code>review_module_viewed</code>, <code>review_fallback_shown</code>, etc.) y se devuelve la respuesta final al usuario.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #F57F17;">Ejemplo de Respuesta</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "service_id": "S-134",
+  "rating": {
+    "promedio": 4.2,
+    "num_resenas": 47,
+    "version_algoritmo": "rating-v1.2"
+  },
+  "resenas": [
+    {
+      "id": "r-001",
+      "rating": 5,
+      "texto": "Excelente asesoría, muy pertinente para mi empresa.",
+      "fecha": "2025-11-20",
+      "autor": { "perfil": "Empresario MiPyme – Bogotá" }
+    }
+  ],
+  "paginacion": { "pagina": 1, "por_pagina": 10, "total": 47 },
+  "fallback": false
+}</pre>
+        <p class="text-muted small mt-2 mb-0">
+          <em>El módulo de reseñas carga asíncronamente y no bloquea la visualización de las recomendaciones principales.</em>
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Componente de tarjeta de servicio</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #F57F17;">Tarjeta de Servicio (rating visible)</div>
+              <ul class="mb-0 small">
+                <li>Estrella + valor numérico: <strong>★ 4.2</strong> (47 reseñas).</li>
+                <li>Enlace/botón <em>"Ver reseñas"</em> que despliega el panel lazy.</li>
+                <li>Badges de contexto: <code>Verificado</code>, <code>Nuevo</code> (si aplica).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #F57F17;">Panel de Reseñas (lazy load)</div>
+              <ul class="mb-0 small">
+                <li>Lista de reseñas con rating, texto, fecha y perfil básico del autor.</li>
+                <li>Botón <em>"Ver más reseñas"</em> al llegar al final de la página actual.</li>
+                <li>Fallback elegante: <em>"Sé el primero en calificar este servicio"</em> cuando no hay reseñas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#F57F17;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Rating con reseñas aprobadas</strong></td>
+                <td>Se muestra rating promedio correcto (media ponderada de calificaciones aprobadas) y número de reseñas.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Servicio sin reseñas</strong></td>
+                <td>Se muestra fallback elegante; no se expone rating de 0 ni campo vacío.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Reseña pendiente/rechazada</strong></td>
+                <td>Las reseñas no aprobadas no aparecen en el listado ni afectan el promedio visible.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Lazy load paginado</strong></td>
+                <td>Se cargan 10 reseñas iniciales; al paginado siguiente se cargan 10 más sin recargar la página.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Rendimiento ≤ 1s</strong></td>
+                <td>El módulo de reseñas responde en p95 ≤ 1000ms; fallo del módulo no bloquea las recomendaciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Cache hit / invalidación</strong></td>
+                <td>Tras publicar una nueva reseña aprobada, el rating en cache se invalida y el siguiente request devuelve valor actualizado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Trazabilidad de eventos</strong></td>
+                <td>Cada visualización del módulo genera evento <code>review_module_viewed</code> con campos obligatorios.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #F57F17;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Rating promedio</dt>
+          <dd class="col-sm-9">Media ponderada de todas las calificaciones aprobadas para un servicio, expresada en escala 1–5.</dd>
+
+          <dt class="col-sm-3">Lazy load</dt>
+          <dd class="col-sm-9">Técnica de carga diferida: el contenido se solicita solo cuando el usuario lo necesita (scroll o clic), evitando carga innecesaria.</dd>
+
+          <dt class="col-sm-3">TTL (Time To Live)</dt>
+          <dd class="col-sm-9">Tiempo de vida de un dato en cache; tras expirar, el dato se recalcula desde la fuente.</dd>
+
+          <dt class="col-sm-3">Estado de reseña</dt>
+          <dd class="col-sm-9">Ciclo de vida: <code>pendiente</code> → <code>aprobada</code> / <code>rechazada</code>. Solo las aprobadas son públicas.</dd>
+
+          <dt class="col-sm-3">Fallback elegante</dt>
+          <dd class="col-sm-9">Comportamiento de degradación grácil: el sistema muestra un estado alternativo informativo en vez de un error o campo vacío.</dd>
+
+          <dt class="col-sm-3 mb-0">CDN</dt>
+          <dd class="col-sm-9 mb-0">Content Delivery Network: red de distribución que sirve activos estáticos (imágenes) desde nodos geográficamente cercanos al usuario.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#F57F17 !important; background:#fff8e1;">
+      <strong>Nota de alcance E1:</strong> El módulo de reseñas opera de forma asíncrona e independiente del motor de recomendación. Un fallo en reseñas no interrumpe la experiencia principal de recomendación. La moderación del contenido de las reseñas se especifica en HU 2.10.2.
     </div>
 
   </div>
@@ -85,4 +375,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

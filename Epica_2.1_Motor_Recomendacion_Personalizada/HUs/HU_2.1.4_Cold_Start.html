@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.1.4 – Y si no existo (Cold Start)</title>
+  <title>HU 2.1.4 – ¿Y si no existo? (Recomendación Cold Start)</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">← Épica 2.1</a>
+        <a class="btn btn-outline-light btn-sm" href="../Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html">←
+          Épica 2.1</a>
         <a class="btn btn-outline-light btn-sm" href="../../Indice_Diagramas_Epicas.html">Inicio</a>
       </div>
     </div>
@@ -21,12 +24,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.1.4</div>
-      <h1 class="fw-bold fs-3 mb-0">Y si no existo (Cold Start)</h1>
+      <h1 class="fw-bold fs-3 mb-1">¿Y si no existo? — Recomendación para usuario sin historial</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.1 · Motor de Recomendación Personalizada · Cold Start</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1565C0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #1565C0;">Enunciado</h2>
@@ -34,47 +39,278 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario nuevo sin historial en el sistema</p>
+              <p class="mb-0">usuario cuya identificación <strong>no existe en el CRM</strong> o en el historial
+                de clientes que han navegado anteriormente en ccb.org.co.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">recibir recomendaciones relevantes desde mi primera visita</p>
+              <p class="mb-0">que el sistema me ofrezca <strong>recomendaciones proactivas</strong> basadas en
+                información mínima disponible (sector, intereses declarados, navegación o atributos generales),
+                o aleatorias que ayuden a ajustar el perfil progresivamente.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">no ver una página vacía o recomendaciones genéricas irrelevantes</p>
+              <p class="mb-0">recibir ayuda inmediata aunque no tenga un perfil en la CCB,
+                y que el sistema pueda aprender mi tipo de cliente, preferencias e intereses desde el inicio.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Objetivo funcional -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1565C0 !important; background:#e8f0fe;">
+      <strong>Objetivo funcional:</strong> Habilitar un flujo alterno de recomendación cuando el CRM no devuelve
+      coincidencias, evitando bloqueos y permitiendo ofrecer valor incluso a usuarios nuevos, externos o sin
+      registro previo.
+    </div>
+
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Definition of Done</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Sistema detecta automáticamente usuario cold-start</li>
-          <li>Obtiene datos mínimos de contexto y demografía</li>
-          <li>Aplica estrategia: populares por segmento o más contratados</li>
-          <li>Recolecta primeras interacciones para personalizar progresivamente</li>
-          <li>Transición automática al modelo personalizado al alcanzar umbral de datos</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>CA 1 — Detección de no existencia</strong>
+            <ul class="mt-1">
+              <li>El sistema valida el ID del usuario contra la réplica del CRM.</li>
+              <li>Si no existe, activa el <strong>"modo recomendación mínima viable"</strong> (no personalizada).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 2 — Ofrecer alternativas claras</strong>
+            <ul class="mt-1">
+              <li>Cuando no se encuentra el usuario, el asistente ofrece:
+                <ol type="a" class="mt-1">
+                  <li>Continuar sin identificación (<strong>modo invitado</strong>).</li>
+                  <li>Proveer algunos datos (p. ej.: sector, tipo de empresa, interés).</li>
+                  <li>Acceder al flujo de registro (solo si negocio lo aprueba).</li>
+                </ol>
+              </li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 3 — Recomendación proactiva basada en datos no sensibles</strong>
+            <ul class="mt-1">
+              <li>El motor genera recomendaciones usando:
+                <ul>
+                  <li>Atributos declarados por el usuario (<em>self-reported</em>).</li>
+                  <li>Populares del portafolio.</li>
+                  <li>Servicios gratuitos.</li>
+                  <li>Servicios más demandados por segmento general.</li>
+                  <li>Servicios introductorios para emprendedores o nuevos empresarios.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 4 — Cumplimiento normativo</strong>
+            <ul class="mt-1">
+              <li>No se infiere identidad.</li>
+              <li>No se construye perfil sin consentimiento.</li>
+              <li>Cumplimiento de la <strong>Ley 1581</strong> de protección de datos.</li>
+              <li>Decisiones trazadas y auditables.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 5 — Lógica explícita</strong>
+            <ul class="mt-1">
+              <li>El recomendador explica claramente:
+                <em>"Te recomiendo estos servicios porque aún no encuentro tu información en nuestra base de datos,
+                pero estos son los más útiles para empresarios como tú."</em>
+              </li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 6 — Métricas obligatorias</strong>
+            <ul class="mt-1">
+              <li>% de usuarios recomendados en modo invitado.</li>
+              <li>% de usuarios que pasan a registro.</li>
+              <li>CTR en modo invitado.</li>
+              <li>Efectividad vs. recomendaciones personalizadas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>CA 7 — Integración con el motor principal</strong>
+            <ul class="mt-1">
+              <li>El sistema cambia automáticamente de <em>"modo invitado"</em> a <em>"modo personalizado"</em>
+                cuando el usuario ingresa su ID válido.</li>
+              <li>Persistencia mínima del estado de transición.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        2. Tecnología <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Propuesto E1</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Umbral configurable de interacciones para transición</li>
-          <li>Segmentación demográfica como fallback</li>
-          <li>A/B testing entre estrategias cold-start</li>
-          <li>Métricas específicas para cohorte cold-start</li>
-        </ul>
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Detección y Fallback</div>
+              <ul class="mb-0 small">
+                <li>Validación de ID contra réplica CRM en tiempo real.</li>
+                <li>Activación automática de modo invitado con degradación segura.</li>
+                <li>Flag <code>is_cold_start</code> en cada request de recomendación.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Estrategias Cold Start</div>
+              <ul class="mb-0 small">
+                <li><strong>Popularidad por segmento general:</strong> top servicios del portafolio.</li>
+                <li><strong>Self-reported:</strong> datos declarados por el usuario (sector, tipo empresa).</li>
+                <li><strong>Servicios introductorios:</strong> enfocados a nuevos empresarios.</li>
+                <li><strong>Servicios gratuitos:</strong> priorizados sin riesgo de entrada.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Transición a Modo Personalizado</div>
+              <ul class="mb-0 small">
+                <li>Umbral configurable de interacciones / señales acumuladas.</li>
+                <li>Cambio automático cuando el usuario provee ID válido de CRM.</li>
+                <li>A/B testing entre estrategias cold start para optimización.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1565C0;">Privacidad y Trazabilidad</div>
+              <ul class="mb-0 small">
+                <li>Sin PII en el payload de recomendaciones para usuarios sin registro.</li>
+                <li>Decisiones auditables: razón de cada recomendación registrada.</li>
+                <li>Cumplimiento Ley 1581 — consentimiento previo para perfilado.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #1565C0;">Pasos del Flujo Cold Start</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Entrada:</strong> usuario accede al portal (anónimo o con ID no reconocido).</li>
+          <li><strong>Validación CRM:</strong> el backend consulta la réplica del CRM con el ID proporcionado.</li>
+          <li><strong>Detección cold start:</strong> si no existe coincidencia, se activa <code>mode=cold_start</code>.</li>
+          <li><strong>Oferta de alternativas:</strong> el sistema presenta opciones al usuario (modo invitado,
+            ingresar datos, registrarse).</li>
+          <li><strong>Generación de candidatos:</strong> usando datos self-reported + populares por segmento general
+            + servicios gratuitos + servicios introductorios.</li>
+          <li><strong>Re-ranking y reglas:</strong> aplicar filtros de elegibilidad básicos y boost de gratuitos.</li>
+          <li><strong>Respuesta:</strong> top-N recomendaciones con razón explícita del modo invitado.</li>
+          <li><strong>Captura de señales:</strong> las interacciones del usuario van construyendo su perfil
+            para la transición al modo personalizado.</li>
+        </ol>
+
+      </div>
+    </div>
+
+    <!-- 4. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">
+        4. Casos de Prueba <span class="badge ms-2" style="background:#1565C0;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:35%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>ID no encontrado en CRM</strong></td>
+                <td>Se activa modo invitado; se generan recomendaciones basadas en popularidad general.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Usuario provee sector y tipo de empresa</strong></td>
+                <td>Las recomendaciones se ajustan al segmento self-reported; score mejora vs. baseline random.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Explicación clara en modo invitado</strong></td>
+                <td>Cada recomendación incluye razón legible indicando el motivo del modo sin historial.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Transición a modo personalizado</strong></td>
+                <td>Al ingresar ID válido del CRM, el sistema cambia automáticamente a recomendaciones personalizadas.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Sin PII en logs</strong></td>
+                <td>El payload de decisiones no contiene datos personales identificables del usuario invitado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Métricas de cohorte cold start</strong></td>
+                <td>El dashboard reporta CTR, % registro y efectividad vs. personalizadas para el segmento invitado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1565C0;">5. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Cold Start</dt>
+          <dd class="col-sm-9">Problema de recomendación cuando no existe historial previo del usuario o el ítem.</dd>
+
+          <dt class="col-sm-3">Modo Invitado</dt>
+          <dd class="col-sm-9">Estado del sistema cuando el usuario navega sin identificación reconocida; usa popularidad y datos declarados.</dd>
+
+          <dt class="col-sm-3">Self-reported</dt>
+          <dd class="col-sm-9">Atributos que el usuario declara voluntariamente (sector, tipo empresa, interés) sin que el sistema los infiera.</dd>
+
+          <dt class="col-sm-3">Modo Personalizado</dt>
+          <dd class="col-sm-9">Estado del sistema cuando el usuario tiene perfil en CRM y suficientes señales para recomendación individual.</dd>
+
+          <dt class="col-sm-3 mb-0">anon_id</dt>
+          <dd class="col-sm-9 mb-0">Identificador de sesión temporal sin PII, para rastrear señales del usuario invitado.</dd>
+        </dl>
       </div>
     </div>
 
@@ -84,4 +320,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

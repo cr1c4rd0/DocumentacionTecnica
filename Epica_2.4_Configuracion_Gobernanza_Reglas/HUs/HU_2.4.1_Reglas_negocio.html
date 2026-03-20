@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.4.1 – Definir reglas de negocio</title>
+  <title>HU 2.4.1 – Definir reglas de negocio para el motor de recomendación</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,62 +23,337 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.4.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Definir reglas de negocio</h1>
+      <h1 class="fw-bold fs-3 mb-1">Definir reglas de negocio para el motor de recomendación</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.4 · Configuración y Gobernanza de Reglas · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #E65100;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #558B2F;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #E65100;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #558B2F;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">administrador de reglas del negocio</p>
+              <p class="mb-0">administradora/or de negocio de la CCB responsable de la configuración y gobernanza del motor de recomendación.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">definir y gestionar reglas (listas blancas/negras, exclusiones, restricciones) que controlan las recomendaciones</p>
+              <p class="mb-0">definir, gestionar y activar reglas de negocio (listas blancas, listas negras, exclusiones por segmento, restricciones por fecha/vigencia, prioridades de campaña) que controlen las recomendaciones generadas por el motor, <strong>sin necesidad de redeploy del modelo</strong>.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">asegurar que el motor siempre respete las políticas del negocio sin necesidad de redeploy</p>
+              <p class="mb-0">asegurar que el motor siempre respete las políticas comerciales, restricciones operativas y estrategias de campaña del negocio, con trazabilidad y control de cambios auditado.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#558B2F;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Interfaz para crear/editar/activar/desactivar reglas</li>
-          <li>Tipos de regla: whitelist, blacklist, exclusión por segmento, restricción por fecha</li>
-          <li>Reglas tienen prioridad y orden de evaluación configurable</li>
-          <li>Cambios aplicados en la próxima inferencia sin redeploy</li>
-          <li>Historial de cambios con usuario y timestamp</li>
-          <li>Validación antes de activar para detectar conflictos</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Panel de administración de reglas</strong>
+            <ul class="mt-1">
+              <li>Interfaz accesible para administradores que permita <strong>crear, editar, activar y desactivar</strong> reglas de negocio.</li>
+              <li>Las reglas se definen en panel web (o vía archivo YAML/JSON en repositorio) sin necesidad de intervención técnica de desarrollo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Tipos de regla soportados</strong>
+            <ul class="mt-1">
+              <li><strong>Whitelist:</strong> servicios que siempre deben aparecer para cierto segmento o campaña.</li>
+              <li><strong>Blacklist:</strong> servicios que nunca deben recomendarse (global o por segmento/rol).</li>
+              <li><strong>Exclusión por segmento:</strong> servicios excluidos para perfiles específicos.</li>
+              <li><strong>Restricción por fecha/vigencia:</strong> reglas activas sólo en un rango de fechas.</li>
+              <li><strong>Prioridad de campaña:</strong> boosting de servicios durante campañas activas.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Prioridad y orden de evaluación</strong>
+            <ul class="mt-1">
+              <li>Cada regla tiene un campo <code>prioridad</code> (numérico); se evalúan en orden descendente.</li>
+              <li>En caso de conflicto entre reglas, prevalece la de mayor prioridad; el conflicto queda registrado en el log.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Aplicación sin redeploy (hot-reload)</strong>
+            <ul class="mt-1">
+              <li>Los cambios en reglas se aplican en la <strong>próxima inferencia</strong> sin reiniciar el servicio (feature flag o config hot-reload).</li>
+              <li>Tiempo máximo de propagación del cambio: ≤ 5 minutos.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Auditoría y trazabilidad</strong>
+            <ul class="mt-1">
+              <li>Cada cambio de regla queda registrado con: <code>usuario</code>, <code>timestamp</code>, <code>versión_anterior</code>, <code>versión_nueva</code>, <code>motivo</code> (campo opcional).</li>
+              <li>Historial de cambios consultable con filtros por fecha, usuario y tipo de regla.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Validación antes de activar</strong>
+            <ul class="mt-1">
+              <li>El sistema verifica conflictos lógicos (ej. misma regla en whitelist y blacklist) antes de activar.</li>
+              <li>Si detecta conflicto, genera alerta al administrador y bloquea la activación hasta resolución.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>API de consulta de reglas activas</strong>
+            <ul class="mt-1">
+              <li>Endpoint <code>GET /rules/active</code> que retorna la versión activa de todas las reglas en formato JSON/YAML.</li>
+              <li>El motor de recomendación consume este endpoint en cada inferencia.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Reglas almacenadas en YAML o base de datos</li>
-          <li>Motor de reglas desacoplado del modelo ML</li>
-          <li>Versionamiento de configuraciones</li>
-          <li>API para consultar reglas activas</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">
+        2. Tecnología <span class="badge ms-2" style="background:#558B2F;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #558B2F;">Almacenamiento de Reglas</div>
+              <ul class="mb-0 small">
+                <li>Reglas en formato <strong>YAML / JSON</strong> versionadas en repositorio Git.</li>
+                <li>Alternativa: tabla de base de datos relacional con soporte a versionado.</li>
+                <li>Carga dinámica mediante config hot-reload o feature flags.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #558B2F;">Motor de Reglas</div>
+              <ul class="mb-0 small">
+                <li>Motor DSL/YAML desacoplado del modelo ML.</li>
+                <li>Evaluación de reglas por orden de prioridad con lógica de hard filters y boosting.</li>
+                <li>Registro de reglas aplicadas por request en el log de trazabilidad.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #558B2F;">Panel de Administración (dev)</div>
+              <ul class="mb-0 small">
+                <li>Interfaz web simple (puede ser notebook / admin panel) para E1.</li>
+                <li>CRUD de reglas con validación de conflictos en tiempo real.</li>
+                <li>Vista de historial de cambios con diff entre versiones.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #558B2F;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> valida que segmentos/roles referenciados en las reglas existen.</li>
+                <li><strong>Catálogo de Servicios:</strong> valida que los <code>service_id</code> en listas blancas/negras existen y están vigentes.</li>
+                <li><strong>Motor / API de Recomendación:</strong> consume las reglas activas en cada inferencia.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#558B2F;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR PRINCIPAL</div>
+              <p class="mb-0 small">Administradora/or de negocio de la CCB que accede al panel de configuración.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">Necesidad de negocio: nueva campaña, cambio de política comercial, restricción regulatoria o corrección de comportamiento del motor.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SISTEMA DESTINO</div>
+              <p class="mb-0 small">CRM Dynamics: persiste la regla y notifica al Motor/API para que la aplique en la próxima inferencia.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #558B2F;">Pasos del Flujo</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Administrador accede al panel</strong> y selecciona "Definir regla".</li>
+          <li><strong>Selecciona tipo de regla</strong> (whitelist / blacklist / exclusión / fecha / campaña) y completa campos requeridos.</li>
+          <li><strong>Sistema valida</strong> conflictos lógicos y existencia de entidades referenciadas (servicio, segmento).</li>
+          <li><strong>Administrador activa la regla</strong>; el sistema la persiste versionada con timestamp y usuario.</li>
+          <li><strong>Motor/API</strong> recarga la configuración de reglas en el siguiente ciclo de inferencia (≤ 5 min).</li>
+          <li><strong>Log de auditoría</strong> registra el cambio con todos los metadatos.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #558B2F;">Ejemplo de Regla en YAML</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">rules:
+  - id: "RULE-042"
+    tipo: blacklist
+    descripcion: "Excluir Asesoría Jurídica para segmento Emprendedor en periodo de piloto"
+    services: ["S-087", "S-091"]
+    segmentos: ["Emprendedor"]
+    vigencia:
+      desde: "2025-01-01"
+      hasta: "2025-06-30"
+    prioridad: 10
+    activa: true
+    auditoria:
+      creado_por: "jperez@ccb.org.co"
+      timestamp: "2025-01-15T09:30:00Z"
+      version: "rules-2025.01.15"</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">
+        4. Diseño — Panel de Administración <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">E1 – Admin interno</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #558B2F;">Vista de Lista de Reglas</div>
+              <ul class="mb-0 small">
+                <li>Tabla con columnas: ID, tipo, descripción, segmentos, vigencia, prioridad, estado (activa/inactiva).</li>
+                <li>Filtros por tipo de regla y estado.</li>
+                <li>Acciones rápidas: activar/desactivar, editar, ver historial.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #558B2F;">Formulario de Creación/Edición</div>
+              <ul class="mb-0 small">
+                <li>Campos: tipo, servicios afectados (selector del catálogo), segmentos, fechas, prioridad, motivo.</li>
+                <li>Alerta visual en caso de conflicto detectado antes de guardar.</li>
+                <li>Previsualización del impacto estimado (cuántos usuarios afectados).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#558B2F;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Blacklist activada</strong></td>
+                <td>Servicio <code>S-087</code> en blacklist no aparece en ninguna recomendación para el segmento configurado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Whitelist de campaña</strong></td>
+                <td>Servicio de campaña aparece siempre en top-3 para el segmento objetivo durante el periodo de vigencia.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Regla expirada por fecha</strong></td>
+                <td>Al vencer la fecha de fin, la regla se desactiva automáticamente y deja de aplicarse.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Detección de conflicto</strong></td>
+                <td>Si el mismo servicio está en whitelist y blacklist, el sistema bloquea la activación y muestra alerta.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Hot-reload sin redeploy</strong></td>
+                <td>Cambio de regla aplicado en ≤ 5 min; log muestra nuevo <code>version_config</code> en las inferencias siguientes.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Auditoría de cambio</strong></td>
+                <td>Historial registra usuario, timestamp y versiones anterior/nueva para cada modificación.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #558B2F;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Whitelist</dt>
+          <dd class="col-sm-9">Lista de servicios que siempre deben incluirse en las recomendaciones para un segmento o campaña determinada.</dd>
+
+          <dt class="col-sm-3">Blacklist</dt>
+          <dd class="col-sm-9">Lista de servicios que deben excluirse siempre de las recomendaciones (global o por segmento).</dd>
+
+          <dt class="col-sm-3">Hot-reload</dt>
+          <dd class="col-sm-9">Capacidad del sistema de recargar configuración o reglas sin reiniciar el servicio ni hacer redeploy del modelo.</dd>
+
+          <dt class="col-sm-3">Prioridad de regla</dt>
+          <dd class="col-sm-9">Valor numérico que determina el orden de evaluación cuando varias reglas aplican al mismo contexto.</dd>
+
+          <dt class="col-sm-3">Feature flag</dt>
+          <dd class="col-sm-9">Mecanismo para activar/desactivar funcionalidades o configuraciones en tiempo de ejecución sin redeploy.</dd>
+
+          <dt class="col-sm-3 mb-0">Boosting</dt>
+          <dd class="col-sm-9 mb-0">Incremento artificial del score de ciertos servicios para favorecer su aparición en el ranking (ej. campaña comercial).</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#558B2F !important; background:#f1f8e9;">
+      <strong>Nota de alcance E1:</strong> El panel de administración puede ser una interfaz simplificada (notebook o admin básico). Lo esencial es que las reglas se persistan en YAML/BD con versionado, se apliquen sin redeploy y queden auditadas. La UI de producción completa se desarrolla en etapas posteriores.
     </div>
 
   </div>
@@ -85,4 +362,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,66 +20,378 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1B5E20; --hero-end: #2E7D32;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.16.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Ajuste de modelo por feedback</h1>
+      <h1 class="fw-bold fs-3 mb-1">Ajuste de modelo por feedback</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.16 · Aprendizaje Continuo</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #1B5E20;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #1B5E20;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">Data Scientist responsable del modelo de recomendación</p>
+              <p class="mb-0">Científico de Datos del Recomendador de Servicios (CCB)</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">usar el feedback e interacciones recolectados para reentrenar y mejorar el modelo periódicamente</p>
+              <p class="mb-0">incorporar el feedback explícito e implícito de los usuarios en un <strong>ciclo de entrenamiento periódico</strong> del modelo, con evaluación rigurosa antes del despliegue</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">que el motor evolucione con el comportamiento real de los usuarios y mejore sus métricas de negocio</p>
+              <p class="mb-0">que el motor de recomendación <strong>evolucione con el comportamiento real</strong> de los usuarios, mejore sus métricas de negocio y pueda desplegarse o revertirse de forma controlada</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Reentrenamiento</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Pipeline de reentrenamiento consume feedback + interacciones de las últimas N semanas</li>
-          <li>Validación de fairness y sesgo antes de desplegar nueva versión</li>
-          <li>Comparación A/B entre versión actual y nueva candidata</li>
-          <li>Rollback automático si métricas caen más del umbral configurado</li>
-          <li>Notificación al equipo cuando el modelo se actualiza en producción</li>
-          <li>Incremento mínimo de precisión del 2% para aprobar nueva versión</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Incorporación de feedback en un ciclo de entrenamiento</strong>
+            <ul class="mt-1">
+              <li>El pipeline de reentrenamiento consume de forma automática:
+                <ul class="mt-1">
+                  <li>Feedback explícito (útil/no útil) de las últimas N semanas (N configurable, defecto 4).</li>
+                  <li>Señales implícitas: clics, vistas, descartes, tiempo de visualización (de HU 2.14.2).</li>
+                  <li>Datos históricos de servicios contratados (SIREP).</li>
+                </ul>
+              </li>
+              <li>El ciclo de reentrenamiento se ejecuta de forma <strong>periódica y automatizada</strong> (cron semanal o bajo demanda desde panel admin).</li>
+              <li>Cada ciclo produce un artefacto de modelo versionado con: <code>version_id</code>, <code>fecha_entrenamiento</code>, <code>datos_usados</code>, <code>métricas_offline</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Evaluación antes del despliegue — CCB define rol responsable</strong>
+            <ul class="mt-1">
+              <li>Antes de desplegar una nueva versión, se ejecuta automáticamente una batería de evaluación offline:
+                <ul class="mt-1">
+                  <li><strong>Métricas de calidad:</strong> precision@K, recall@K, NDCG, coverage, diversity, novelty.</li>
+                  <li><strong>Validación de fairness y sesgo:</strong> distribución por segmento; alerta si hay diferencias significativas entre grupos.</li>
+                  <li><strong>Comparación con versión actual:</strong> mejora mínima configurable (defecto: +2% en precision@5).</li>
+                </ul>
+              </li>
+              <li>La CCB define un <strong>rol responsable de aprobación</strong> (Científico de Datos + Product Owner) que revisa el reporte de evaluación antes de autorizar el despliegue.</li>
+              <li>Si las métricas no superan el umbral mínimo, el despliegue se bloquea y se notifica al equipo con el reporte de comparación.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Despliegue controlado y rollback</strong>
+            <ul class="mt-1">
+              <li>El despliegue de la nueva versión se realiza de forma <strong>gradual</strong> (canary: 5% → 20% → 100%) con monitoreo de métricas en cada etapa.</li>
+              <li>Si en cualquier etapa del canary las métricas online caen por debajo del umbral configurado, se activa <strong>rollback automático</strong> a la versión anterior.</li>
+              <li>El rollback manual también está disponible desde el panel admin con un clic.</li>
+              <li>El estado de cada versión del modelo queda registrado: <code>en_prueba</code>, <code>activa</code>, <code>retirada</code>, <code>rollback</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Privacidad/consentimiento y minimización</strong>
+            <ul class="mt-1">
+              <li>Solo se usan en el entrenamiento datos de usuarios con <strong>consentimiento explícito</strong> de uso de sus datos para mejora del servicio.</li>
+              <li>Los datos de entrenamiento se trabajan con <code>user_key_pseudo</code> (seudonimizados); no se expone PII en el pipeline de ML.</li>
+              <li>Principio de minimización: solo se incluyen las features estrictamente necesarias para el modelo; se documentan en el artefacto de versión.</li>
+              <li>Los datasets de entrenamiento se eliminan o archivan tras el ciclo, según política de retención de datos de ML.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento del motor en producción</strong>
+            <ul class="mt-1">
+              <li>La nueva versión del modelo no debe degradar la latencia de inferencia: p95 ≤ tope definido en configuración (referencia: 300 ms).</li>
+              <li>Se monitorean métricas online en producción tras cada despliegue: CTR, tasa de descarte, conversión, latencia p95.</li>
+              <li>Alertas configuradas en el sistema de observabilidad (Grafana/Datadog) para degradación de métricas post-despliegue.</li>
+              <li>Notificación automática al equipo cuando el modelo se actualiza exitosamente en producción.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>MLflow o similar para tracking de experimentos</li>
-          <li>Pipeline orquestado con Airflow</li>
-          <li>Validación de sesgo con Fairlearn o AIF360</li>
-          <li>Blue-green deployment para cambio de versión</li>
-          <li>Alertas en Grafana/Datadog sobre degradación de métricas</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        2. Tecnología <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Pipeline de Reentrenamiento</div>
+              <ul class="mb-0 small">
+                <li>Orquestación con <strong>Apache Airflow</strong> o equivalente (DAG semanal + on-demand).</li>
+                <li>Tracking de experimentos con <strong>MLflow</strong>: versiones, parámetros, métricas, artefactos.</li>
+                <li>Feature store actualizado con señales de feedback e interacciones recientes.</li>
+                <li>Framework de entrenamiento: scikit-learn / PyTorch / LightFM según modelo base.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Evaluación y Validación</div>
+              <ul class="mb-0 small">
+                <li>Métricas offline: precision@K, recall@K, NDCG, coverage, diversity, novelty (script reproducible).</li>
+                <li>Validación de fairness: <strong>Fairlearn</strong> o <strong>AIF360</strong> — distribución equitativa entre segmentos.</li>
+                <li>Comparación automática con versión en producción; bloqueo si no supera umbral mínimo.</li>
+                <li>Reporte de evaluación generado automáticamente y enviado al rol responsable para aprobación.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Despliegue y Rollback</div>
+              <ul class="mb-0 small">
+                <li>Estrategia <strong>canary deployment</strong>: 5% → 20% → 100% con pausa entre etapas.</li>
+                <li>Rollback automático si métricas online caen por debajo de umbral configurado.</li>
+                <li>Rollback manual desde panel admin con registro de motivo.</li>
+                <li>Registro de estado de cada versión: <code>en_prueba</code> | <code>activa</code> | <code>retirada</code> | <code>rollback</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #1B5E20;">Observabilidad en Producción</div>
+              <ul class="mb-0 small">
+                <li>Dashboards en <strong>Grafana / Datadog</strong>: CTR, latencia p95, tasa de descarte, cobertura por segmento.</li>
+                <li>Alertas automáticas por degradación de métricas post-despliegue.</li>
+                <li>Notificación al equipo (Slack/email) en cada actualización exitosa del modelo.</li>
+                <li>Panel de historial de versiones con métricas comparativas offline y online.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> Científico de Datos.</li>
+                <li><strong>Motor / API:</strong> incorporación de feedback y rendimiento en producción.</li>
+                <li><strong>Panel Admin:</strong> evaluación antes del despliegue y rol responsable.</li>
+                <li><strong>Frontend / UI:</strong> despliegue controlado y rollback.</li>
+                <li><strong>Formulario:</strong> privacidad/consentimiento y minimización.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SECUENCIA PRINCIPAL</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>Motor / API lanza ciclo de incorporación de feedback en entrenamiento.</li>
+                <li>Panel Admin ejecuta evaluación; CCB define rol responsable para aprobación del despliegue.</li>
+                <li>Frontend / UI gestiona despliegue controlado (canary) y rollback si es necesario.</li>
+                <li>Formulario verifica privacidad/consentimiento y minimización de datos de entrenamiento.</li>
+                <li>Motor / API monitorea rendimiento del motor en producción y notifica al equipo.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">CICLO DE APRENDIZAJE</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li><strong>Recolección:</strong> feedback + interacciones + SIREP.</li>
+                <li><strong>Entrenamiento:</strong> pipeline automatizado (Airflow + MLflow).</li>
+                <li><strong>Evaluación:</strong> métricas offline + fairness + umbral mínimo.</li>
+                <li><strong>Aprobación:</strong> rol responsable revisa reporte.</li>
+                <li><strong>Despliegue:</strong> canary gradual con monitoreo online.</li>
+                <li><strong>Monitoreo:</strong> alertas y métricas en producción.</li>
+                <li><strong>Rollback:</strong> automático o manual si hay degradación.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #1B5E20;">Ejemplo de Artefacto de Versión de Modelo</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "version_id": "rec-0.4.0",
+  "fecha_entrenamiento": "2025-09-01T03:00:00Z",
+  "datos_usados": {
+    "feedback_semanas": 4,
+    "registros_feedback": 12430,
+    "eventos_interaccion": 87650,
+    "registros_sirep": 45200
+  },
+  "metricas_offline": {
+    "precision_at_5": 0.61,
+    "recall_at_5": 0.44,
+    "ndcg": 0.57,
+    "coverage": 0.83,
+    "diversity": 0.71,
+    "novelty": 0.68
+  },
+  "metricas_vs_version_anterior": {
+    "precision_at_5_delta": "+0.03",
+    "supera_umbral_minimo": true
+  },
+  "fairness": {
+    "alerta_sesgo": false,
+    "distribucion_segmentos": "OK"
+  },
+  "estado": "en_prueba",
+  "aprobado_por": null
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        4. Diseño — Panel de Gestión de Versiones del Modelo
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1B5E20;">Vista de Versiones del Modelo</div>
+              <ul class="mb-0 small">
+                <li>Tabla con columnas: versión, fecha, estado, precision@5, delta vs. anterior, aprobado por.</li>
+                <li>Badge de estado: <span class="badge" style="background:#1B5E20;">Activa</span> <span class="badge bg-warning text-dark">En prueba</span> <span class="badge bg-secondary">Retirada</span> <span class="badge bg-danger">Rollback</span>.</li>
+                <li>Botón "Aprobar despliegue" disponible para versiones <code>en_prueba</code> que superaron umbral.</li>
+                <li>Botón "Rollback manual" disponible para la versión activa.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #1B5E20;">Reporte de Evaluación (por versión)</div>
+              <ul class="mb-0 small">
+                <li>Métricas offline con comparativo vs. versión anterior (tabla + gráfico de barras).</li>
+                <li>Sección de fairness: distribución por segmento, alertas de sesgo.</li>
+                <li>Lista de features usadas en el entrenamiento.</li>
+                <li>Enlace a experimento en MLflow para trazabilidad completa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#1B5E20;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Ciclo de entrenamiento automático</strong></td>
+                <td>El DAG de Airflow ejecuta el pipeline semanal y produce artefacto de modelo versionado con métricas offline registradas en MLflow.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Bloqueo por umbral no superado</strong></td>
+                <td>Si precision@5 no mejora ≥ 2% vs. versión actual, el despliegue queda bloqueado y se notifica al equipo con reporte comparativo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Aprobación y despliegue canary</strong></td>
+                <td>Rol responsable aprueba desde panel; la versión se despliega al 5% del tráfico. Tras métricas estables, escala a 20% y luego a 100%.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Rollback automático</strong></td>
+                <td>Si CTR cae &gt; umbral configurado durante canary, el sistema revierte automáticamente a la versión anterior y notifica al equipo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Fairness sin sesgo</strong></td>
+                <td>El reporte de evaluación no muestra alertas de sesgo entre segmentos; la diferencia de precision entre grupos es ≤ umbral configurado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Privacidad en entrenamiento</strong></td>
+                <td>El dataset de entrenamiento no contiene PII directa; solo <code>user_key_pseudo</code>. Solo incluye datos de usuarios con consentimiento activo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Latencia en producción no degradada</strong></td>
+                <td>La nueva versión del modelo mantiene latencia de inferencia p95 ≤ tope configurado tras despliegue completo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #1B5E20;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">NDCG</dt>
+          <dd class="col-sm-9">Normalized Discounted Cumulative Gain — métrica de ranking que penaliza elementos relevantes en posiciones bajas de la lista.</dd>
+
+          <dt class="col-sm-3">Canary Deployment</dt>
+          <dd class="col-sm-9">Estrategia de despliegue gradual que expone la nueva versión a un porcentaje pequeño del tráfico antes de escalar al 100%.</dd>
+
+          <dt class="col-sm-3">Fairness / Fairlearn</dt>
+          <dd class="col-sm-9">Conjunto de técnicas y herramientas para detectar y mitigar sesgo en modelos de ML entre diferentes grupos demográficos o de negocio.</dd>
+
+          <dt class="col-sm-3">Rollback</dt>
+          <dd class="col-sm-9">Reversión del sistema a una versión anterior del modelo, ya sea automática (por umbral) o manual (desde panel admin).</dd>
+
+          <dt class="col-sm-3">Feature Store</dt>
+          <dd class="col-sm-9">Repositorio centralizado de variables (features) listas para entrenamiento e inferencia, actualizado con señales de feedback e interacciones.</dd>
+
+          <dt class="col-sm-3">MLflow</dt>
+          <dd class="col-sm-9">Plataforma de tracking de experimentos de ML que registra parámetros, métricas y artefactos por cada ciclo de entrenamiento.</dd>
+
+          <dt class="col-sm-3 mb-0">Seudonimización</dt>
+          <dd class="col-sm-9 mb-0">Sustitución de PII por una clave no reversible (<code>user_key_pseudo</code>) que permite el análisis sin exponer datos personales.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#1B5E20 !important; background:#e8f5e9;">
+      <strong>Nota de alcance:</strong> Esta HU cubre el ciclo completo de reentrenamiento del modelo con feedback, evaluación rigurosa, despliegue controlado (canary) y rollback. La captura del feedback explícito del usuario se gestiona en HU 2.16.1. El registro de eventos de interacción para ML se gestiona en HU 2.14.2. La CCB define el rol responsable de aprobación del despliegue de cada nueva versión.
     </div>
 
   </div>
@@ -86,4 +400,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

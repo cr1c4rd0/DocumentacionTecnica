@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,341 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1B5E20; --hero-end: #2E7D32;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.11.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Redirección al formulario correcto</h1>
+      <h1 class="fw-bold fs-3 mb-1">Redirección al formulario correcto</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.11 · Integración con Formularios de Servicios · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00796B;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #2E7D32;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #00796B;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #2E7D32;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que decide inscribirse en un servicio recomendado</p>
+              <p class="mb-0">usuario empresario que <strong>recibe una recomendación de servicio</strong> y decide inscribirse.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ser llevado directamente al formulario correcto con mi contexto precargado</p>
+              <p class="mb-0">ser llevado directamente al <strong>formulario correcto</strong> correspondiente al servicio, con mis datos de contexto disponibles.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">completar mi inscripción sin fricciones ni búsquedas adicionales</p>
+              <p class="mb-0">completar mi inscripción <strong>sin fricciones</strong> ni búsquedas adicionales en el portal.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Deep link generado con parámetros de contexto (userId, serviceId, campaignId)</li>
-          <li>Redirección en ≤ 500ms</li>
-          <li>Datos del usuario precargados en el formulario cuando sea posible</li>
-          <li>Manejo de sesión expirada con reautenticación transparente</li>
-          <li>URL de deep link trackeable para atribución</li>
-          <li>Fallback a formulario genérico si deep link falla</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Enlace correcto por servicio (catálogo → formulario)</strong>
+            <ul class="mt-1">
+              <li>Cada servicio del catálogo tiene <strong>exactamente un enlace de formulario</strong> canónico mapeado; el mapeo reside en el Catálogo de Servicios (no hardcodeado en el frontend).</li>
+              <li>El sistema genera un <strong>deep link</strong> con parámetros de contexto: <code>service_id</code>, <code>recommendation_id</code>, <code>user_key_pseudo</code>, <code>canal</code>, <code>campaign_id</code> (si aplica).</li>
+              <li>La redirección se produce en <strong>≤ 500 ms</strong> desde el clic del usuario.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Validación automática y monitoreo de enlaces</strong>
+            <ul class="mt-1">
+              <li>Job automático (cron diario) valida que todos los enlaces de formulario en el catálogo responden con HTTP 200; los que fallan se marcan como <code>enlace_roto</code>.</li>
+              <li>Alerta a equipo de integración cuando se detecta un <code>enlace_roto</code>.</li>
+              <li>Métricas de monitoreo: <code>tasa_enlaces_rotos</code>, <code>latencia_redirect_p95</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y experiencia de navegación</strong>
+            <ul class="mt-1">
+              <li>La apertura del formulario se produce en una <strong>nueva pestaña</strong> (o navegación configurada por canal) para no interrumpir el contexto del recomendador.</li>
+              <li>Si la sesión del usuario está activa en el portal CCB, el formulario <strong>no requiere re-autenticación</strong> (SSO/token heredado).</li>
+              <li>El formulario destino recibe los parámetros de contexto vía query string firmado o JWT corto.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback si el enlace no existe o falla</strong>
+            <ul class="mt-1">
+              <li>Si el enlace del formulario no existe en el catálogo o está marcado como <code>enlace_roto</code>, se muestra al usuario un mensaje con <strong>alternativa de contacto</strong> (teléfono o chat CCB).</li>
+              <li>El sistema registra el intento fallido en log con: <code>service_id</code>, <code>motivo_fallo</code>, <code>timestamp</code>.</li>
+              <li>Nunca se redirige al usuario a una URL inválida o de error 404.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Seguridad y control de acceso</strong>
+            <ul class="mt-1">
+              <li>Los deep links son <strong>firmados</strong> (HMAC o JWT de corta vida, TTL ≤ 15 minutos) para prevenir manipulación de parámetros.</li>
+              <li>No se expone PII del usuario en la URL; solo <code>user_key_pseudo</code> y el token firmado.</li>
+              <li>El formulario destino valida la firma antes de usar los parámetros de contexto.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Eventos analíticos estructurados</strong>
+            <ul class="mt-1">
+              <li>Se emite evento <code>recommendation_cta_clicked</code> al hacer clic en el botón de inscripción.</li>
+              <li>Se emite evento <code>form_redirect_initiated</code> con resultado: <code>success</code> / <code>fallback</code> / <code>error</code>.</li>
+              <li>Cada evento incluye: <code>recommendation_id</code>, <code>service_id</code>, <code>user_key_pseudo</code>, <code>canal</code>, <code>campaign_id</code>, <code>timestamp</code>.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Servicio de generación de deep links</li>
-          <li>JWT firmado con contexto de la recomendación</li>
-          <li>Integración con SSO del portal</li>
-          <li>Registro de evento redirect en pipeline de atribución</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        2. Tecnología <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Catálogo de Servicios (fuente de mapeo)</div>
+              <ul class="mb-0 small">
+                <li>Campo <code>url_formulario</code> en el maestro de servicios; editable por equipo de integración sin redeploy.</li>
+                <li>Campo <code>estado_enlace</code>: <code>activo</code> / <code>enlace_roto</code> / <code>sin_formulario</code>.</li>
+                <li>API interna para consulta: <code>GET /catalog/services/{id}/form-url</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Servicio de Deep Links</div>
+              <ul class="mb-0 small">
+                <li>Generación de JWT firmado con contexto: <code>service_id</code>, <code>recommendation_id</code>, <code>user_key_pseudo</code>, <code>exp</code> (15 min).</li>
+                <li>Endpoint: <code>POST /deep-links</code> → retorna URL firmada.</li>
+                <li>Integración con SSO del portal para herencia de sesión.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Monitoreo de Enlace</div>
+              <ul class="mb-0 small">
+                <li>Job cron diario: HEAD request a cada URL de formulario del catálogo.</li>
+                <li>Actualización automática del campo <code>estado_enlace</code>.</li>
+                <li>Alerta por email/Teams cuando se detecta <code>enlace_roto</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #2E7D32;">Pipeline Analítico</div>
+              <ul class="mb-0 small">
+                <li>Eventos estructurados emitidos a pipeline de analítica (Kafka / Event Hub o similar).</li>
+                <li>Registro de: clic en CTA, resultado de redirección, fallback activado.</li>
+                <li>Trazabilidad de <code>recommendation_id</code> → clic → formulario.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTOR</div>
+              <p class="mb-0 small">Usuario empresario que recibe una recomendación de servicio y hace clic en el botón de inscripción.</p>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">PARTICIPANTES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor</strong></li>
+                <li><strong>Motor / API</strong> (recomendador + servicio deep links)</li>
+                <li><strong>Catálogo Servicios</strong> (mapeo service → form URL)</li>
+                <li><strong>Frontend / UI</strong> (portal CCB)</li>
+                <li><strong>Formulario</strong> (sistema destino)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">CONDICIÓN DE ÉXITO</div>
+              <p class="mb-0 small">El usuario llega al formulario correcto con el contexto de la recomendación disponible, en ≤ 500ms, sin reautenticación.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Pasos del Flujo (según Diagrama de Secuencia)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Enlace correcto por servicio:</strong> el Usuario hace clic en "Inscribirme"; el Motor/API consulta al Catálogo Servicios la URL canónica del formulario para el <code>service_id</code>.</li>
+          <li><strong>Validación automática y monitoreo:</strong> el Motor/API verifica el estado del enlace en el Catálogo (<code>activo</code> vs <code>enlace_roto</code>); si está activo, genera el deep link firmado.</li>
+          <li><strong>Rendimiento y experiencia de navegación:</strong> el Frontend/UI recibe el deep link y lo abre en nueva pestaña hacia el Formulario destino; la sesión SSO se hereda.</li>
+          <li><strong>Fallback si el enlace no existe o falla:</strong> el Formulario devuelve error o el enlace está marcado como roto; el Motor/API activa el fallback y devuelve respuesta alternativa al Motor.</li>
+          <li><strong>Seguridad y control de acceso:</strong> el Motor/API valida la firma del JWT antes de procesar los parámetros de contexto.</li>
+          <li><strong>Eventos analíticos estructurados:</strong> el Catálogo Servicios emite evento <code>form_redirect_initiated</code> al pipeline analítico.</li>
+          <li><strong>Confirmación final:</strong> el Motor/API confirma al usuario el resultado de la redirección; se emiten los eventos analíticos completos.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #2E7D32;">Ejemplo de Deep Link Generado</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">https://formularios.ccb.org.co/asesoria-formalizacion
+  ?ctx=eyJhbGciOiJIUzI1NiJ9...   ← JWT firmado (TTL 15min)
+  &canal=recomendador
+  &campaign=Q1-Form
+
+// Payload decodificado del JWT:
+{
+  "recommendation_id": "rec-0042",
+  "service_id": "S-134",
+  "user_key_pseudo": "u_9f3a",
+  "canal": "recomendador",
+  "campaign_id": "Q1-Form",
+  "exp": 1703163900
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        4. Diseño — Qué ve el Usuario <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">CTA en tarjeta de recomendación</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">Tarjeta de Recomendación (CTA)</div>
+              <ul class="mb-0 small">
+                <li>Botón primario: <em>"Inscribirme"</em> o <em>"Ir al formulario"</em>.</li>
+                <li>Indicador de carga (spinner) mientras se genera el deep link (≤ 500ms).</li>
+                <li>Si hay fallback: mensaje con opción de contacto alternativa.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #2E7D32;">Formulario Destino</div>
+              <ul class="mb-0 small">
+                <li>Se abre en nueva pestaña con el contexto de la recomendación disponible.</li>
+                <li>El nombre del servicio puede pre-completarse si el formulario lo soporta.</li>
+                <li>Sin solicitud de re-login si la sesión SSO está activa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#2E7D32;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Enlace activo — redirección exitosa</strong></td>
+                <td>Deep link generado en ≤ 500ms; usuario llega al formulario correcto con JWT válido.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Enlace roto en catálogo</strong></td>
+                <td>Se muestra mensaje de fallback con alternativa de contacto; no se redirige a URL inválida.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>JWT expirado (> 15 min)</strong></td>
+                <td>El formulario destino rechaza el JWT; el Motor genera uno nuevo si el usuario reintenta.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Parámetros manipulados en URL</strong></td>
+                <td>Validación de firma falla; redirección no se procesa; evento de seguridad registrado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Monitoreo detecta enlace roto</strong></td>
+                <td>Job cron actualiza estado a <code>enlace_roto</code> y dispara alerta al equipo de integración.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Eventos analíticos completos</strong></td>
+                <td>Cada clic exitoso genera <code>recommendation_cta_clicked</code> y <code>form_redirect_initiated</code> con todos los campos requeridos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #2E7D32;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Deep link</dt>
+          <dd class="col-sm-9">URL que apunta directamente a una página o recurso específico dentro de una aplicación, con parámetros de contexto incluidos.</dd>
+
+          <dt class="col-sm-3">JWT (JSON Web Token)</dt>
+          <dd class="col-sm-9">Token compacto y firmado que transporta claims de contexto; su firma permite verificar que no fue manipulado.</dd>
+
+          <dt class="col-sm-3">SSO (Single Sign-On)</dt>
+          <dd class="col-sm-9">Mecanismo de autenticación única que permite al usuario acceder a múltiples sistemas con una sola sesión activa.</dd>
+
+          <dt class="col-sm-3">Enlace roto</dt>
+          <dd class="col-sm-9">URL de formulario que no responde con HTTP 200; detectada por el job de monitoreo automático.</dd>
+
+          <dt class="col-sm-3">recommendation_id</dt>
+          <dd class="col-sm-9">Identificador único de la recomendación específica que originó el clic del usuario; usado para trazabilidad en el pipeline de atribución.</dd>
+
+          <dt class="col-sm-3 mb-0">Canal</dt>
+          <dd class="col-sm-9 mb-0">Punto de contacto del usuario con el recomendador (portal web, móvil, asistente, etc.).</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#2E7D32 !important; background:#e8f5e9;">
+      <strong>Nota de alcance E1:</strong> La redirección con deep link y JWT firmado es el contrato mínimo de integración. El pre-llenado de campos en el formulario destino depende de las capacidades del sistema de formularios CCB y se implementa de forma incremental. Los eventos analíticos generados aquí son la base del pipeline de atribución de HU 2.11.2 y 2.11.3.
     </div>
 
   </div>
@@ -85,4 +363,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

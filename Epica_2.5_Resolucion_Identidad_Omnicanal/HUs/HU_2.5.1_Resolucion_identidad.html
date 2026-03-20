@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HU 2.5.1 – Resolución de identidad omnicanal</title>
+  <title>HU 2.5.1 – Resolución de identidad omnicanal para perfilamiento y recomendación</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -21,12 +23,14 @@
   <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.5.1</div>
-      <h1 class="fw-bold fs-3 mb-0">Resolución de identidad omnicanal</h1>
+      <h1 class="fw-bold fs-3 mb-1">Resolución de identidad omnicanal para perfilamiento y recomendación de servicios (Top-N)</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.5 · Resolución de Identidad Omnicanal · Etapa 1 (Desarrollo)</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #00695C;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #00695C;">Enunciado</h2>
@@ -34,48 +38,297 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario que interactúa con CCB desde múltiples canales</p>
+              <p class="mb-0">sistema Recomendador de servicios de la CCB que necesita identificar a cada usuario de manera confiable a través de múltiples canales (web, chat, WhatsApp, presencial).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">ser reconocido como la misma persona independientemente del canal que use</p>
+              <p class="mb-0">capturar los identificadores disponibles, resolver la identidad mediante reglas de matching (determinístico y probabilístico), y persistir la continuidad omnicanal del perfil unificado.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">recibir recomendaciones coherentes y personalizadas en todos mis puntos de contacto</p>
+              <p class="mb-0">generar recomendaciones personalizadas Top-N coherentes para cada usuario en todos sus canales de interacción, con entrada suave sin fricción y consentimiento claro.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Unificación de identidad por email, teléfono, IDs de sistema y cookies</li>
-          <li>Generación de ID unificado (golden record) con trazabilidad</li>
-          <li>Resolución en ≤ 200ms</li>
-          <li>Gestión de conflictos cuando hay identidades parcialmente coincidentes</li>
-          <li>Auditoría completa de fusiones y separaciones de identidad</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Captura de identificadores disponibles (determinístico)</strong>
+            <ul class="mt-1">
+              <li>El sistema captura todos los identificadores disponibles en el canal: <code>email</code>, <code>teléfono</code>, <code>NIT/cédula</code>, <code>cookie_id</code>, <code>session_id</code>, <code>whatsapp_id</code>.</li>
+              <li>Se registra el canal de origen y el nivel de confianza de cada identificador.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Resolución de identidad mediante reglas de matching</strong>
+            <ul class="mt-1">
+              <li>Matching <strong>determinístico</strong>: coincidencia exacta en email o documento de identidad con registro en CRM Dynamics o SIREP.</li>
+              <li>Matching <strong>probabilístico</strong>: puntuación de similitud usando combinación de campos (nombre + teléfono + segmento) cuando no hay coincidencia exacta.</li>
+              <li>Se genera un <code>identity_key</code> (golden record) unificado con trazabilidad de los identificadores que lo componen.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Persistencia de continuidad omnicanal</strong>
+            <ul class="mt-1">
+              <li>La identidad resuelta persiste en la capa de datos para los canales: <strong>web, chat, WhatsApp</strong> y atención presencial.</li>
+              <li>El perfil unificado está disponible para el motor de recomendación en ≤ 200 ms.</li>
+              <li>Auditoría completa de fusiones y separaciones de identidad.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback cuando no se logra identificar con certeza</strong>
+            <ul class="mt-1">
+              <li>Si no es posible resolver la identidad con suficiente confianza, se ejecuta el flujo de <strong>entrada suave (sin fricción)</strong>: se generan recomendaciones basadas en segmento genérico o popularidad.</li>
+              <li>Se notifica al usuario (si hay canal disponible) que con más información recibirá mejores recomendaciones.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Medir y registrar</strong>
+            <ul class="mt-1">
+              <li>Métricas capturadas por cada resolución: <code>canal</code>, <code>tipo_matching</code> (determinístico / probabilístico / fallback), <code>confianza_score</code>, <code>latencia_ms</code>.</li>
+              <li>Tasa de resolución exitosa reportada por canal y periodo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Opciones de identificación y consentimiento claro</strong>
+            <ul class="mt-1">
+              <li>Se ofrecen opciones de identificación al usuario (login, email, teléfono) de forma no intrusiva.</li>
+              <li>Consentimiento explícito registrado antes de unificar identidades entre canales distintos.</li>
+              <li>Cumplimiento de Ley 1581 (Habeas Data) y política interna de privacidad de la CCB.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Identity graph en base de datos de grafos</li>
-          <li>Algoritmo de matching probabilístico y determinístico</li>
-          <li>Integración con CRM y sistemas de autenticación</li>
-          <li>Cumplimiento GDPR/Habeas Data</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        2. Tecnología <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Propuesto E1</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Identity Resolution Engine</div>
+              <ul class="mb-0 small">
+                <li>Reglas de matching determinístico (exacto) sobre campos clave: email, NIT/cédula.</li>
+                <li>Matching probabilístico con scoring de similitud (nombre + teléfono + segmento).</li>
+                <li>Identity graph: grafo de identidades donde cada nodo es un identificador y los arcos representan confianza de vinculación.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Integraciones</div>
+              <ul class="mb-0 small">
+                <li><strong>CRM Dynamics:</strong> fuente principal de identidades registradas (perfil, segmento, rol).</li>
+                <li><strong>SIREP:</strong> historial transaccional vinculado al identity_key.</li>
+                <li><strong>Catálogo de Servicios:</strong> valida elegibilidad del perfil resuelto.</li>
+                <li><strong>Base de Datos:</strong> persiste el identity graph y el golden record.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Canales Soportados</div>
+              <ul class="mb-0 small">
+                <li>Web (portal CCB): cookie_id + sesión autenticada.</li>
+                <li>Chat en línea: session_id + email opcional.</li>
+                <li>WhatsApp: whatsapp_id + teléfono.</li>
+                <li>Presencial / asistido: NIT/cédula capturado por asesor.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #00695C;">Privacidad y Cumplimiento</div>
+              <ul class="mb-0 small">
+                <li>Datos personales seudonimizados en E1; no se persiste PII directa en logs.</li>
+                <li>Consentimiento registrado antes de fusión entre canales.</li>
+                <li>Flags de no seguimiento respetados en todos los canales.</li>
+                <li>Cumplimiento Ley 1581 (Habeas Data Colombia).</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">E1 – Desarrollo</span>
+      </div>
+      <div class="card-body">
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Pasos del Pipeline de Resolución</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Captura de identificadores:</strong> el sistema recoge todos los IDs disponibles en el canal (cookie, email, teléfono, documento) — consulta a CRM Dynamics.</li>
+          <li><strong>Resolución de identidad:</strong> aplica reglas de matching (determinístico primero, probabilístico si falla) contra SIREP y Catálogo de Servicios.</li>
+          <li><strong>Persistencia omnicanal:</strong> el golden record se actualiza en la Base de Datos y queda disponible para web, chat y WhatsApp.</li>
+          <li><strong>Fallback de no identificación:</strong> si no hay certeza, el Motor/API activa recomendaciones genéricas; se registra el intento fallido.</li>
+          <li><strong>Medir y registrar:</strong> métricas de resolución persistidas en Base de Datos para análisis posterior.</li>
+          <li><strong>Entrada suave (sin fricción):</strong> se presentan opciones de identificación al usuario de forma no intrusiva.</li>
+          <li><strong>Opciones de identificación:</strong> usuario elige método (login, email, teléfono) y el sistema intenta nueva resolución.</li>
+          <li><strong>Consentimiento claro:</strong> antes de unificar identidades entre canales, se solicita y registra consentimiento explícito.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #00695C;">Ejemplo de Respuesta del Servicio de Identidad</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "identity_key": "ik_7a2f9e",
+  "confianza": "alta",
+  "tipo_matching": "deterministico",
+  "canal_origen": "web",
+  "identificadores": {
+    "email": "hash_sha256_xxx",
+    "cookie_id": "ck_9b3d1a",
+    "crm_id": "CRM-00341"
+  },
+  "perfil_disponible": true,
+  "latencia_ms": 87,
+  "consentimiento_omnicanal": true
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        4. Diseño — Experiencia de Identificación <span class="badge ms-2" style="background:#6c757d;font-size:0.7rem;">Sin fricción</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Entrada Suave (usuario no identificado)</div>
+              <ul class="mb-0 small">
+                <li>Recomendaciones populares por segmento genérico presentadas de inmediato.</li>
+                <li>Banner no intrusivo: <em>"Personaliza tus recomendaciones — ingresa tu email o inicia sesión"</em>.</li>
+                <li>Dos rutas claras: identificarse ahora o continuar sin identificación.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #00695C;">Usuario Identificado</div>
+              <ul class="mb-0 small">
+                <li>Recomendaciones personalizadas Top-N basadas en perfil unificado.</li>
+                <li>Consentimiento de vinculación omnicanal visible y modificable en perfil.</li>
+                <li>Continuidad: el usuario retoma en cualquier canal donde lo dejó.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#00695C;font-size:0.7rem;">Mínimos E1</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Matching determinístico exitoso</strong></td>
+                <td>Usuario con email registrado en CRM resuelto en ≤ 200 ms; <code>tipo_matching=deterministico</code>, <code>confianza=alta</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Matching probabilístico</strong></td>
+                <td>Usuario identificado por combinación nombre+teléfono con score ≥ 0.85; se registra como probabilístico.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Fallback sin identificación</strong></td>
+                <td>Sin identificadores válidos: sistema genera recomendaciones genéricas y muestra banner de identificación no intrusivo.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Continuidad omnicanal</strong></td>
+                <td>Mismo usuario identificado en web y WhatsApp comparte el mismo <code>identity_key</code>; recomendaciones coherentes.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Consentimiento de fusión</strong></td>
+                <td>Fusión de identidades entre canales sólo ocurre tras consentimiento explícito; registro en log.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Latencia</strong></td>
+                <td>Resolución de identidad retorna en ≤ 200 ms (p95) medido en entorno dev con datos seudonimizados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #00695C;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Identity Key</dt>
+          <dd class="col-sm-9">Identificador único (golden record) que unifica todos los identificadores de un mismo usuario en el sistema.</dd>
+
+          <dt class="col-sm-3">Matching Determinístico</dt>
+          <dd class="col-sm-9">Resolución de identidad por coincidencia exacta en un campo clave (email, NIT/cédula).</dd>
+
+          <dt class="col-sm-3">Matching Probabilístico</dt>
+          <dd class="col-sm-9">Resolución por puntuación de similitud en múltiples campos cuando no hay coincidencia exacta.</dd>
+
+          <dt class="col-sm-3">Golden Record</dt>
+          <dd class="col-sm-9">Perfil unificado y canónico de un usuario construido a partir de múltiples fuentes de identidad.</dd>
+
+          <dt class="col-sm-3">Entrada Suave</dt>
+          <dd class="col-sm-9">Estrategia de identificación que permite al usuario recibir recomendaciones básicas sin identificarse, con opción de mejorar su perfil progresivamente.</dd>
+
+          <dt class="col-sm-3 mb-0">Habeas Data</dt>
+          <dd class="col-sm-9 mb-0">Derecho reconocido en la Ley 1581 de Colombia que permite a los ciudadanos controlar el uso de sus datos personales.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#00695C !important; background:#e0f2f1;">
+      <strong>Nota de alcance E1:</strong> En desarrollo, las identidades se trabajan con datos seudonimizados o mockeados. El matching probabilístico se implementa con reglas simples. La integración completa con todos los canales en producción se entrega en etapas posteriores.
     </div>
 
   </div>
@@ -84,4 +337,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

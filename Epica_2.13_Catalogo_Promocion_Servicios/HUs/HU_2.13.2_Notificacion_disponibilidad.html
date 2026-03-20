@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #880E4F; --hero-end: #AD1457;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.13.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Notificación de disponibilidad futura</h1>
+      <h1 class="fw-bold fs-3 mb-1">Notificación de disponibilidad futura</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.13 · Catálogo y Promoción de Servicios</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #AD1457;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #AD1457;">Enunciado</h2>
@@ -34,49 +38,330 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">usuario interesado en un servicio que aún no está disponible</p>
+              <p class="mb-0">usuario que consulta el Recomendador de Servicios e identifica un servicio de su interés con estado <strong>"Sin programación actual"</strong> o <strong>"Próximamente"</strong></p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">suscribirme para ser notificado cuando ese servicio abra inscripciones</p>
+              <p class="mb-0">suscribirme para recibir una <strong>notificación automática</strong> cuando ese servicio abra sus inscripciones o cambie su estado de disponibilidad</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">no perder la oportunidad cuando el servicio esté disponible sin tener que revisarlo manualmente</p>
+              <p class="mb-0">no perder la oportunidad de inscribirme sin tener que revisar el catálogo manualmente, cumpliendo mis preferencias de canal y privacidad</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Notificaciones</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Botón "Avisarme cuando abra" en servicios con estado Sin programación o Próximamente</li>
-          <li>Confirmación de suscripción inmediata con feedback visual</li>
-          <li>Notificación enviada en ≤ 1 hora tras cambio de estado</li>
-          <li>Canales de notificación: email y/o push (según preferencias del usuario)</li>
-          <li>Gestión de suscripciones activas desde perfil de usuario</li>
-          <li>Baja fácil desde el email con un clic</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Suscripción desde servicios "sin programación actual" o "próximamente"</strong>
+            <ul class="mt-1">
+              <li>El botón <strong>"Avisarme cuando abra"</strong> aparece únicamente en servicios con estado <code>unscheduled</code> o <code>upcoming</code>.</li>
+              <li>El usuario puede suscribirse con un solo clic si tiene sesión activa; si es anónimo, se le solicita email antes de confirmar.</li>
+              <li>Confirmación visual inmediata con feedback (toast o badge "Suscrito").</li>
+              <li>Un usuario no puede quedar suscrito dos veces al mismo servicio (deduplicación en backend).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Disparo automático de notificación por cambio de estado</strong>
+            <ul class="mt-1">
+              <li>Cuando el estado de un servicio cambia a <code>available</code>, se <strong>dispara automáticamente</strong> la notificación a todos los suscriptores en ≤ 1 hora.</li>
+              <li>El disparador se basa en el webhook de cambio de estado del catálogo (no en polling).</li>
+              <li>Se notifica también si el estado cambia a <code>upcoming</code> con fecha definida (para suscripciones desde <code>unscheduled</code>).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Verificación de vigencia semántica</strong>
+            <ul class="mt-1">
+              <li>Antes de enviar la notificación, el Motor / API verifica que el servicio <strong>sigue disponible</strong> (no fue cerrado inmediatamente tras abrir).</li>
+              <li>Si la verificación falla (servicio ya cerrado nuevamente), se cancela el envío y se registra el fallback con código de motivo.</li>
+              <li>Si el servicio no existe o fue eliminado del catálogo, se cancela la suscripción y se notifica al usuario con mensaje explicativo.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Gestión de preferencias y cancelación</strong>
+            <ul class="mt-1">
+              <li>El usuario puede cancelar una suscripción activa desde su <strong>perfil</strong> o directamente desde el email con un clic (enlace de baja).</li>
+              <li>Las preferencias de canal (email, push, SMS) se respetan según configuración del usuario.</li>
+              <li>La gestión de suscripciones activas es visible desde el perfil (lista de servicios suscritos + canal + fecha de suscripción).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Fallback por falta de canal o datos de contacto</strong>
+            <ul class="mt-1">
+              <li>Si el usuario no tiene canal de contacto válido configurado, se le informa en el momento de suscripción y se le invita a completar su perfil.</li>
+              <li>Si el envío falla (rebote de email, push no entregado), se registra el error y se aplica retry con backoff exponencial (máx. 3 intentos).</li>
+              <li>Si todos los intentos fallan, se registra <code>notification_failed</code> con motivo y se genera alerta interna.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Cumplimiento y privacidad</strong>
+            <ul class="mt-1">
+              <li>Solo se envían notificaciones a usuarios con <strong>consentimiento explícito</strong> de comunicaciones (Ley 1581 / GDPR).</li>
+              <li>El enlace de baja en el email es de un clic y efectivo de forma inmediata.</li>
+              <li>No se persiste PII en logs de notificación; se usa <code>user_key_pseudo</code> o email hasheado para trazabilidad.</li>
+              <li>Rate limiting: máximo N notificaciones por usuario por día (configurable, defecto 3).</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Tabla de suscripciones con userId, serviceId, canal y timestamp</li>
-          <li>Trigger en cambio de estado del servicio</li>
-          <li>Integración con servicio de emails transaccionales (SendGrid o similar)</li>
-          <li>Rate limiting de notificaciones por usuario</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        2. Tecnología <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Servicio de Suscripciones</div>
+              <ul class="mb-0 small">
+                <li>Tabla de suscripciones: <code>user_key_pseudo</code>, <code>service_id</code>, <code>canal</code>, <code>timestamp_suscripcion</code>, <code>activa</code>.</li>
+                <li>Índice único en <code>(user_key_pseudo, service_id)</code> para deduplicación.</li>
+                <li>API REST: <code>POST /subscriptions</code>, <code>DELETE /subscriptions/{id}</code>, <code>GET /subscriptions</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Disparador y Notificación</div>
+              <ul class="mb-0 small">
+                <li>Trigger en webhook de cambio de estado del Catálogo Servicios.</li>
+                <li>Cola de mensajes (Kafka / SQS) para procesamiento asíncrono de notificaciones.</li>
+                <li>Integración con servicio de emails transaccionales (SendGrid, Amazon SES o similar).</li>
+                <li>Push notifications vía FCM / APNs según preferencias del usuario.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Motor / API y Verificación</div>
+              <ul class="mb-0 small">
+                <li>Verificación de vigencia semántica antes del envío: consulta estado actual del catálogo.</li>
+                <li>Lógica de retry con backoff exponencial (máx. 3 intentos).</li>
+                <li>Rate limiting configurable por usuario y por servicio.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #AD1457;">Cumplimiento y Observabilidad</div>
+              <ul class="mb-0 small">
+                <li>Integración con CRM / Dynamics para verificar flag de consentimiento de comunicaciones.</li>
+                <li>Log de notificaciones: <code>service_id</code>, <code>user_key_pseudo</code>, <code>canal</code>, <code>estado_envio</code>, <code>timestamp</code>.</li>
+                <li>Dashboard de suscripciones activas, tasa de entrega y fallbacks.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> consulta el recomendador y se suscribe.</li>
+                <li><strong>Motor / API:</strong> gestiona suscripciones y dispara notificaciones.</li>
+                <li><strong>CRM / Dynamics:</strong> disparo automático por cambio de estado.</li>
+                <li><strong>SIREP:</strong> verificación de vigencia semántica.</li>
+                <li><strong>Catálogo Servicios:</strong> gestión de preferencias y cancelación.</li>
+                <li><strong>Frontend / UI:</strong> fallback por falta de canal o datos.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">HAPPY PATH</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>Usuario se suscribe desde servicio "sin programación" (Catálogo Servicios → Motor / API).</li>
+                <li>CRM / Dynamics detecta cambio de estado y dispara notificación automática al Motor / API.</li>
+                <li>Motor / API verifica vigencia semántica en SIREP.</li>
+                <li>Catálogo Servicios gestiona preferencias de canal y cancelación en Frontend / UI.</li>
+                <li>Frontend / UI reporta fallback si falta canal o datos de contacto al Motor / API.</li>
+                <li>Motor / API confirma cumplimiento y privacidad al Usuario.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ERROR PATH</div>
+              <ul class="mb-0 small ps-3">
+                <li>Si verificación de vigencia semántica falla → Error / Fallback: notificar al usuario que el servicio ya no está disponible.</li>
+                <li>Si canal de contacto no disponible → solicitar actualización de perfil.</li>
+                <li>Si envío falla → retry con backoff; si agota intentos → <code>notification_failed</code> + alerta interna.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #AD1457;">Ejemplo de Payload de Notificación</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "notification_id": "notif_8a2f1c",
+  "user_key_pseudo": "u_9f3a",
+  "service_id": "S-421",
+  "service_nombre": "Programa de Formalización Empresarial",
+  "canal": "email",
+  "tipo_evento": "status_changed_to_available",
+  "estado_vigencia_verificado": true,
+  "timestamp_envio": "2025-09-01T08:05:00Z",
+  "estado_envio": "entregado",
+  "intentos": 1
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        4. Diseño — Experiencia de Suscripción
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #AD1457;">En la Tarjeta de Servicio</div>
+              <ul class="mb-0 small">
+                <li>Botón <strong>"Avisarme cuando abra"</strong> visible en servicios <code>unscheduled</code> / <code>upcoming</code>.</li>
+                <li>Al hacer clic: confirmación inmediata con toast "¡Listo! Te avisaremos cuando abra."</li>
+                <li>El botón cambia a badge "Suscrito ✓" y queda deshabilitado si el usuario ya está suscrito.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #AD1457;">En el Perfil del Usuario</div>
+              <ul class="mb-0 small">
+                <li>Sección "Mis alertas de servicios" con lista de suscripciones activas.</li>
+                <li>Cada suscripción muestra: nombre del servicio, canal, fecha de suscripción y botón "Cancelar alerta".</li>
+                <li>Selector de canal preferido (email / push / SMS).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#AD1457;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Suscripción exitosa</strong></td>
+                <td>Usuario se suscribe a servicio <code>unscheduled</code>; aparece confirmación visual y registro en tabla de suscripciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Deduplicación</strong></td>
+                <td>Segundo intento de suscripción al mismo servicio retorna <code>409 Already subscribed</code>; no se crea registro duplicado.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Disparo automático ≤ 1 h</strong></td>
+                <td>Al cambiar estado a <code>available</code>, todos los suscriptores reciben notificación en ≤ 1 hora.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Verificación de vigencia fallida</strong></td>
+                <td>Si servicio se cierra antes del envío, notificación se cancela y se registra <code>notification_cancelled: service_not_available</code>.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Baja desde email</strong></td>
+                <td>Clic en enlace de baja cancela suscripción de forma inmediata; no se envían más notificaciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Sin canal de contacto</strong></td>
+                <td>Al suscribirse sin email/push configurado, se muestra mensaje solicitando completar perfil; no se crea suscripción huérfana.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Cumplimiento de consentimiento</strong></td>
+                <td>Usuario sin flag de consentimiento de comunicaciones no recibe notificación aunque esté suscrito.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #AD1457;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Vigencia semántica</dt>
+          <dd class="col-sm-9">Verificación de que el estado de un servicio sigue siendo el esperado en el momento de enviar la notificación.</dd>
+
+          <dt class="col-sm-3">Suscripción activa</dt>
+          <dd class="col-sm-9">Registro en tabla de suscripciones con flag <code>activa = true</code> para un par (usuario, servicio).</dd>
+
+          <dt class="col-sm-3">Backoff exponencial</dt>
+          <dd class="col-sm-9">Estrategia de reintento que duplica el tiempo de espera entre intentos fallidos para evitar sobrecarga.</dd>
+
+          <dt class="col-sm-3">Rate limiting</dt>
+          <dd class="col-sm-9">Límite máximo de notificaciones enviadas a un usuario en un período de tiempo para evitar spam.</dd>
+
+          <dt class="col-sm-3">Fire-and-forget</dt>
+          <dd class="col-sm-9">Patrón de envío donde el productor no espera confirmación del consumidor; el procesamiento es asíncrono.</dd>
+
+          <dt class="col-sm-3 mb-0">Consentimiento explícito</dt>
+          <dd class="col-sm-9 mb-0">Aceptación documentada del usuario para recibir comunicaciones, requerida por Ley 1581 / GDPR.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#AD1457 !important; background:#fce4ec;">
+      <strong>Nota de alcance:</strong> Esta HU cubre el ciclo completo de suscripción y notificación de disponibilidad futura. La clasificación y etiquetado de estados de disponibilidad se gestiona en HU 2.13.1. El cumplimiento de privacidad aplica Ley 1581 y lineamientos internos CCB.
     </div>
 
   </div>
@@ -85,4 +370,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

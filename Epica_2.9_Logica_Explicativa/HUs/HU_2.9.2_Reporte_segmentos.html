@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
-  <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
+  <nav class="navbar navbar-dark shadow-sm" style="background: #4527A0;">
     <div class="container-xl d-flex justify-content-between align-items-center">
       <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2"><img src="../../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;"> Sistema Recomendador</span>
       <div class="d-flex gap-2">
@@ -18,15 +20,17 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #1A0070; --hero-end: #4527A0;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.9.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Reporte de segmentos</h1>
+      <h1 class="fw-bold fs-3 mb-1">Reporte de segmentos</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.9 · Lógica Explicativa · Dashboard de métricas segmentadas del recomendador</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
+    <!-- 0. Enunciado -->
     <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #4527A0;">
       <div class="card-body">
         <h2 class="fs-5 fw-bold mb-3" style="color: #4527A0;">Enunciado</h2>
@@ -34,48 +38,381 @@
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">analista de negocio o Data Scientist</p>
+              <p class="mb-0">usuario de negocio (líder/analista responsable del Recomendador de Servicios CCB).</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">acceder a un dashboard con métricas segmentadas del recomendador</p>
+              <p class="mb-0">acceder a un <strong>reporte / dashboard con métricas segmentadas</strong> del recomendador: volumen de recomendaciones, tasa de aceptación, conversión y distribución de servicios por segmento de usuario.</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">entender el comportamiento del motor por grupos de usuarios y tomar decisiones estratégicas</p>
+              <p class="mb-0">entender el <strong>comportamiento del motor por grupos de usuarios</strong>, identificar oportunidades de mejora, detectar brechas y tomar decisiones estratégicas basadas en datos.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Reporte de Segmentos</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Dashboard con métricas por segmento: volumen, tasa de aceptación, conversión, distribución de servicios</li>
-          <li>Filtros por segmento demográfico, fecha, canal y tipo de servicio</li>
-          <li>Comparación entre segmentos en gráficos side-by-side</li>
-          <li>Exportación en CSV y Excel</li>
-          <li>Actualización de datos con frecuencia configurable (defecto: diaria)</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Disponibilidad de reporte segmentado</strong>
+            <ul class="mt-1">
+              <li>Existe un dashboard/reporte accesible desde el Panel de Administración del Recomendador, sección "Reportes de Segmentos".</li>
+              <li>El reporte presenta métricas desglosadas por <strong>segmento de usuario</strong> (MiPyme, Empresa Grande, Ciudadano, Emprendedor, etc.).</li>
+              <li>KPIs globales visibles al inicio para panorama rápido: total de recomendaciones generadas, tasa de aceptación global, tasa de conversión global, top 5 servicios más recomendados.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Trazabilidad de métricas y definiciones</strong>
+            <ul class="mt-1">
+              <li>Cada métrica tiene una <strong>definición documentada</strong> accesible con tooltip o enlace "¿Cómo se calcula?":
+                <ul>
+                  <li><strong>Volumen:</strong> número de recomendaciones generadas por segmento en el período.</li>
+                  <li><strong>Tasa de aceptación:</strong> % de recomendaciones en las que el usuario hizo clic en "Ver detalle" o aplicó un CTA.</li>
+                  <li><strong>Tasa de conversión:</strong> % de recomendaciones que resultaron en inscripción/contratación confirmada.</li>
+                  <li><strong>Distribución de servicios:</strong> breakdown de qué servicios se recomiendan más por segmento.</li>
+                </ul>
+              </li>
+              <li>Las métricas son trazables hasta la fuente: pipeline de agregación batch con <code>job_id</code> y <code>run_timestamp</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y actualización</strong>
+            <ul class="mt-1">
+              <li>Los datos del reporte se actualizan con <strong>frecuencia configurable</strong> (defecto: diaria, pipeline nocturno).</li>
+              <li>El dashboard indica claramente la <strong>fecha y hora de la última actualización</strong>.</li>
+              <li>Los resultados del reporte se cachean por 24 horas con posibilidad de <strong>invalidación manual</strong> (botón "Actualizar ahora" para admin).</li>
+              <li>El tiempo de carga del dashboard (con caché caliente) es ≤ 3 s.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Manejo de datos incompletos (fallback analítico)</strong>
+            <ul class="mt-1">
+              <li>Si un segmento no tiene datos suficientes para el período seleccionado, se muestra una alerta contextual: <em>"Datos insuficientes para este segmento en el período. Se requieren al menos N registros para calcular métricas estables."</em></li>
+              <li>El reporte sigue funcionando para los segmentos con datos suficientes.</li>
+              <li>Opción de ver datos del período anterior cuando el actual no está disponible (fallback analítico).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Exportación / consumo por negocio</strong>
+            <ul class="mt-1">
+              <li>Exportación del reporte completo en <strong>CSV</strong> y <strong>Excel (.xlsx)</strong>.</li>
+              <li>Exportación de gráficos individuales en PNG.</li>
+              <li>Opción de configurar un <strong>envío periódico por correo</strong> (frecuencia: semanal/mensual) a una lista de destinatarios definida por admin.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Acceso y configuración de filtros</strong>
+            <ul class="mt-1">
+              <li>El usuario accede desde el <strong>sidebar de navegación</strong> del Panel Admin → sección "Reportes".</li>
+              <li>Panel de filtros con opciones:
+                <ul>
+                  <li><strong>Fecha:</strong> rango personalizado, últimos 7/30/90 días, mes/trimestre actual.</li>
+                  <li><strong>Segmentación:</strong> tipo de usuario (MiPyme, Empresa, Ciudadano, etc.).</li>
+                  <li><strong>Servicio:</strong> filtrar por categoría o servicio específico.</li>
+                  <li><strong>Canal:</strong> web, app, chat, presencial.</li>
+                </ul>
+              </li>
+              <li>Filtros combinables con actualización del dashboard al aplicar.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>KPIs globales (panorama rápido)</strong>
+            <ul class="mt-1">
+              <li>Sección superior del dashboard con tarjetas de KPI:
+                <ul>
+                  <li>Total recomendaciones generadas en el período.</li>
+                  <li>Tasa de aceptación global (%).</li>
+                  <li>Tasa de conversión global (%).</li>
+                  <li>Top 3 servicios más recomendados.</li>
+                  <li>Segmento con mayor tasa de conversión.</li>
+                </ul>
+              </li>
+              <li>Comparación con el período anterior: delta absoluto y relativo con indicador de tendencia (flecha arriba/abajo).</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>Pipeline de agregación batch nocturno</li>
-          <li>Almacenamiento en Data Warehouse</li>
-          <li>Frontend con biblioteca de charts (Chart.js, D3)</li>
-          <li>Caché de resultados de 24h con invalidación manual</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        2. Tecnología <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Stack Propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Pipeline de Agregación</div>
+              <ul class="mb-0 small">
+                <li>Job batch nocturno (cron / Airflow / Databricks Workflow) que agrega métricas por segmento.</li>
+                <li>Fuentes: tabla de recomendaciones, tabla de eventos de interacción, tabla de conversiones (SIREP).</li>
+                <li>Resultado almacenado en <strong>Data Warehouse</strong> (tabla de hechos por segmento/período).</li>
+                <li>Particionado por <code>fecha</code> y <code>segmento</code> para consultas eficientes.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">API de Reportes</div>
+              <ul class="mb-0 small">
+                <li><code>GET /reports/segments?from=&amp;to=&amp;segment=&amp;canal=&amp;service=</code></li>
+                <li>Respuesta: KPIs globales + breakdown por segmento + series temporales.</li>
+                <li>Caché de 24 h con invalidación manual vía <code>POST /reports/segments/invalidate</code>.</li>
+                <li>Latencia objetivo (caché caliente): ≤ 1 s.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Frontend del Dashboard</div>
+              <ul class="mb-0 small">
+                <li>Biblioteca de charts: <strong>Chart.js</strong> (barras, líneas, dona) o <strong>D3.js</strong> para visualizaciones avanzadas.</li>
+                <li>Tarjetas de KPI con indicadores de tendencia (delta vs. período anterior).</li>
+                <li>Tabla de distribución de servicios por segmento (ordenable y filtrable en cliente).</li>
+                <li>Botones de exportación CSV / Excel / PNG por sección.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #4527A0;">Gobernanza y Privacidad</div>
+              <ul class="mb-0 small">
+                <li>Solo se exponen métricas agregadas; nunca datos a nivel de usuario individual en el reporte.</li>
+                <li>Los segmentos con menos de N usuarios se enmascaran (<em>k-anonymity mínima</em>).</li>
+                <li>El acceso al reporte queda registrado en log de auditoría.</li>
+                <li>Datos seudonimizados en el pipeline; PII no transita por la capa de reportes.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        3. Flujo Técnico y de Datos <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Secuencia Dashboard</span>
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <p class="mb-0 small">Usuario / Actor (Líder/Analista) · Motor / API · CRM / Dynamics · Frontend / UI · Formulario</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">DISPARADOR</div>
+              <p class="mb-0 small">El analista necesita revisar el desempeño del motor de recomendación por segmento para un período dado y tomar decisiones estratégicas.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">RESULTADO</div>
+              <p class="mb-0 small">Dashboard con KPIs globales, métricas por segmento, distribución de servicios, comparación de períodos y opción de exportación.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #4527A0;">Pasos del Flujo (según Diagramas)</div>
+        <ol class="mb-3 small" style="line-height:1.9;">
+          <li><strong>Disponibilidad de reporte segmentado:</strong> el Usuario / Actor solicita el reporte al Motor / API; el API verifica disponibilidad de datos agregados en el DW.</li>
+          <li><strong>Trazabilidad de métricas y definiciones:</strong> el Motor / API consulta el CRM / Dynamics para enriquecer la definición de segmentos; las métricas se calculan con su definición documentada.</li>
+          <li><strong>Rendimiento y actualización:</strong> el Frontend / UI recibe los datos del pipeline nocturno y los renderiza en el Formulario (dashboard); muestra la fecha de última actualización.</li>
+          <li><strong>Manejo de datos incompletos (fallback analítico):</strong> el Formulario detecta segmentos con datos insuficientes y muestra alertas contextuales; el Motor retorna datos del período anterior si aplica.</li>
+          <li><strong>Exportación / consumo por negocio:</strong> el Motor / API genera el archivo CSV/Excel a petición del Usuario; el Frontend lo descarga directamente.</li>
+          <li><strong>El usuario accede desde el sidebar de navegación:</strong> el Motor / API carga la configuración del reporte; el Frontend renderiza el panel con los filtros disponibles.</li>
+          <li><strong>Configura filtros:</strong> el Usuario selecciona fecha, segmentación, servicio, canal; el Frontend actualiza la vista con los datos filtrados desde el DW.</li>
+          <li><strong>Revisa KPIs globales:</strong> el Usuario obtiene el panorama rápido de métricas clave; puede explorar el detalle por segmento desde las tarjetas de KPI.</li>
+        </ol>
+
+        <div class="fw-semibold small mb-2" style="color: #4527A0;">Ejemplo de Respuesta de Reporte</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "periodo": { "from": "2025-02-01", "to": "2025-02-28" },
+  "kpis_globales": {
+    "total_recomendaciones": 142500,
+    "tasa_aceptacion_pct": 18.4,
+    "tasa_conversion_pct": 4.2,
+    "top_servicios": ["S-134", "S-200", "S-312"]
+  },
+  "por_segmento": [
+    {
+      "segmento": "MiPyme",
+      "total": 58000,
+      "tasa_aceptacion_pct": 22.1,
+      "tasa_conversion_pct": 5.8,
+      "top_servicios": ["S-134", "S-405"]
+    },
+    {
+      "segmento": "Ciudadano",
+      "total": 31000,
+      "tasa_aceptacion_pct": 14.3,
+      "tasa_conversion_pct": 2.9,
+      "top_servicios": ["S-200", "S-512"]
+    }
+  ],
+  "ultima_actualizacion": "2025-03-10T03:00:00Z",
+  "job_id": "batch_20250310_0300",
+  "version_pipeline": "agg-1.4.0"
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        4. Diseño — Dashboard de Reportes
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #4527A0;">Sección KPIs Globales</div>
+              <ul class="mb-0 small">
+                <li>4–5 tarjetas de KPI en fila superior con valor, delta y tendencia.</li>
+                <li>Colores semánticos: verde (mejora), rojo (baja), gris (sin cambio).</li>
+                <li>Tooltip con definición de cada KPI al pasar el cursor.</li>
+                <li>Actualización: fecha/hora de la última ejecución del pipeline.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #4527A0;">Sección Breakdown por Segmento</div>
+              <ul class="mb-0 small">
+                <li>Gráfico de barras agrupadas: tasa de aceptación y conversión por segmento.</li>
+                <li>Tabla de distribución de servicios por segmento (ordenable).</li>
+                <li>Comparación side-by-side entre dos segmentos seleccionados.</li>
+                <li>Opción de ver evolución temporal (gráfico de líneas) por segmento.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#4527A0;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Carga del dashboard</strong></td>
+                <td>El dashboard se carga en ≤ 3 s con caché caliente; muestra KPIs globales y breakdown por segmento.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Filtro por segmento y fecha</strong></td>
+                <td>Al filtrar por "MiPyme" y "últimos 30 días", el dashboard muestra solo métricas de ese segmento y período.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Exportar en CSV</strong></td>
+                <td>Se descarga un CSV con todas las métricas por segmento del período seleccionado, con encabezados y definiciones.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Datos insuficientes en segmento</strong></td>
+                <td>El segmento con pocos datos muestra alerta contextual; el resto del dashboard sigue funcionando.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Invalidación manual de caché</strong></td>
+                <td>Al hacer clic en "Actualizar ahora", el pipeline se re-ejecuta y los datos se refrescan; el dashboard muestra la nueva fecha de actualización.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Comparación entre períodos</strong></td>
+                <td>Las tarjetas de KPI muestran el delta correcto vs. el período anterior con indicador de tendencia.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Sin PII en reportes</strong></td>
+                <td>Ningún dato individual aparece en el reporte; todos los valores son agregados por segmento.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">8</td>
+                <td><strong>Segmento con k-anonymity insuficiente</strong></td>
+                <td>Segmento con menos de N usuarios se enmascara; no se muestra la métrica sino un aviso de privacidad.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #4527A0;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">Tasa de aceptación</dt>
+          <dd class="col-sm-9">% de recomendaciones en las que el usuario realizó una acción afirmativa (clic en CTA, "Ver detalle", inscripción iniciada).</dd>
+
+          <dt class="col-sm-3">Tasa de conversión</dt>
+          <dd class="col-sm-9">% de recomendaciones que resultaron en una inscripción o contratación confirmada (validado en SIREP).</dd>
+
+          <dt class="col-sm-3">Segmento</dt>
+          <dd class="col-sm-9">Grupo de usuarios con características comunes (tipo de empresa, etapa, sector) usado para segmentar las métricas del motor.</dd>
+
+          <dt class="col-sm-3">Pipeline batch</dt>
+          <dd class="col-sm-9">Proceso de agregación nocturno que calcula y almacena las métricas segmentadas en el Data Warehouse.</dd>
+
+          <dt class="col-sm-3">k-anonymity</dt>
+          <dd class="col-sm-9">Propiedad de privacidad que garantiza que cada registro en el reporte es indistinguible de al menos k-1 otros registros del mismo segmento.</dd>
+
+          <dt class="col-sm-3">Fallback analítico</dt>
+          <dd class="col-sm-9">Estrategia que muestra datos del período anterior cuando el período actual no tiene suficientes registros para métricas estables.</dd>
+
+          <dt class="col-sm-3 mb-0">Delta</dt>
+          <dd class="col-sm-9 mb-0">Diferencia (absoluta y relativa) entre el valor de una métrica en el período actual vs. el período anterior, usada para indicar tendencia.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#4527A0 !important; background:#ede7f6;">
+      <strong>Nota de alcance:</strong> El reporte de segmentos opera sobre datos agregados del pipeline batch nocturno; no expone datos individuales de usuario. La frecuencia de actualización (defecto: diaria) y el umbral de k-anonymity son configurables por admin. La exportación en CSV/Excel y el envío periódico por correo son funcionalidades de distribución del reporte a stakeholders de negocio.
     </div>
 
   </div>
@@ -84,4 +421,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>

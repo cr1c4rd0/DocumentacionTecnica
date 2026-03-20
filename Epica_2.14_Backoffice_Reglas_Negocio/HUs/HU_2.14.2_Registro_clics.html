@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../js/bootstrap-loader.js"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-dark shadow-sm" style="background: #DD0034;">
     <div class="container-xl d-flex justify-content-between align-items-center">
@@ -18,65 +20,352 @@
     </div>
   </nav>
 
-  <div class="hero text-white py-4 px-4" style="--hero-start: #B5002B; --hero-end: #DD0034;">
+  <div class="hero text-white py-4 px-4" style="--hero-start: #263238; --hero-end: #37474F;">
     <div class="container-xl">
       <div class="text-uppercase fw-semibold small opacity-75 mb-1 ls-1">Historia de Usuario · HU 2.14.2</div>
-      <h1 class="fw-bold fs-3 mb-0">Registro de clics y navegación</h1>
+      <h1 class="fw-bold fs-3 mb-1">Registro de clics y navegación</h1>
+      <p class="mb-0 opacity-75 small">Épica 2.14 · Backoffice y Reglas de Negocio</p>
     </div>
   </div>
 
   <div class="container-xl py-4 px-4">
 
-    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #4E342E;">
+    <!-- 0. Enunciado -->
+    <div class="card shadow-sm mb-4 hu-card-accent" style="--accent: #37474F;">
       <div class="card-body">
-        <h2 class="fs-5 fw-bold mb-3" style="color: #4E342E;">Enunciado</h2>
+        <h2 class="fs-5 fw-bold mb-3" style="color: #37474F;">Enunciado</h2>
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">COMO</div>
-              <p class="mb-0">analista de datos que estudia el comportamiento de los usuarios</p>
+              <p class="mb-0">CCB (equipo de negocio y analítica del Recomendador de Servicios)</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">QUIERO</div>
-              <p class="mb-0">acceder a un registro trazable de todos los eventos de interacción del usuario con el recomendador</p>
+              <p class="mb-0">capturar de forma <strong>automática, consentida y trazable</strong> todos los eventos de interacción del usuario con el recomendador (clics, vistas, descartes, navegación)</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-3 bg-light rounded h-100">
               <div class="fw-semibold small text-muted mb-2">PARA</div>
-              <p class="mb-0">entender los patrones de uso y alimentar el ciclo de mejora continua del motor</p>
+              <p class="mb-0">alimentar el ciclo de mejora continua del motor, habilitar analítica de comportamiento y soportar el reentrenamiento de modelos de ML, <strong>sin impactar la experiencia del usuario</strong></p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 1. Criterios de Aceptación -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Criterios de Aceptación</div>
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        1. Criterios de Aceptación <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Tracking</span>
+      </div>
       <div class="card-body">
-        <ul class="mb-0">
-          <li>Captura de eventos: view, click, dismiss, hover_time, filter_applied</li>
-          <li>Registro incluye: userId (o sessionId si anónimo), serviceId, timestamp, canal, acción</li>
-          <li>Consentimiento verificado antes de registrar eventos de usuarios identificados</li>
-          <li>Exportación de eventos en formato CSV o JSON</li>
-          <li>Retention configurable (defecto 12 meses)</li>
-          <li>Latencia de ingesta ≤ 100ms</li>
-        </ul>
+        <ol class="mb-0" style="line-height:1.8;">
+
+          <li class="mb-3">
+            <strong>Esquema de eventos mínimo y obligatorio (por sesión)</strong>
+            <ul class="mt-1">
+              <li>Se capturan obligatoriamente los siguientes tipos de evento por sesión:
+                <ol type="1" class="mt-1">
+                  <li><code>recommendation_shown</code> — recomendación mostrada al usuario.</li>
+                  <li><code>recommendation_clicked</code> — clic sobre una tarjeta de recomendación.</li>
+                  <li><code>recommendation_dismissed</code> — usuario descarta/oculta una recomendación.</li>
+                  <li><code>filter_applied</code> — usuario aplica un filtro en el catálogo.</li>
+                  <li><code>service_detail_viewed</code> — usuario abre el detalle de un servicio.</li>
+                </ol>
+              </li>
+              <li>Cada evento incluye: <code>event_type</code>, <code>session_id</code>, <code>user_key_pseudo</code> (o <code>anonymous_id</code>), <code>service_id</code>, <code>timestamp</code>, <code>canal</code>, <code>position_in_list</code>, <code>version_modelo</code>.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Consentimiento y cumplimiento (control de captura)</strong>
+            <ul class="mt-1">
+              <li>El SDK de tracking verifica el flag de consentimiento antes de registrar eventos de usuarios identificados.</li>
+              <li>Para usuarios anónimos, solo se registra <code>session_id</code> temporal; no se persiste PII.</li>
+              <li>Si el consentimiento se revoca, los eventos del usuario se anonimiza retroactivamente dentro de las 48 h siguientes (proceso batch nocturno).</li>
+              <li>Cumplimiento con Ley 1581 / GDPR: no se registran datos de navegación fuera del contexto del recomendador.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Disponibilidad para analítica y ML (listas para consumo)</strong>
+            <ul class="mt-1">
+              <li>Los eventos están disponibles para consulta analítica en <strong>≤ 15 min</strong> desde su generación (near-real-time).</li>
+              <li>Para pipelines de ML, los eventos se consolidan en tablas Parquet/Delta en el Data Lake, particionadas por fecha y tipo de evento.</li>
+              <li>Se ofrece exportación de eventos en formato CSV o JSON desde el panel de backoffice.</li>
+              <li>Query engine compatible: Athena, BigQuery o Spark.</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Calidad de datos: deduplicación y orden</strong>
+            <ul class="mt-1">
+              <li>El pipeline de ingesta detecta y descarta <strong>eventos duplicados</strong> usando <code>event_id</code> único (UUID por evento).</li>
+              <li>Los eventos se ordenan por <code>timestamp</code> en el proceso de consolidación; se toleran llegadas tardías de hasta 5 min.</li>
+              <li>Alertas automáticas si el volumen de eventos cae por debajo del umbral esperado (posible pérdida de tracking).</li>
+            </ul>
+          </li>
+
+          <li class="mb-3">
+            <strong>Rendimiento y resiliencia (no impactar UX)</strong>
+            <ul class="mt-1">
+              <li>La captura de eventos es <strong>asíncrona y no bloqueante</strong>; latencia de ingesta ≤ 100 ms desde la acción del usuario.</li>
+              <li>Si el servicio de tracking no responde, la UI <strong>no se degrada</strong>; el evento se encola localmente y se reintenta (fire-and-forget con buffer).</li>
+              <li>El SDK no impacta el tiempo de carga de la página en más de 50 ms (medido en lighthouse).</li>
+              <li>Retention configurable por tipo de evento (defecto 12 meses); archivado automático tras periodo de retención.</li>
+            </ul>
+          </li>
+
+        </ol>
       </div>
     </div>
 
+    <!-- 2. Tecnología -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white fw-semibold text-secondary">Notas Técnicas</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li>SDK de tracking con verificación de consentimiento</li>
-          <li>Ingesta via Kafka topic events.recomendador</li>
-          <li>Almacenamiento en Data Lake particionado por fecha</li>
-          <li>Query engine con Athena o BigQuery</li>
-        </ul>
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        2. Tecnología <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Stack propuesto</span>
       </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">SDK de Tracking (Cliente)</div>
+              <ul class="mb-0 small">
+                <li>Biblioteca JavaScript ligera (&lt; 10 KB gzip) con verificación de consentimiento integrada.</li>
+                <li>Buffer local en localStorage para eventos no entregados.</li>
+                <li>Auto-retry silencioso con backoff exponencial (máx. 3 intentos).</li>
+                <li>Modo de debug activable para QA (<code>?tracking_debug=true</code>).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Pipeline de Ingesta</div>
+              <ul class="mb-0 small">
+                <li>Ingesta vía Kafka topic <code>events.recomendador</code> (o equivalente AWS Kinesis).</li>
+                <li>Procesamiento con Spark Structured Streaming o AWS Glue.</li>
+                <li>Deduplicación por <code>event_id</code> en ventana de 5 min.</li>
+                <li>Almacenamiento en Data Lake particionado por <code>date / event_type</code>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Almacenamiento y Consulta</div>
+              <ul class="mb-0 small">
+                <li>Tablas Parquet/Delta en S3 o ADLS para eventos históricos.</li>
+                <li>Query engine: Athena / BigQuery / Databricks SQL.</li>
+                <li>Tabla OLAP de resumen diario para dashboards de analítica.</li>
+                <li>API de exportación para descarga en CSV/JSON desde el panel.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2" style="color: #37474F;">Cumplimiento y Calidad</div>
+              <ul class="mb-0 small">
+                <li>Job nocturno de anonimización retroactiva para usuarios que revocan consentimiento.</li>
+                <li>Política de retención configurable por tipo de evento (defecto 12 meses).</li>
+                <li>Alertas de volumen: si <code>recommendation_shown</code> cae &gt; 30% vs. semana anterior → alerta de data quality.</li>
+                <li>Integración con CRM / Dynamics para sincronizar flags de consentimiento.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Flujo Técnico -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        3. Flujo Técnico y de Datos
+      </div>
+      <div class="card-body">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">ACTORES</div>
+              <ul class="mb-0 small ps-3">
+                <li><strong>Usuario / Actor:</strong> interactúa con el recomendador.</li>
+                <li><strong>Motor / API:</strong> esquema de eventos mínimo y obligatorio.</li>
+                <li><strong>Frontend / UI:</strong> consentimiento y cumplimiento (control de captura).</li>
+                <li><strong>Formulario:</strong> disponibilidad para analítica y ML.</li>
+                <li><strong>Asistente / Chat:</strong> calidad de datos: deduplicación y orden.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">SECUENCIA PRINCIPAL</div>
+              <ol class="mb-0 small ps-3" style="line-height:1.7;">
+                <li>Motor / API define esquema de eventos mínimo y obligatorio.</li>
+                <li>Frontend / UI aplica consentimiento y cumplimiento (control de captura).</li>
+                <li>Formulario habilita disponibilidad para analítica y ML (tablas listas para consumo).</li>
+                <li>Asistente / Chat garantiza calidad de datos: deduplicación y orden, devuelve a Motor / API.</li>
+                <li>Motor / API confirma rendimiento y resiliencia (no impactar UX) al Usuario.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded h-100">
+              <div class="fw-semibold small text-muted mb-2">GARANTÍAS DE CALIDAD</div>
+              <ul class="mb-0 small ps-3">
+                <li>Latencia de ingesta ≤ 100 ms (p95).</li>
+                <li>Deduplicación por <code>event_id</code> (UUID).</li>
+                <li>Disponibilidad analítica ≤ 15 min tras generación.</li>
+                <li>Retención configurable (defecto 12 meses).</li>
+                <li>No impacto en UX: SDK asíncrono y no bloqueante.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="fw-semibold small mb-2" style="color: #37474F;">Ejemplo de Evento de Tracking</div>
+        <pre class="bg-light p-3 rounded small mb-0" style="overflow-x:auto; font-size: 0.78rem;">{
+  "event_id": "evt_7c2a9f1b",
+  "event_type": "recommendation_clicked",
+  "session_id": "sess_4de21",
+  "user_key_pseudo": "u_9f3a",
+  "service_id": "S-134",
+  "position_in_list": 2,
+  "canal": "web",
+  "timestamp": "2025-08-20T14:32:15.420Z",
+  "version_modelo": "rec-0.3.1",
+  "consentimiento_verificado": true
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4. Diseño -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        4. Diseño — Panel de Analítica de Eventos
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #37474F;">Dashboard de Comportamiento</div>
+              <ul class="mb-0 small">
+                <li>Métricas clave: CTR (clics/vistas), tasa de descarte, tiempo en detalle, funnel de conversión.</li>
+                <li>Segmentación por canal, segmento de usuario y versión del modelo.</li>
+                <li>Gráficos de tendencia por semana/mes con comparativo de versiones del motor.</li>
+                <li>Alertas configurables por umbral de CTR o volumen de eventos.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded h-100">
+              <div class="fw-semibold mb-2 small" style="color: #37474F;">Exportación de Datos</div>
+              <ul class="mb-0 small">
+                <li>Panel con selector de rango de fechas, tipo de evento y canal.</li>
+                <li>Descarga en CSV o JSON con campos seleccionables.</li>
+                <li>Opción de exportar tabla de resumen diario o eventos individuales.</li>
+                <li>Disponible solo para roles autorizados (RBAC); log de acceso a exportaciones.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Casos de Prueba -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">
+        5. Casos de Prueba <span class="badge ms-2" style="background:#37474F;font-size:0.7rem;">Mínimos</span>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0 small">
+            <thead class="table-light">
+              <tr>
+                <th style="width:5%;">#</th>
+                <th style="width:30%;">Escenario</th>
+                <th>Resultado Esperado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center fw-semibold">1</td>
+                <td><strong>Captura del esquema mínimo</strong></td>
+                <td>Cada interacción genera evento con todos los campos obligatorios (<code>event_id</code>, <code>event_type</code>, <code>session_id</code>, <code>timestamp</code>, <code>service_id</code>).</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">2</td>
+                <td><strong>Consentimiento no otorgado</strong></td>
+                <td>Evento de usuario sin consentimiento no persiste <code>user_key_pseudo</code>; solo se guarda <code>anonymous_id</code> de sesión.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">3</td>
+                <td><strong>Latencia de ingesta ≤ 100 ms</strong></td>
+                <td>SDK envía evento y recibe ACK del servidor en ≤ 100 ms (p95) sin bloquear la UI.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">4</td>
+                <td><strong>Deduplicación</strong></td>
+                <td>Evento con mismo <code>event_id</code> enviado dos veces produce un solo registro en el Data Lake.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">5</td>
+                <td><strong>Disponibilidad analítica ≤ 15 min</strong></td>
+                <td>Evento generado a las 10:00 es consultable en el query engine antes de las 10:15.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">6</td>
+                <td><strong>Resiliencia ante fallo de tracking</strong></td>
+                <td>Si el endpoint de tracking no responde, la UI no se degrada; el evento se encola y reintenta al recuperarse el servicio.</td>
+              </tr>
+              <tr>
+                <td class="text-center fw-semibold">7</td>
+                <td><strong>Anonimización por revocación</strong></td>
+                <td>Tras revocación de consentimiento, el job nocturno anonimiza eventos del usuario en ≤ 48 h.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Glosario -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white fw-semibold" style="color: #37474F;">6. Glosario</div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-3">CTR</dt>
+          <dd class="col-sm-9">Click-Through Rate — razón entre clics y vistas de recomendaciones; métrica clave de engagement.</dd>
+
+          <dt class="col-sm-3">Fire-and-forget</dt>
+          <dd class="col-sm-9">Patrón de envío asíncrono donde el cliente no espera respuesta; minimiza impacto en UX.</dd>
+
+          <dt class="col-sm-3">Data Lake</dt>
+          <dd class="col-sm-9">Repositorio de almacenamiento de datos en formatos abiertos (Parquet/Delta) para analítica y ML.</dd>
+
+          <dt class="col-sm-3">Deduplicación</dt>
+          <dd class="col-sm-9">Proceso de eliminación de eventos duplicados usando un identificador único (<code>event_id</code> UUID).</dd>
+
+          <dt class="col-sm-3">Anonimización retroactiva</dt>
+          <dd class="col-sm-9">Proceso batch que reemplaza PII en eventos históricos por identificadores no reversibles tras revocación de consentimiento.</dd>
+
+          <dt class="col-sm-3 mb-0">Retention</dt>
+          <dd class="col-sm-9 mb-0">Período configurable durante el cual se conservan los eventos antes de su archivado o eliminación.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Nota de alcance -->
+    <div class="alert border-start border-4 py-2 small mb-4"
+      style="border-color:#37474F !important; background:#eceff1;">
+      <strong>Nota de alcance:</strong> Esta HU cubre la captura, ingesta, almacenamiento y disponibilidad de eventos de interacción del usuario para analítica y ML. La gestión de reglas de negocio del recomendador se cubre en HU 2.14.1. El uso del feedback explícito (útil/no útil) para reentrenamiento se cubre en Épica 2.16.
     </div>
 
   </div>
@@ -85,4 +374,5 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 </body>
+
 </html>
