@@ -4,95 +4,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa de Relaciones — Sistema Recomendador CCB</title>
+  <title>Mapa de Relaciones HU — Sistema Recomendador CCB</title>
   <link rel="stylesheet" href="../css/style.css">
   <script src="../js/bootstrap-loader.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
+    /* ── Graph ─────────────────────────────────────────────── */
     #graph-container {
       width: 100%;
-      height: 540px;
+      height: 580px;
       background: #f8f9fa;
       border: 1px solid #dee2e6;
       border-radius: 8px;
       overflow: hidden;
       cursor: grab;
+      position: relative;
     }
     #graph-container:active { cursor: grabbing; }
 
+    .hull-path {
+      stroke-width: 1.5px;
+      stroke-dasharray: none;
+      opacity: 0.13;
+      transition: opacity .2s;
+    }
+    .hull-path:hover { opacity: 0.22; }
+
+    .link-line {
+      stroke-opacity: 0.55;
+      fill: none;
+    }
+
     .node-circle {
       stroke: rgba(255,255,255,0.7);
-      stroke-width: 2.5px;
+      stroke-width: 2px;
       cursor: pointer;
-      transition: filter 0.18s;
+      transition: filter .18s;
     }
-    .node-circle:hover { filter: brightness(1.2) drop-shadow(0 0 6px rgba(0,0,0,0.35)); }
+    .node-circle:hover {
+      filter: brightness(1.25) drop-shadow(0 0 5px rgba(0,0,0,.35));
+    }
     .node-circle.selected {
       stroke: #FFD600;
-      stroke-width: 4px;
-      filter: drop-shadow(0 0 8px rgba(255,214,0,0.6));
+      stroke-width: 3.5px;
+      filter: drop-shadow(0 0 7px rgba(255,214,0,.55));
     }
-    .node-label-main {
-      font-size: 10.5px;
+    .node-label {
+      font-size: 8.5px;
       font-weight: 700;
       fill: #fff;
       text-anchor: middle;
       dominant-baseline: middle;
       pointer-events: none;
+      letter-spacing: -.2px;
     }
-    .node-label-sub {
-      font-size: 7.5px;
-      font-weight: 400;
-      fill: rgba(255,255,255,0.85);
-      text-anchor: middle;
-      dominant-baseline: middle;
-      pointer-events: none;
-    }
-    .link-line {
-      stroke-opacity: 0.55;
-      transition: stroke-opacity 0.2s;
-    }
-    .link-line:hover { stroke-opacity: 1; }
-    .link-label {
+    .epic-cluster-label {
       font-size: 9px;
-      fill: #555;
+      font-weight: 700;
       text-anchor: middle;
       pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: .4px;
     }
 
+    /* Arrow markers injected via JS */
+    .link-arrow { fill: none; }
+
+    /* ── Detail panel ─────────────────────────────────────── */
     #detail-panel {
       background: #fff;
       border: 1px solid #dee2e6;
       border-radius: 8px;
-      padding: 18px;
-      min-height: 260px;
+      padding: 16px;
+      min-height: 280px;
       max-height: 600px;
       overflow-y: auto;
     }
-
-    .related-epic-card {
-      background: #f8f9fa;
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
+    .relation-row {
       border-left: 3px solid transparent;
+      border-radius: 4px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+      background: #f8f9fa;
     }
-
-    .hu-row td { vertical-align: middle; }
-
-    .topic-pill {
-      display: inline-block;
-      font-size: 9.5px;
-      font-weight: 500;
-      color: #fff;
+    .dir-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      padding: 1px 6px;
       border-radius: 20px;
-      padding: 2px 8px;
-      margin: 1px;
-      letter-spacing: 0.1px;
+      color: #fff;
     }
 
+    /* ── Tabs & table ─────────────────────────────────────── */
     .nav-tabs .nav-link { font-size: 13px; }
-    .nav-tabs .nav-link.active { font-weight: 600; }
+    .nav-tabs .nav-link.active { font-weight: 700; }
+    .rel-type-card { border-top: 4px solid transparent; }
+    .hu-link-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      color: #fff;
+      margin: 1px;
+    }
+    .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
   </style>
 </head>
 
@@ -112,10 +130,10 @@
   <!-- Hero -->
   <div class="hero text-white py-5" style="--hero-start:#880E4F;--hero-end:#4A148C;">
     <div class="container-xl px-4">
-      <h1 class="fw-bold fs-2 mb-1">Mapa de Relaciones</h1>
+      <h1 class="fw-bold fs-2 mb-1">Mapa de Relaciones entre HU</h1>
       <p class="opacity-75 mb-0 fs-6">
-        Visualiza cómo cada épica, diagrama e historia de usuario se asocia con otras
-        · <strong class="opacity-100">15 épicas · 32 HU · 4 temas compartidos</strong>
+        Visualiza cómo cada Historia de Usuario se relaciona con otras a través de 15 épicas
+        · <strong class="opacity-100">32 HU · 24 relaciones identificadas · 4 tipos de vínculo</strong>
       </p>
     </div>
   </div>
@@ -124,19 +142,16 @@
   <div class="container-xl px-4 pt-4">
     <ul class="nav nav-tabs" id="mapaTabs" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tab-red-btn" data-bs-toggle="tab" data-bs-target="#tab-red" type="button" role="tab">
-          🕸 Red de Relaciones
-        </button>
+        <button class="nav-link active" id="tab-red-btn" data-bs-toggle="tab"
+          data-bs-target="#tab-red" type="button" role="tab">🕸 Red de HU</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab-temas-btn" data-bs-toggle="tab" data-bs-target="#tab-temas" type="button" role="tab">
-          🏷 Temas Compartidos
-        </button>
+        <button class="nav-link" id="tab-tipos-btn" data-bs-toggle="tab"
+          data-bs-target="#tab-tipos" type="button" role="tab">🔗 Tipos de Relación</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab-hu-btn" data-bs-toggle="tab" data-bs-target="#tab-hu" type="button" role="tab">
-          📋 Tabla de Asociaciones
-        </button>
+        <button class="nav-link" id="tab-tabla-btn" data-bs-toggle="tab"
+          data-bs-target="#tab-tabla" type="button" role="tab">📋 Tabla de Asociaciones</button>
       </li>
     </ul>
   </div>
@@ -145,7 +160,7 @@
   <div class="container-xl px-4 pb-5">
     <div class="tab-content pt-3" id="mapaTabContent">
 
-      <!-- ── TAB 1: Red de Relaciones ───────────────────────────────── -->
+      <!-- ── TAB 1: Red de HU ───────────────────────────────────── -->
       <div class="tab-pane fade show active" id="tab-red" role="tabpanel">
         <div class="row g-3">
 
@@ -153,24 +168,22 @@
           <div class="col-lg-8">
             <div class="card shadow-sm border-0">
               <div class="card-body p-2">
-                <div class="d-flex justify-content-between align-items-center px-2 pt-1 pb-2">
-                  <span class="text-muted small">
-                    <strong>Clic</strong> en una épica para ver sus relaciones ·
-                    <strong>Arrastra</strong> para mover · <strong>Scroll</strong> para zoom
-                  </span>
+                <div class="d-flex justify-content-between align-items-center px-2 pt-1 pb-2 flex-wrap gap-2">
+                  <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span id="legend-alimenta"  class="legend-row"><span class="legend-dot" style="background:#43A047"></span><span class="small">Alimenta</span></span>
+                    <span id="legend-configura"  class="legend-row"><span class="legend-dot" style="background:#F57C00"></span><span class="small">Configura</span></span>
+                    <span id="legend-complementa" class="legend-row"><span class="legend-dot" style="background:#9C27B0"></span><span class="small">Complementa</span></span>
+                    <span id="legend-integra"    class="legend-row"><span class="legend-dot" style="background:#0277BD"></span><span class="small">Integra</span></span>
+                  </div>
                   <button id="btn-reset" class="btn btn-outline-secondary btn-sm">⟳ Restablecer</button>
                 </div>
                 <div id="graph-container">
                   <svg id="graph-svg" width="100%" height="100%"></svg>
                 </div>
-                <!-- Legend -->
-                <div class="px-2 pt-2 pb-1 d-flex flex-wrap gap-2 align-items-center">
-                  <span class="text-muted small fw-semibold">Conexiones por tema:</span>
-                  <span class="badge" style="background:#7B1FA2">Personalización y proactividad</span>
-                  <span class="badge" style="background:#4527A0">Lógica explicativa</span>
-                  <span class="badge" style="background:#F57F17">Productos destacados</span>
-                  <span class="badge" style="background:#BF360C">Módulo admin reglas</span>
-                  <span class="text-muted small ms-2">— Épicas sin conexión flotan libres</span>
+                <div class="text-muted small px-2 pt-2 pb-1">
+                  <strong>Clic</strong> en una HU para ver sus relaciones ·
+                  <strong>Arrastra</strong> para mover · <strong>Scroll</strong> para zoom ·
+                  Los contornos agrupan HUs de la misma épica
                 </div>
               </div>
             </div>
@@ -182,7 +195,7 @@
               <div id="detail-placeholder" class="text-center text-muted py-5">
                 <div style="font-size:2.8rem;">🔍</div>
                 <p class="mt-3 mb-0 small">
-                  Selecciona una épica en el grafo<br>para ver sus detalles y relaciones
+                  Selecciona una HU en el grafo<br>para ver sus relaciones
                 </p>
               </div>
               <div id="detail-content" style="display:none;"></div>
@@ -191,24 +204,17 @@
         </div>
       </div>
 
-      <!-- ── TAB 2: Temas Compartidos ───────────────────────────────── -->
-      <div class="tab-pane fade" id="tab-temas" role="tabpanel">
-        <p class="text-muted small mb-3">
-          Se muestran únicamente los temas que aparecen en <strong>2 o más épicas</strong>,
-          creando los puentes de relación entre ellas.
-        </p>
-        <div class="row g-3" id="temas-container"></div>
-        <div class="row g-3 mt-0" id="temas-isolated"></div>
+      <!-- ── TAB 2: Tipos de Relación ──────────────────────────── -->
+      <div class="tab-pane fade" id="tab-tipos" role="tabpanel">
+        <div class="row g-3 mb-3" id="tipos-legend-row">
+          <!-- type summary cards -->
+        </div>
+        <div class="row g-3" id="tipos-container"></div>
       </div>
 
-      <!-- ── TAB 3: Tabla de Asociaciones ──────────────────────────── -->
-      <div class="tab-pane fade" id="tab-hu" role="tabpanel">
-        <p class="text-muted small mb-3">
-          Para cada épica se listan sus <strong>Historias de Usuario</strong>,
-          los <strong>temas</strong> que la caracterizan y las <strong>épicas relacionadas</strong>
-          por temas en común.
-        </p>
-        <div id="hu-container"></div>
+      <!-- ── TAB 3: Tabla de Asociaciones ──────────────────────── -->
+      <div class="tab-pane fade" id="tab-tabla" role="tabpanel">
+        <div id="tabla-container"></div>
       </div>
 
     </div>
@@ -218,277 +224,228 @@
     Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
   </footer>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       DATA + LOGIC
+  ═══════════════════════════════════════════════════════════ -->
   <script>
-  // ═══════════════════════════════════════════════════════════════
-  //  DATA
-  // ═══════════════════════════════════════════════════════════════
 
-  const TOPIC_COLORS = {
-    "t-personalizacion":      "#7B1FA2",
-    "t-interfaz-exp":         "#1565C0",
-    "t-logica-explicativa":   "#4527A0",
-    "t-trazabilidad":         "#283593",
-    "t-destacar-gratuito":    "#2E7D32",
-    "t-panel-negocio":        "#E65100",
-    "t-productos-destacados": "#F57F17",
-    "t-modulo-admin-reglas":  "#BF360C",
-    "t-id-omnicanal":         "#006064",
-    "t-resolver-identidad":   "#00695C",
-    "t-preferencias":         "#00838F",
-    "t-interfaz-personal":    "#01579B",
-    "t-evitar-repetidas":     "#B71C1C",
-    "t-reglas-carrusel":      "#546E7A",
-    "t-exp-visual":           "#1976D2",
-    "t-comentarios":          "#EF6C00",
-    "t-redireccion":          "#00796B",
-    "t-formularios":          "#388E3C",
-    "t-registrar-resultado":  "#4E342E",
-    "t-frontend-integrable":  "#37474F",
-    "t-clasificacion":        "#AD1457",
-    "t-promocion":            "#880E4F",
-    "t-notificaciones":       "#6A1B9A",
-    "t-registro-nav":         "#5D4037",
-    "t-adaptacion-continua":  "#1B5E20",
+  // ── Relationship types ─────────────────────────────────────────
+  const REL_TYPES = {
+    alimenta:    { label: "Alimenta",    color: "#43A047", desc: "Transfiere datos, eventos o señales de entrada hacia otra HU" },
+    configura:   { label: "Configura",   color: "#F57C00", desc: "Define parámetros, reglas o condiciones que otra HU consume" },
+    complementa: { label: "Complementa", color: "#9C27B0", desc: "Trabaja en paralelo hacia el mismo objetivo de negocio" },
+    integra:     { label: "Integra",     color: "#0277BD", desc: "Dependencia técnica directa o flujo de navegación entre HUs" },
   };
 
-  const TOPIC_LABELS = {
-    "t-personalizacion":      "Personalización y proactividad",
-    "t-interfaz-exp":         "Interfaz y experiencia",
-    "t-logica-explicativa":   "Lógica explicativa",
-    "t-trazabilidad":         "Trazabilidad",
-    "t-destacar-gratuito":    "Destacar gratuito",
-    "t-panel-negocio":        "Panel negocio",
-    "t-productos-destacados": "Productos destacados",
-    "t-modulo-admin-reglas":  "Módulo admin reglas",
-    "t-id-omnicanal":         "Identificación Omnicanal",
-    "t-resolver-identidad":   "Resolver identidad",
-    "t-preferencias":         "Preferencias",
-    "t-interfaz-personal":    "Interfaz personalizada",
-    "t-evitar-repetidas":     "Evitar sugerencias repetidas",
-    "t-reglas-carrusel":      "Reglas por carrusel",
-    "t-exp-visual":           "Experiencia visual",
-    "t-comentarios":          "Comentarios y calificaciones",
-    "t-redireccion":          "Redirección formularios",
-    "t-formularios":          "Formularios",
-    "t-registrar-resultado":  "Registrar resultado",
-    "t-frontend-integrable":  "Frontend integrable",
-    "t-clasificacion":        "Clasificación",
-    "t-promocion":            "Promoción",
-    "t-notificaciones":       "Notificaciones",
-    "t-registro-nav":         "Registro navegación",
-    "t-adaptacion-continua":  "Adaptación continua",
-  };
-
+  // ── Épicas ─────────────────────────────────────────────────────
   const EPICS = [
-    { id:"2.1",  label:"Épica 2.1",  name:"Motor de Recomendación Personalizada",   color:"#1565C0",
+    { id:"2.1",  label:"Épica 2.1",  name:"Motor Recomendación Personalizada",  color:"#1565C0",
       href:"../Epica_2.1_Motor_Recomendacion_Personalizada/Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html",
-      topics:["t-personalizacion","t-interfaz-exp"],
-      hus:[{id:"HU 2.1.1",label:"Recomendar proactivamente"},{id:"HU 2.1.2",label:"Entrenar motor 6M/24M"},{id:"HU 2.1.3",label:"Aprende de clics"},{id:"HU 2.1.4",label:"Cold Start"}] },
-    { id:"2.2",  label:"Épica 2.2",  name:"Panel de Administración y Explicabilidad", color:"#6A1B9A",
+      hus:[{id:"2.1.1",label:"Recomendar proactivamente"},{id:"2.1.2",label:"Entrenar motor 6M/24M"},{id:"2.1.3",label:"Aprende de clics"},{id:"2.1.4",label:"Cold Start"}] },
+    { id:"2.2",  label:"Épica 2.2",  name:"Panel Administración y Explicabilidad", color:"#6A1B9A",
       href:"../Epica_2.2_Panel_Administracion_Explicabilidad/Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html",
-      topics:["t-logica-explicativa"],
-      hus:[{id:"HU 2.2.1",label:"Explicar recomendaciones"}] },
-    { id:"2.3",  label:"Épica 2.3",  name:"Gestión de Promoción de Servicios",       color:"#2E7D32",
+      hus:[{id:"2.2.1",label:"Explicar recomendaciones"}] },
+    { id:"2.3",  label:"Épica 2.3",  name:"Gestión Promoción de Servicios", color:"#2E7D32",
       href:"../Epica_2.3_Gestion_Promocion_Servicios/Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html",
-      topics:["t-destacar-gratuito","t-panel-negocio","t-productos-destacados"],
-      hus:[{id:"HU 2.3.1",label:"Resalta lo gratuito"},{id:"HU 2.3.2",label:"Destacar servicios"}] },
-    { id:"2.4",  label:"Épica 2.4",  name:"Configuración y Gobernanza de Reglas",    color:"#E65100",
+      hus:[{id:"2.3.1",label:"Resalta lo gratuito"},{id:"2.3.2",label:"Destacar servicios"}] },
+    { id:"2.4",  label:"Épica 2.4",  name:"Configuración y Gobernanza de Reglas", color:"#E65100",
       href:"../Epica_2.4_Configuracion_Gobernanza_Reglas/Diagrama_Epica_2.4_Configuracion_Gobernanza_Reglas.html",
-      topics:["t-modulo-admin-reglas"],
-      hus:[{id:"HU 2.4.1",label:"Reglas de negocio"}] },
-    { id:"2.5",  label:"Épica 2.5",  name:"Resolución de Identidad Omnicanal",       color:"#00695C",
+      hus:[{id:"2.4.1",label:"Reglas de negocio"}] },
+    { id:"2.5",  label:"Épica 2.5",  name:"Resolución Identidad Omnicanal", color:"#00695C",
       href:"../Epica_2.5_Resolucion_Identidad_Omnicanal/Diagrama_Epica_2.5_Resolucion_Identidad_Omnicanal.html",
-      topics:["t-id-omnicanal","t-resolver-identidad","t-preferencias","t-interfaz-personal"],
-      hus:[{id:"HU 2.5.1",label:"Resolución identidad"},{id:"HU 2.5.2",label:"Identificación progresiva"},{id:"HU 2.5.3",label:"Respeta preferencias"},{id:"HU 2.5.4",label:"Privacidad UI"}] },
-    { id:"2.6",  label:"Épica 2.6",  name:"Motor de Recomendación",                 color:"#1A237E",
+      hus:[{id:"2.5.1",label:"Resolución identidad"},{id:"2.5.2",label:"Identificación progresiva"},{id:"2.5.3",label:"Respeta preferencias"},{id:"2.5.4",label:"Privacidad UI"}] },
+    { id:"2.6",  label:"Épica 2.6",  name:"Motor de Recomendación", color:"#1A237E",
       href:"../Epica_2.6_Motor_Recomendacion/Diagrama_Epica_2.6_Motor_Recomendacion.html",
-      topics:["t-personalizacion","t-productos-destacados"],
-      hus:[{id:"HU 2.6.1",label:"Modelo Top-N"},{id:"HU 2.6.2",label:"Parametrización sin redeploy"},{id:"HU 2.6.3",label:"Elegibilidad y membresía"}] },
-    { id:"2.7",  label:"Épica 2.7",  name:"Reglas de Exclusión",                    color:"#B71C1C",
+      hus:[{id:"2.6.1",label:"Modelo Top-N"},{id:"2.6.2",label:"Parametrización sin redeploy"},{id:"2.6.3",label:"Elegibilidad y membresía"}] },
+    { id:"2.7",  label:"Épica 2.7",  name:"Reglas de Exclusión", color:"#B71C1C",
       href:"../Epica_2.7_Reglas_Exclusion/Diagrama_Epica_2.7_Reglas_Exclusion.html",
-      topics:["t-personalizacion","t-evitar-repetidas"],
-      hus:[{id:"HU 2.7.1",label:"Servicios ya consumidos"},{id:"HU 2.7.2",label:"Descarte explícito"}] },
-    { id:"2.8",  label:"Épica 2.8",  name:"UI Recomendador Tipo Catálogo",           color:"#0277BD",
+      hus:[{id:"2.7.1",label:"Servicios ya consumidos"},{id:"2.7.2",label:"Descarte explícito"}] },
+    { id:"2.8",  label:"Épica 2.8",  name:"UI Recomendador Tipo Catálogo", color:"#0277BD",
       href:"../Epica_2.8_UI_Recomendador_Catalogo/Diagrama_Epica_2.8_UI_Recomendador_Catalogo.html",
-      topics:["t-reglas-carrusel","t-exp-visual"],
-      hus:[{id:"HU 2.8.1",label:"Carruseles"},{id:"HU 2.8.2",label:"Filtros y Sorpréndeme"}] },
-    { id:"2.9",  label:"Épica 2.9",  name:"Lógica Explicativa",                     color:"#4527A0",
+      hus:[{id:"2.8.1",label:"Carruseles"},{id:"2.8.2",label:"Filtros y Sorpréndeme"}] },
+    { id:"2.9",  label:"Épica 2.9",  name:"Lógica Explicativa", color:"#4527A0",
       href:"../Epica_2.9_Logica_Explicativa/Diagrama_Epica_2.9_Logica_Explicativa.html",
-      topics:["t-logica-explicativa","t-trazabilidad"],
-      hus:[{id:"HU 2.9.1",label:"Explicación por recomendación"},{id:"HU 2.9.2",label:"Reporte de segmentos"}] },
-    { id:"2.10", label:"Épica 2.10", name:"Prueba Social",                           color:"#F57F17",
+      hus:[{id:"2.9.1",label:"Explicación por recomendación"},{id:"2.9.2",label:"Reporte de segmentos"}] },
+    { id:"2.10", label:"Épica 2.10", name:"Prueba Social", color:"#E65100",
       href:"../Epica_2.10_Prueba_Social/Diagrama_Epica_2.10_Prueba_Social.html",
-      topics:["t-comentarios"],
-      hus:[{id:"HU 2.10.1",label:"Reseñas y calificaciones"},{id:"HU 2.10.2",label:"Moderación de contenido"}] },
-    { id:"2.11", label:"Épica 2.11", name:"Integración con Formularios",             color:"#00796B",
+      hus:[{id:"2.10.1",label:"Reseñas y calificaciones"},{id:"2.10.2",label:"Moderación de contenido"}] },
+    { id:"2.11", label:"Épica 2.11", name:"Integración con Formularios", color:"#00796B",
       href:"../Epica_2.11_Integracion_Formularios/Diagrama_Epica_2.11_Integracion_Formularios.html",
-      topics:["t-redireccion","t-formularios","t-registrar-resultado"],
-      hus:[{id:"HU 2.11.1",label:"Redirección formulario"},{id:"HU 2.11.2",label:"Resultado inscripción"},{id:"HU 2.11.3",label:"Atribución conversión"}] },
-    { id:"2.12", label:"Épica 2.12", name:"Micro-frontend Recomendador",             color:"#37474F",
+      hus:[{id:"2.11.1",label:"Redirección formulario"},{id:"2.11.2",label:"Resultado inscripción"},{id:"2.11.3",label:"Atribución conversión"}] },
+    { id:"2.12", label:"Épica 2.12", name:"Micro-frontend Recomendador", color:"#37474F",
       href:"../Epica_2.12_Microfrontend_Recomendador/Diagrama_Epica_2.12_Microfrontend_Recomendador.html",
-      topics:["t-frontend-integrable"],
-      hus:[{id:"HU 2.12.1",label:"Web Component"},{id:"HU 2.12.2",label:"Navegación con asistente"}] },
-    { id:"2.13", label:"Épica 2.13", name:"Catálogo y Promoción de Servicios",       color:"#AD1457",
+      hus:[{id:"2.12.1",label:"Web Component"},{id:"2.12.2",label:"Navegación con asistente"}] },
+    { id:"2.13", label:"Épica 2.13", name:"Catálogo y Promoción de Servicios", color:"#AD1457",
       href:"../Epica_2.13_Catalogo_Promocion_Servicios/Diagrama_Epica_2.13_Catalogo_Promocion_Servicios.html",
-      topics:["t-clasificacion","t-promocion","t-notificaciones"],
-      hus:[{id:"HU 2.13.1",label:"Clasificación servicios"},{id:"HU 2.13.2",label:"Notificación disponibilidad"}] },
-    { id:"2.14", label:"Épica 2.14", name:"Backoffice y Reglas de Negocio",          color:"#4E342E",
+      hus:[{id:"2.13.1",label:"Clasificación servicios"},{id:"2.13.2",label:"Notificación disponibilidad"}] },
+    { id:"2.14", label:"Épica 2.14", name:"Backoffice y Reglas de Negocio", color:"#4E342E",
       href:"../Epica_2.14_Backoffice_Reglas_Negocio/Diagrama_Epica_2.14_Backoffice_Reglas_Negocio.html",
-      topics:["t-modulo-admin-reglas","t-registro-nav"],
-      hus:[{id:"HU 2.14.1",label:"Panel de reglas"},{id:"HU 2.14.2",label:"Registro de clics"}] },
-    { id:"2.16", label:"Épica 2.16", name:"Aprendizaje Continuo",                    color:"#1B5E20",
+      hus:[{id:"2.14.1",label:"Panel de reglas"},{id:"2.14.2",label:"Registro de clics"}] },
+    { id:"2.16", label:"Épica 2.16", name:"Aprendizaje Continuo", color:"#1B5E20",
       href:"../Epica_2.16_Aprendizaje_Continuo/Diagrama_Epica_2.16_Aprendizaje_Continuo.html",
-      topics:["t-adaptacion-continua"],
-      hus:[{id:"HU 2.16.1",label:"Captura de feedback"},{id:"HU 2.16.2",label:"Ajuste de modelo"}] },
+      hus:[{id:"2.16.1",label:"Captura de feedback"},{id:"2.16.2",label:"Ajuste de modelo"}] },
   ];
 
-  // ── Compute topic → epics map ──────────────────────────────────
-  const topicToEpics = {};
-  EPICS.forEach(e => e.topics.forEach(t => {
-    if (!topicToEpics[t]) topicToEpics[t] = [];
-    topicToEpics[t].push(e.id);
+  // ── Relaciones entre HU ────────────────────────────────────────
+  // source → target  (dirección de la flecha)
+  const HU_LINKS = [
+    // ALIMENTA — transfiere datos o señales
+    { source:"2.1.3",  target:"2.14.2", type:"alimenta",    desc:"Aprende de clics alimenta el registro de comportamiento" },
+    { source:"2.14.2", target:"2.16.1", type:"alimenta",    desc:"Registro de clics aporta señales al motor de feedback" },
+    { source:"2.10.1", target:"2.16.1", type:"alimenta",    desc:"Reseñas y calificaciones como señal de satisfacción" },
+    { source:"2.11.2", target:"2.16.1", type:"alimenta",    desc:"El resultado de inscripción retroalimenta el aprendizaje" },
+    { source:"2.11.3", target:"2.14.2", type:"alimenta",    desc:"La atribución de conversión registra el origen del clic" },
+    { source:"2.16.1", target:"2.16.2", type:"alimenta",    desc:"Feedback capturado dispara el ajuste periódico del modelo" },
+    { source:"2.6.1",  target:"2.1.1",  type:"alimenta",    desc:"El modelo Top-N provee las recomendaciones a mostrar proactivamente" },
+    { source:"2.9.2",  target:"2.14.2", type:"alimenta",    desc:"El reporte de segmentos enriquece el registro de comportamiento" },
+
+    // CONFIGURA — define reglas o parámetros
+    { source:"2.4.1",  target:"2.6.1",  type:"configura",   desc:"Las reglas de negocio filtran y priorizan la salida del motor Top-N" },
+    { source:"2.4.1",  target:"2.7.1",  type:"configura",   desc:"Las reglas de negocio definen qué servicios se excluyen por consumo" },
+    { source:"2.14.1", target:"2.6.2",  type:"configura",   desc:"El panel de reglas ajusta parámetros del motor sin redeploy" },
+    { source:"2.1.2",  target:"2.6.1",  type:"configura",   desc:"El entrenamiento periódico actualiza el modelo que usa Top-N" },
+    { source:"2.16.2", target:"2.6.1",  type:"configura",   desc:"El ajuste de modelo recalibra el motor de recomendación" },
+
+    // COMPLEMENTA — mismo objetivo de negocio
+    { source:"2.2.1",  target:"2.9.1",  type:"complementa", desc:"Ambas HU abordan la explicabilidad: la 2.2.1 desde el panel admin y la 2.9.1 desde la lógica interna" },
+    { source:"2.4.1",  target:"2.14.1", type:"complementa", desc:"Ambas gestionan reglas de negocio: la 2.4.1 las define y la 2.14.1 las administra en backoffice" },
+    { source:"2.5.3",  target:"2.7.2",  type:"complementa", desc:"Respetar preferencias y descarte explícito son dos mecanismos del mismo objetivo: no molestar al usuario" },
+    { source:"2.3.1",  target:"2.13.1", type:"complementa", desc:"Resaltar gratuito y clasificar servicios son estrategias complementarias de visibilidad" },
+    { source:"2.5.2",  target:"2.1.4",  type:"complementa", desc:"Identificación progresiva y Cold Start son respuestas al mismo problema: usuario sin historial" },
+    { source:"2.1.4",  target:"2.6.3",  type:"complementa", desc:"Cold Start se apoya en elegibilidad/membresía para generar recomendaciones iniciales" },
+
+    // INTEGRA — dependencia técnica o de flujo
+    { source:"2.5.1",  target:"2.6.3",  type:"integra",     desc:"Resolver la identidad del usuario es prerequisito para calcular su elegibilidad y membresía" },
+    { source:"2.8.1",  target:"2.12.1", type:"integra",     desc:"Los carruseles se renderizan a través del Web Component del microfrontend" },
+    { source:"2.8.2",  target:"2.1.1",  type:"integra",     desc:"Sorpréndeme consume el endpoint de recomendación proactiva" },
+    { source:"2.12.2", target:"2.11.1", type:"integra",     desc:"El asistente de navegación redirige al usuario a formularios de inscripción" },
+    { source:"2.3.2",  target:"2.6.1",  type:"integra",     desc:"Los servicios destacados por negocio se inyectan en la lista del motor Top-N" },
+  ];
+
+  // ── Flat HU list ───────────────────────────────────────────────
+  const ALL_HUS = [];
+  EPICS.forEach(e => e.hus.forEach(hu => {
+    ALL_HUS.push({
+      id: hu.id,
+      label: hu.label,
+      epicId: e.id,
+      epicColor: e.color,
+      epicLabel: e.label,
+      epicName: e.name,
+      epicHref: e.href,
+    });
   }));
 
-  // ── Compute links (shared topics between epic pairs) ──────────
-  const LINKS = [];
-  const seen = new Set();
-  Object.entries(topicToEpics).forEach(([topic, ids]) => {
-    if (ids.length < 2) return;
-    for (let i = 0; i < ids.length; i++) {
-      for (let j = i + 1; j < ids.length; j++) {
-        const key = [ids[i], ids[j]].sort().join('|');
-        const existing = LINKS.find(l => l.key === key);
-        if (existing) { existing.topics.push(topic); }
-        else { LINKS.push({ source: ids[i], target: ids[j], key, topics: [topic] }); seen.add(key); }
-      }
-    }
-  });
-
-  // ── Helper: topic pill HTML ───────────────────────────────────
-  function topicPill(t) {
-    return `<span class="topic-pill" style="background:${TOPIC_COLORS[t]||'#999'}">${TOPIC_LABELS[t]||t}</span>`;
+  // ── Helper: get relations for a HU ────────────────────────────
+  function getRelations(huId) {
+    return HU_LINKS
+      .filter(l => l.source === huId || l.target === huId)
+      .map(l => {
+        const isSource = l.source === huId;
+        const otherId  = isSource ? l.target : l.source;
+        return { hu: ALL_HUS.find(h => h.id === otherId), type: l.type, desc: l.desc, isSource };
+      })
+      .filter(r => r.hu);
   }
 
-  // ── Helper: get related epics for a given epic ────────────────
-  function getRelated(epicId) {
-    return LINKS
-      .filter(l => l.source === epicId || l.target === epicId)
-      .map(l => ({
-        epic: EPICS.find(e => e.id === (l.source === epicId ? l.target : l.source)),
-        topics: l.topics
-      }))
-      .filter(r => r.epic);
+  // ── Direction label helper ─────────────────────────────────────
+  function dirLabel(type, isSource) {
+    const map = {
+      alimenta:    [' envía datos a ',  ' recibe datos de '],
+      configura:   [' configura a ',    ' es configurada por '],
+      complementa: [' complementa a ',  ' complementa a '],
+      integra:     [' integra con ',    ' es usada por '],
+    };
+    return (map[type] || [' → ', ' ← '])[isSource ? 0 : 1];
   }
 
   // ═══════════════════════════════════════════════════════════════
-  //  TAB 2 — Temas Compartidos
+  //  TAB 2 — Tipos de Relación
   // ═══════════════════════════════════════════════════════════════
-  function buildTemasView() {
-    const container = document.getElementById('temas-container');
-    const isolated  = document.getElementById('temas-isolated');
+  function buildTiposView() {
+    const legendRow = document.getElementById('tipos-legend-row');
+    const container = document.getElementById('tipos-container');
 
-    const shared = Object.entries(topicToEpics).filter(([, ids]) => ids.length >= 2);
+    Object.entries(REL_TYPES).forEach(([key, rt]) => {
+      const links = HU_LINKS.filter(l => l.type === key);
 
-    shared.forEach(([topic, ids]) => {
-      const color = TOPIC_COLORS[topic] || '#666';
-      const label = TOPIC_LABELS[topic] || topic;
-      const relEpics = ids.map(id => EPICS.find(e => e.id === id)).filter(Boolean);
+      // Summary card in legend row
+      const sumCol = document.createElement('div');
+      sumCol.className = 'col-6 col-md-3';
+      sumCol.innerHTML = `
+        <div class="card text-center shadow-sm py-3" style="border-top:4px solid ${rt.color}">
+          <div class="fw-bold" style="color:${rt.color};font-size:1.3rem;">${links.length}</div>
+          <div class="fw-semibold small">${rt.label}</div>
+          <div class="text-muted" style="font-size:10px;">${rt.desc.substring(0,40)}…</div>
+        </div>`;
+      legendRow.appendChild(sumCol);
 
+      // Full list card
       const col = document.createElement('div');
-      col.className = 'col-md-6 col-xl-4';
+      col.className = 'col-md-6 col-xl-3';
       col.innerHTML = `
-        <div class="card h-100 shadow-sm" style="border-top:4px solid ${color}">
+        <div class="card h-100 shadow-sm rel-type-card" style="border-top-color:${rt.color}">
           <div class="card-body">
-            <span class="badge mb-2 px-3 py-1" style="background:${color};font-size:11px;">${label}</span>
-            <p class="text-muted small mb-3">${relEpics.length} épicas comparten este tema</p>
-            ${relEpics.map((e, idx) => `
-              ${idx > 0 ? '<hr class="my-2">' : ''}
-              <div>
-                <a href="${e.href}" class="fw-bold text-decoration-none d-block mb-1" style="color:${e.color};font-size:12.5px;">
-                  ${e.label}: ${e.name}
-                </a>
-                <div class="d-flex flex-wrap gap-1">
-                  ${e.hus.map(hu => `<span class="badge" style="background:#f1f3f6;color:#444;font-size:10px;">${hu.id}: ${hu.label}</span>`).join('')}
-                </div>
-              </div>
-            `).join('')}
+            <span class="badge mb-2 px-3 py-1 fs-6" style="background:${rt.color}">${rt.label}</span>
+            <p class="text-muted small mb-3">${rt.desc}</p>
+            ${links.map(l => {
+              const src = ALL_HUS.find(h => h.id === l.source);
+              const tgt = ALL_HUS.find(h => h.id === l.target);
+              if (!src || !tgt) return '';
+              return `
+                <div class="mb-3 p-2 rounded" style="background:#f9f9f9;border-left:3px solid ${rt.color}">
+                  <div class="d-flex align-items-center gap-1 flex-wrap mb-1">
+                    <span class="hu-link-badge" style="background:${src.epicColor}">${src.id}</span>
+                    <span style="font-size:14px;color:${rt.color};">→</span>
+                    <span class="hu-link-badge" style="background:${tgt.epicColor}">${tgt.id}</span>
+                  </div>
+                  <div style="font-size:10.5px;font-weight:600;color:#333;">${src.label} → ${tgt.label}</div>
+                  <div class="text-muted" style="font-size:9.5px;">${l.desc}</div>
+                </div>`;
+            }).join('')}
           </div>
         </div>`;
       container.appendChild(col);
     });
-
-    // Isolated epics (unique topics only)
-    const isolatedEpics = EPICS.filter(e =>
-      !e.topics.some(t => topicToEpics[t] && topicToEpics[t].length >= 2)
-    );
-    if (isolatedEpics.length) {
-      const col = document.createElement('div');
-      col.className = 'col-12 mt-2';
-      col.innerHTML = `
-        <div class="card shadow-sm" style="border-top:4px solid #bbb">
-          <div class="card-body">
-            <h6 class="fw-semibold text-muted mb-3">
-              Épicas con temas únicos — sin conexión directa con otras épicas por tema
-            </h6>
-            <div class="d-flex flex-wrap gap-2">
-              ${isolatedEpics.map(e => `
-                <a href="${e.href}" class="badge text-decoration-none px-3 py-2"
-                   style="background:${e.color};font-size:11px;">${e.label}: ${e.name}</a>
-              `).join('')}
-            </div>
-          </div>
-        </div>`;
-      isolated.appendChild(col);
-    }
   }
 
   // ═══════════════════════════════════════════════════════════════
-  //  TAB 3 — Tabla de Asociaciones
+  //  TAB 3 — Tabla
   // ═══════════════════════════════════════════════════════════════
-  function buildHUView() {
-    const rows = EPICS.map(e => {
-      const related = getRelated(e.id);
+  function buildTablaView() {
+    const rows = ALL_HUS.map(hu => {
+      const rels = getRelations(hu.id);
       return `
         <tr>
-          <td style="min-width:155px;">
-            <a href="${e.href}" class="fw-bold text-decoration-none d-block" style="color:${e.color};font-size:12px;">${e.label}</a>
-            <span class="text-muted" style="font-size:10.5px;">${e.name}</span>
+          <td style="white-space:nowrap;">
+            <span class="badge px-2 py-1" style="background:${hu.epicColor};font-size:11px;">${hu.id}</span>
           </td>
-          <td style="min-width:200px;">
-            <div class="d-flex flex-wrap gap-1">
-              ${e.hus.map(hu =>
-                `<span class="badge py-1" style="background:#f1f3f6;color:#333;font-size:10px;">${hu.id}: ${hu.label}</span>`
-              ).join('')}
-            </div>
+          <td style="font-size:11.5px;">${hu.label}</td>
+          <td style="font-size:10.5px;">
+            <a href="${hu.epicHref}" class="text-decoration-none fw-semibold" style="color:${hu.epicColor};">${hu.epicLabel}</a>
+            <div class="text-muted" style="font-size:9.5px;">${hu.epicName}</div>
           </td>
-          <td style="min-width:180px;">
-            ${e.topics.map(topicPill).join('')}
-          </td>
-          <td style="min-width:160px;">
-            ${related.length
-              ? related.map(r => `
-                  <div class="mb-1">
-                    <a href="${r.epic.href}" class="badge text-decoration-none py-1 d-block text-start"
-                       style="background:${r.epic.color};font-size:10px;max-width:200px;white-space:normal;">
-                       ${r.epic.label}: ${r.epic.name}
-                    </a>
-                    <div>${r.topics.map(t => `<span style="font-size:8.5px;color:${TOPIC_COLORS[t]};font-weight:600;">${TOPIC_LABELS[t]}</span>`).join(', ')}</div>
-                  </div>
-                `).join('')
-              : '<span class="text-muted small">—</span>'}
+          <td>
+            ${rels.length ? rels.map(r => `
+              <div class="mb-1 d-flex align-items-start gap-1 flex-wrap">
+                <span class="badge" style="background:${REL_TYPES[r.type]?.color||'#999'};font-size:9px;">${REL_TYPES[r.type]?.label||r.type}</span>
+                <span class="hu-link-badge" style="background:${r.hu.epicColor};font-size:10px;">${r.hu.id}</span>
+                <span style="font-size:10px;color:#555;">${r.hu.label}</span>
+              </div>`).join('')
+            : '<span class="text-muted small">—</span>'}
           </td>
         </tr>`;
     }).join('');
 
-    document.getElementById('hu-container').innerHTML = `
+    document.getElementById('tabla-container').innerHTML = `
       <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle" style="font-size:11.5px;">
           <thead class="table-dark">
             <tr>
-              <th>Épica</th>
-              <th>Historias de Usuario</th>
-              <th>Temas</th>
-              <th>Épicas Relacionadas</th>
+              <th>HU</th>
+              <th style="min-width:160px;">Nombre</th>
+              <th style="min-width:150px;">Épica</th>
+              <th style="min-width:260px;">Relaciones con otras HU</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -497,58 +454,159 @@
   }
 
   // ═══════════════════════════════════════════════════════════════
-  //  TAB 1 — D3 Force Graph
+  //  DETAIL PANEL
+  // ═══════════════════════════════════════════════════════════════
+  function renderDetail(hu) {
+    const rels = getRelations(hu.id);
+    document.getElementById('detail-placeholder').style.display = 'none';
+    const content = document.getElementById('detail-content');
+    content.style.display = 'block';
+
+    const byType = {};
+    rels.forEach(r => { (byType[r.type] = byType[r.type] || []).push(r); });
+
+    content.innerHTML = `
+      <div class="d-flex align-items-start gap-2 mb-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white flex-shrink-0"
+             style="width:44px;height:44px;background:${hu.epicColor};font-size:9.5px;text-align:center;line-height:1.25;">
+          ${hu.id}
+        </div>
+        <div>
+          <div class="fw-bold" style="color:${hu.epicColor};font-size:13px;">${hu.label}</div>
+          <a href="${hu.epicHref}" class="text-decoration-none text-muted small">${hu.epicLabel}: ${hu.epicName}</a><br>
+          <a href="${hu.epicHref}" class="btn btn-sm text-white mt-1 px-2 py-0" style="background:${hu.epicColor};font-size:11px;">
+            Ver diagrama →
+          </a>
+        </div>
+      </div>
+
+      ${rels.length === 0
+        ? '<p class="text-muted small">Esta HU no tiene relaciones explícitas mapeadas.</p>'
+        : Object.entries(byType).map(([type, list]) => {
+            const rt = REL_TYPES[type] || { label: type, color: '#999' };
+            return `
+              <div class="mb-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge px-2 py-1" style="background:${rt.color}">${rt.label}</span>
+                  <span class="text-muted small">${rt.desc}</span>
+                </div>
+                ${list.map(r => `
+                  <div class="relation-row" style="border-left-color:${rt.color}">
+                    <div class="d-flex align-items-center gap-1 mb-1 flex-wrap">
+                      <span class="dir-badge" style="background:${rt.color}">
+                        ${r.isSource ? 'Origen' : 'Destino'}
+                      </span>
+                      <span class="hu-link-badge" style="background:${r.hu.epicColor};font-size:10.5px;">${r.hu.id}</span>
+                      <span class="fw-semibold" style="font-size:11.5px;">${r.hu.label}</span>
+                    </div>
+                    <div class="text-muted" style="font-size:10px;">${r.desc}</div>
+                    <div class="text-muted" style="font-size:9.5px;">${r.hu.epicLabel}: ${r.hu.epicName}</div>
+                  </div>`).join('')}
+              </div>`;
+          }).join('')
+      }`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  TAB 1 — D3 Force Graph (HU nodes, epic hulls)
   // ═══════════════════════════════════════════════════════════════
   function buildGraph() {
     const container = document.getElementById('graph-container');
     const W = container.clientWidth  || 700;
-    const H = container.clientHeight || 520;
+    const H = container.clientHeight || 560;
 
-    // Clear previous render
+    // Clear
     const svgEl = document.getElementById('graph-svg');
     while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
 
     const svg = d3.select('#graph-svg').attr('viewBox', `0 0 ${W} ${H}`);
 
-    // Zoom & pan
-    const zoomBehavior = d3.zoom().scaleExtent([0.25, 4])
-      .on('zoom', e => g.attr('transform', e.transform));
-    svg.call(zoomBehavior);
+    // Zoom
+    const zoomB = d3.zoom().scaleExtent([0.2, 5])
+      .on('zoom', e => gRoot.attr('transform', e.transform));
+    svg.call(zoomB);
 
-    const g = svg.append('g');
+    const gRoot = svg.append('g');
 
-    // Deep-copy data so simulation doesn't mutate originals
-    const nodes = EPICS.map(e => ({ ...e }));
-    const links = LINKS.map(l => ({ ...l }));
+    // ── Arrow markers per type ──────────────────────────────────
+    const defs = svg.append('defs');
+    Object.entries(REL_TYPES).forEach(([key, rt]) => {
+      defs.append('marker')
+        .attr('id', `arrow-${key}`)
+        .attr('viewBox', '0 -4 8 8').attr('refX', 24).attr('refY', 0)
+        .attr('markerWidth', 5).attr('markerHeight', 5).attr('orient', 'auto')
+        .append('path').attr('d', 'M0,-4L8,0L0,4').attr('fill', rt.color).attr('opacity', 0.75);
+    });
 
-    // ── Simulation ────────────────────────────────────────────
-    const sim = d3.forceSimulation(nodes)
-      .force('link',      d3.forceLink(links).id(d => d.id).distance(140).strength(0.7))
-      .force('charge',    d3.forceManyBody().strength(-380))
-      .force('center',    d3.forceCenter(W / 2, H / 2))
-      .force('collision', d3.forceCollide(44));
+    // ── Pre-assign epic cluster centers (circle layout) ─────────
+    const epicCenters = {};
+    EPICS.forEach((e, i) => {
+      const angle = (i / EPICS.length) * 2 * Math.PI - Math.PI / 2;
+      epicCenters[e.id] = { x: W / 2 + 205 * Math.cos(angle), y: H / 2 + 185 * Math.sin(angle) };
+    });
 
-    // ── Links ─────────────────────────────────────────────────
-    const linkLines = g.append('g').selectAll('line')
-      .data(links).join('line')
+    // ── Build node data ─────────────────────────────────────────
+    const huNodes = ALL_HUS.map(hu => {
+      const center = epicCenters[hu.epicId];
+      const peers  = ALL_HUS.filter(h => h.epicId === hu.epicId);
+      const idx    = peers.findIndex(h => h.id === hu.id);
+      const a = (idx / Math.max(peers.length, 1)) * 2 * Math.PI;
+      const r = 22 + 8 * peers.length;
+      return { ...hu, x: center.x + r * Math.cos(a), y: center.y + r * Math.sin(a) };
+    });
+
+    // ── Build link data ─────────────────────────────────────────
+    const linkData = HU_LINKS.map(l => ({ ...l }));
+
+    // ── Clustering force ────────────────────────────────────────
+    function clusterForce(alpha) {
+      const k = 0.1 * alpha;
+      huNodes.forEach(n => {
+        const c = epicCenters[n.epicId];
+        if (!c) return;
+        n.vx -= (n.x - c.x) * k;
+        n.vy -= (n.y - c.y) * k;
+      });
+    }
+
+    // ── Simulation ──────────────────────────────────────────────
+    const sim = d3.forceSimulation(huNodes)
+      .force('link',      d3.forceLink(linkData).id(d => d.id).distance(80).strength(0.35))
+      .force('charge',    d3.forceManyBody().strength(-90))
+      .force('collision', d3.forceCollide(17))
+      .force('cluster',   clusterForce);
+
+    // ── Epic hulls (paths) ───────────────────────────────────────
+    const hullG = gRoot.append('g');
+    const epicHullPaths = hullG.selectAll('path')
+      .data(EPICS).join('path')
+      .attr('class', 'hull-path')
+      .attr('fill', d => d.color)
+      .attr('stroke', d => d.color);
+
+    // Epic labels
+    const epicLabels = gRoot.append('g').selectAll('text')
+      .data(EPICS).join('text')
+      .attr('class', 'epic-cluster-label')
+      .attr('fill', d => d.color)
+      .text(d => d.label);
+
+    // ── Links ────────────────────────────────────────────────────
+    const linkG = gRoot.append('g');
+    const linkLines = linkG.selectAll('line')
+      .data(linkData).join('line')
       .attr('class', 'link-line')
-      .attr('stroke', d => TOPIC_COLORS[d.topics[0]] || '#aaa')
-      .attr('stroke-width', d => 1.8 + d.topics.length * 0.6)
-      .attr('stroke-dasharray', d => d.topics.length > 1 ? '7,3' : null);
+      .attr('stroke', d => REL_TYPES[d.type]?.color || '#aaa')
+      .attr('stroke-width', 1.8)
+      .attr('stroke-opacity', 0.55)
+      .attr('marker-end', d => `url(#arrow-${d.type})`);
 
-    linkLines.append('title').text(d =>
-      d.topics.map(t => TOPIC_LABELS[t]).join(' + ')
-    );
+    linkLines.append('title').text(d => `${d.source?.id || d.source} → ${d.target?.id || d.target}\n${REL_TYPES[d.type]?.label}: ${d.desc}`);
 
-    // ── Link labels ───────────────────────────────────────────
-    const linkLabels = g.append('g').selectAll('text')
-      .data(links).join('text')
-      .attr('class', 'link-label')
-      .text(d => d.topics.map(t => TOPIC_LABELS[t]).join(' + '));
-
-    // ── Node groups ───────────────────────────────────────────
-    const nodeGroups = g.append('g').selectAll('g')
-      .data(nodes).join('g')
+    // ── Nodes ────────────────────────────────────────────────────
+    const nodeG = gRoot.append('g');
+    const nodeGroups = nodeG.selectAll('g')
+      .data(huNodes).join('g')
       .call(d3.drag()
         .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
         .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
@@ -556,124 +614,104 @@
 
     nodeGroups.append('circle')
       .attr('class', 'node-circle')
-      .attr('r', 32)
-      .attr('fill', d => d.color);
+      .attr('r', 13)
+      .attr('fill', d => d.epicColor);
 
     nodeGroups.append('text')
-      .attr('class', 'node-label-main')
-      .attr('dy', '-0.5em')
+      .attr('class', 'node-label')
       .text(d => d.id);
 
-    nodeGroups.append('text')
-      .attr('class', 'node-label-sub')
-      .attr('dy', '1.1em')
-      .text(d => {
-        const w = d.name.split(' ');
-        return w.slice(0, 2).join(' ') + (w.length > 2 ? '…' : '');
+    nodeGroups.append('title').text(d => `HU ${d.id}: ${d.label}\n${d.epicLabel}: ${d.epicName}`);
+
+    // ── Hull path builder ────────────────────────────────────────
+    function hullPath(epicId) {
+      const pts = huNodes.filter(n => n.epicId === epicId).map(n => [n.x, n.y]);
+      if (!pts.length) return '';
+      const PAD = 24;
+      if (pts.length === 1) {
+        const [x, y] = pts[0];
+        return `M${x - PAD},${y} a${PAD},${PAD} 0 1,0 ${PAD*2},0 a${PAD},${PAD} 0 1,0 ${-PAD*2},0`;
+      }
+      const hull = d3.polygonHull(pts);
+      if (!hull) {
+        const cx = d3.mean(pts, p => p[0]), cy = d3.mean(pts, p => p[1]);
+        return `M${cx - PAD},${cy} a${PAD},${PAD} 0 1,0 ${PAD*2},0 a${PAD},${PAD} 0 1,0 ${-PAD*2},0`;
+      }
+      const centroid = d3.polygonCentroid(hull);
+      const expanded = hull.map(p => {
+        const dx = p[0] - centroid[0], dy = p[1] - centroid[1];
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        return [p[0] + PAD * dx / dist, p[1] + PAD * dy / dist];
+      });
+      return d3.line().curve(d3.curveCatmullRomClosed)(expanded);
+    }
+
+    // ── Tick ─────────────────────────────────────────────────────
+    sim.on('tick', () => {
+      epicHullPaths.attr('d', d => hullPath(d.id));
+
+      epicLabels.each(function(d) {
+        const pts = huNodes.filter(n => n.epicId === d.id);
+        if (!pts.length) return;
+        const cx = d3.mean(pts, n => n.x);
+        const cy = d3.min(pts, n => n.y) - 28;
+        d3.select(this).attr('x', cx).attr('y', cy);
       });
 
-    nodeGroups.append('title').text(d => `${d.label}: ${d.name}`);
-
-    // ── Tick ──────────────────────────────────────────────────
-    sim.on('tick', () => {
       linkLines
         .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
         .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-      linkLabels
-        .attr('x', d => (d.source.x + d.target.x) / 2)
-        .attr('y', d => (d.source.y + d.target.y) / 2 - 5);
+
       nodeGroups.attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
-    // ── Click → detail panel ──────────────────────────────────
+    // ── Click → detail ───────────────────────────────────────────
     nodeGroups.on('click', function(event, d) {
-      nodeGroups.selectAll('circle').classed('selected', false);
-      d3.select(this).select('circle').classed('selected', true);
+      nodeGroups.selectAll('.node-circle').classed('selected', false);
+      d3.select(this).select('.node-circle').classed('selected', true);
+
+      // Highlight connected edges
+      linkLines.attr('stroke-opacity', l => {
+        const sid = typeof l.source === 'object' ? l.source.id : l.source;
+        const tid = typeof l.target === 'object' ? l.target.id : l.target;
+        return (sid === d.id || tid === d.id) ? 1 : 0.15;
+      });
+      nodeGroups.selectAll('.node-circle').attr('opacity', n => {
+        if (n.id === d.id) return 1;
+        const connected = HU_LINKS.some(l => (l.source === d.id && l.target === n.id) || (l.target === d.id && l.source === n.id));
+        return connected ? 1 : 0.35;
+      });
+
       renderDetail(d);
     });
 
-    // ── Reset button ──────────────────────────────────────────
+    // ── Reset ────────────────────────────────────────────────────
     document.getElementById('btn-reset').onclick = () => {
-      svg.transition().duration(600).call(zoomBehavior.transform, d3.zoomIdentity);
+      svg.transition().duration(600).call(zoomB.transform, d3.zoomIdentity);
       sim.alpha(0.8).restart();
-      nodeGroups.selectAll('circle').classed('selected', false);
+      nodeGroups.selectAll('.node-circle').classed('selected', false).attr('opacity', 1);
+      linkLines.attr('stroke-opacity', 0.55);
       document.getElementById('detail-placeholder').style.display = '';
       document.getElementById('detail-content').style.display = 'none';
     };
-  }
-
-  // ── Detail panel renderer ──────────────────────────────────────
-  function renderDetail(d) {
-    const related = getRelated(d.id);
-    document.getElementById('detail-placeholder').style.display = 'none';
-    const content = document.getElementById('detail-content');
-    content.style.display = 'block';
-    content.innerHTML = `
-      <div class="d-flex align-items-start gap-2 mb-3">
-        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white flex-shrink-0"
-             style="width:46px;height:46px;background:${d.color};font-size:10.5px;text-align:center;line-height:1.2;">${d.id}</div>
-        <div>
-          <div class="fw-bold" style="color:${d.color};font-size:13px;">${d.label}</div>
-          <div class="text-muted small">${d.name}</div>
-          <a href="${d.href}" class="btn btn-sm text-white mt-1 px-2 py-0" style="background:${d.color};font-size:11px;">
-            Ver diagrama →
-          </a>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <div class="text-muted fw-semibold mb-1" style="font-size:11px;">HISTORIAS DE USUARIO (${d.hus.length})</div>
-        ${d.hus.map(hu =>
-          `<span class="badge me-1 mb-1 py-1" style="background:#f1f3f6;color:#333;font-size:10.5px;">${hu.id}: ${hu.label}</span>`
-        ).join('')}
-      </div>
-
-      <div class="mb-3">
-        <div class="text-muted fw-semibold mb-1" style="font-size:11px;">TEMAS</div>
-        ${d.topics.map(topicPill).join('')}
-      </div>
-
-      <div>
-        <div class="text-muted fw-semibold mb-2" style="font-size:11px;">
-          ÉPICAS RELACIONADAS ${related.length ? `(${related.length})` : '— ninguna'}
-        </div>
-        ${related.length
-          ? related.map(r => `
-              <div class="related-epic-card" style="border-left-color:${r.epic.color}">
-                <a href="${r.epic.href}" class="fw-semibold text-decoration-none d-block"
-                   style="color:${r.epic.color};font-size:11.5px;">${r.epic.label}: ${r.epic.name}</a>
-                <div class="mt-1">${r.topics.map(topicPill).join('')}</div>
-                <div class="mt-1 d-flex flex-wrap gap-1">
-                  ${r.epic.hus.map(hu =>
-                    `<span class="badge" style="background:#eef;color:#444;font-size:9.5px;">${hu.id}</span>`
-                  ).join('')}
-                </div>
-              </div>
-            `).join('')
-          : `<p class="text-muted small">Esta épica no comparte temas con otras épicas.</p>`}
-      </div>`;
   }
 
   // ═══════════════════════════════════════════════════════════════
   //  INIT
   // ═══════════════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
-    buildTemasView();
-    buildHUView();
+    buildTiposView();
+    buildTablaView();
 
-    function tryBuildGraph() {
+    function tryGraph() {
       if (typeof d3 !== 'undefined') { buildGraph(); }
-      else { setTimeout(tryBuildGraph, 80); }
+      else { setTimeout(tryGraph, 80); }
     }
-    tryBuildGraph();
+    tryGraph();
 
-    // Rebuild graph on tab show (ensures correct container dimensions)
-    const redBtn = document.getElementById('tab-red-btn');
-    if (redBtn) {
-      redBtn.addEventListener('shown.bs.tab', function () {
-        if (typeof d3 !== 'undefined') buildGraph();
-      });
-    }
+    document.getElementById('tab-red-btn').addEventListener('shown.bs.tab', function () {
+      if (typeof d3 !== 'undefined') buildGraph();
+    });
   });
   </script>
 
