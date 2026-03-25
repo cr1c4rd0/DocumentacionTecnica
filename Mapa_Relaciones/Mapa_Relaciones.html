@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de Relaciones — Sistema Recomendador CCB</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/bootstrap-loader.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    #graph-container {
+      width: 100%;
+      height: 540px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #graph-container:active { cursor: grabbing; }
+
+    .node-circle {
+      stroke: rgba(255,255,255,0.7);
+      stroke-width: 2.5px;
+      cursor: pointer;
+      transition: filter 0.18s;
+    }
+    .node-circle:hover { filter: brightness(1.2) drop-shadow(0 0 6px rgba(0,0,0,0.35)); }
+    .node-circle.selected {
+      stroke: #FFD600;
+      stroke-width: 4px;
+      filter: drop-shadow(0 0 8px rgba(255,214,0,0.6));
+    }
+    .node-label-main {
+      font-size: 10.5px;
+      font-weight: 700;
+      fill: #fff;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+    .node-label-sub {
+      font-size: 7.5px;
+      font-weight: 400;
+      fill: rgba(255,255,255,0.85);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+    .link-line {
+      stroke-opacity: 0.55;
+      transition: stroke-opacity 0.2s;
+    }
+    .link-line:hover { stroke-opacity: 1; }
+    .link-label {
+      font-size: 9px;
+      fill: #555;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    #detail-panel {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 260px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .related-epic-card {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid transparent;
+    }
+
+    .hu-row td { vertical-align: middle; }
+
+    .topic-pill {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 500;
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 8px;
+      margin: 1px;
+      letter-spacing: 0.1px;
+    }
+
+    .nav-tabs .nav-link { font-size: 13px; }
+    .nav-tabs .nav-link.active { font-weight: 600; }
+  </style>
+</head>
+
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark shadow-sm" style="background:#DD0034;">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold mb-0 d-flex align-items-center gap-2">
+        <img src="../img/Logo.png" alt="CCB Logo" height="36" style="object-fit:contain;">
+        Sistema Recomendador
+      </span>
+      <a href="../Indice_Diagramas_Epicas.html" class="btn btn-outline-light btn-sm">← Índice de Épicas</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero text-white py-5" style="--hero-start:#880E4F;--hero-end:#4A148C;">
+    <div class="container-xl px-4">
+      <h1 class="fw-bold fs-2 mb-1">Mapa de Relaciones</h1>
+      <p class="opacity-75 mb-0 fs-6">
+        Visualiza cómo cada épica, diagrama e historia de usuario se asocia con otras
+        · <strong class="opacity-100">15 épicas · 32 HU · 4 temas compartidos</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="container-xl px-4 pt-4">
+    <ul class="nav nav-tabs" id="mapaTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-red-btn" data-bs-toggle="tab" data-bs-target="#tab-red" type="button" role="tab">
+          🕸 Red de Relaciones
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-temas-btn" data-bs-toggle="tab" data-bs-target="#tab-temas" type="button" role="tab">
+          🏷 Temas Compartidos
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-hu-btn" data-bs-toggle="tab" data-bs-target="#tab-hu" type="button" role="tab">
+          📋 Tabla de Asociaciones
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Tab content -->
+  <div class="container-xl px-4 pb-5">
+    <div class="tab-content pt-3" id="mapaTabContent">
+
+      <!-- ── TAB 1: Red de Relaciones ───────────────────────────────── -->
+      <div class="tab-pane fade show active" id="tab-red" role="tabpanel">
+        <div class="row g-3">
+
+          <!-- Graph -->
+          <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+              <div class="card-body p-2">
+                <div class="d-flex justify-content-between align-items-center px-2 pt-1 pb-2">
+                  <span class="text-muted small">
+                    <strong>Clic</strong> en una épica para ver sus relaciones ·
+                    <strong>Arrastra</strong> para mover · <strong>Scroll</strong> para zoom
+                  </span>
+                  <button id="btn-reset" class="btn btn-outline-secondary btn-sm">⟳ Restablecer</button>
+                </div>
+                <div id="graph-container">
+                  <svg id="graph-svg" width="100%" height="100%"></svg>
+                </div>
+                <!-- Legend -->
+                <div class="px-2 pt-2 pb-1 d-flex flex-wrap gap-2 align-items-center">
+                  <span class="text-muted small fw-semibold">Conexiones por tema:</span>
+                  <span class="badge" style="background:#7B1FA2">Personalización y proactividad</span>
+                  <span class="badge" style="background:#4527A0">Lógica explicativa</span>
+                  <span class="badge" style="background:#F57F17">Productos destacados</span>
+                  <span class="badge" style="background:#BF360C">Módulo admin reglas</span>
+                  <span class="text-muted small ms-2">— Épicas sin conexión flotan libres</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail panel -->
+          <div class="col-lg-4">
+            <div id="detail-panel" class="shadow-sm">
+              <div id="detail-placeholder" class="text-center text-muted py-5">
+                <div style="font-size:2.8rem;">🔍</div>
+                <p class="mt-3 mb-0 small">
+                  Selecciona una épica en el grafo<br>para ver sus detalles y relaciones
+                </p>
+              </div>
+              <div id="detail-content" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB 2: Temas Compartidos ───────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-temas" role="tabpanel">
+        <p class="text-muted small mb-3">
+          Se muestran únicamente los temas que aparecen en <strong>2 o más épicas</strong>,
+          creando los puentes de relación entre ellas.
+        </p>
+        <div class="row g-3" id="temas-container"></div>
+        <div class="row g-3 mt-0" id="temas-isolated"></div>
+      </div>
+
+      <!-- ── TAB 3: Tabla de Asociaciones ──────────────────────────── -->
+      <div class="tab-pane fade" id="tab-hu" role="tabpanel">
+        <p class="text-muted small mb-3">
+          Para cada épica se listan sus <strong>Historias de Usuario</strong>,
+          los <strong>temas</strong> que la caracterizan y las <strong>épicas relacionadas</strong>
+          por temas en común.
+        </p>
+        <div id="hu-container"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="text-center py-4 text-muted small border-top mt-2">
+    Cámara de Comercio de Bogotá · Sistema Recomendador · 2025
+  </footer>
+
+  <script>
+  // ═══════════════════════════════════════════════════════════════
+  //  DATA
+  // ═══════════════════════════════════════════════════════════════
+
+  const TOPIC_COLORS = {
+    "t-personalizacion":      "#7B1FA2",
+    "t-interfaz-exp":         "#1565C0",
+    "t-logica-explicativa":   "#4527A0",
+    "t-trazabilidad":         "#283593",
+    "t-destacar-gratuito":    "#2E7D32",
+    "t-panel-negocio":        "#E65100",
+    "t-productos-destacados": "#F57F17",
+    "t-modulo-admin-reglas":  "#BF360C",
+    "t-id-omnicanal":         "#006064",
+    "t-resolver-identidad":   "#00695C",
+    "t-preferencias":         "#00838F",
+    "t-interfaz-personal":    "#01579B",
+    "t-evitar-repetidas":     "#B71C1C",
+    "t-reglas-carrusel":      "#546E7A",
+    "t-exp-visual":           "#1976D2",
+    "t-comentarios":          "#EF6C00",
+    "t-redireccion":          "#00796B",
+    "t-formularios":          "#388E3C",
+    "t-registrar-resultado":  "#4E342E",
+    "t-frontend-integrable":  "#37474F",
+    "t-clasificacion":        "#AD1457",
+    "t-promocion":            "#880E4F",
+    "t-notificaciones":       "#6A1B9A",
+    "t-registro-nav":         "#5D4037",
+    "t-adaptacion-continua":  "#1B5E20",
+  };
+
+  const TOPIC_LABELS = {
+    "t-personalizacion":      "Personalización y proactividad",
+    "t-interfaz-exp":         "Interfaz y experiencia",
+    "t-logica-explicativa":   "Lógica explicativa",
+    "t-trazabilidad":         "Trazabilidad",
+    "t-destacar-gratuito":    "Destacar gratuito",
+    "t-panel-negocio":        "Panel negocio",
+    "t-productos-destacados": "Productos destacados",
+    "t-modulo-admin-reglas":  "Módulo admin reglas",
+    "t-id-omnicanal":         "Identificación Omnicanal",
+    "t-resolver-identidad":   "Resolver identidad",
+    "t-preferencias":         "Preferencias",
+    "t-interfaz-personal":    "Interfaz personalizada",
+    "t-evitar-repetidas":     "Evitar sugerencias repetidas",
+    "t-reglas-carrusel":      "Reglas por carrusel",
+    "t-exp-visual":           "Experiencia visual",
+    "t-comentarios":          "Comentarios y calificaciones",
+    "t-redireccion":          "Redirección formularios",
+    "t-formularios":          "Formularios",
+    "t-registrar-resultado":  "Registrar resultado",
+    "t-frontend-integrable":  "Frontend integrable",
+    "t-clasificacion":        "Clasificación",
+    "t-promocion":            "Promoción",
+    "t-notificaciones":       "Notificaciones",
+    "t-registro-nav":         "Registro navegación",
+    "t-adaptacion-continua":  "Adaptación continua",
+  };
+
+  const EPICS = [
+    { id:"2.1",  label:"Épica 2.1",  name:"Motor de Recomendación Personalizada",   color:"#1565C0",
+      href:"../Epica_2.1_Motor_Recomendacion_Personalizada/Diagrama_Epica_2.1_Motor_Recomendacion_Personalizada.html",
+      topics:["t-personalizacion","t-interfaz-exp"],
+      hus:[{id:"HU 2.1.1",label:"Recomendar proactivamente"},{id:"HU 2.1.2",label:"Entrenar motor 6M/24M"},{id:"HU 2.1.3",label:"Aprende de clics"},{id:"HU 2.1.4",label:"Cold Start"}] },
+    { id:"2.2",  label:"Épica 2.2",  name:"Panel de Administración y Explicabilidad", color:"#6A1B9A",
+      href:"../Epica_2.2_Panel_Administracion_Explicabilidad/Diagrama_Epica_2.2_Panel_Administracion_Explicabilidad.html",
+      topics:["t-logica-explicativa"],
+      hus:[{id:"HU 2.2.1",label:"Explicar recomendaciones"}] },
+    { id:"2.3",  label:"Épica 2.3",  name:"Gestión de Promoción de Servicios",       color:"#2E7D32",
+      href:"../Epica_2.3_Gestion_Promocion_Servicios/Diagrama_Epica_2.3_Gestion_Promocion_Servicios.html",
+      topics:["t-destacar-gratuito","t-panel-negocio","t-productos-destacados"],
+      hus:[{id:"HU 2.3.1",label:"Resalta lo gratuito"},{id:"HU 2.3.2",label:"Destacar servicios"}] },
+    { id:"2.4",  label:"Épica 2.4",  name:"Configuración y Gobernanza de Reglas",    color:"#E65100",
+      href:"../Epica_2.4_Configuracion_Gobernanza_Reglas/Diagrama_Epica_2.4_Configuracion_Gobernanza_Reglas.html",
+      topics:["t-modulo-admin-reglas"],
+      hus:[{id:"HU 2.4.1",label:"Reglas de negocio"}] },
+    { id:"2.5",  label:"Épica 2.5",  name:"Resolución de Identidad Omnicanal",       color:"#00695C",
+      href:"../Epica_2.5_Resolucion_Identidad_Omnicanal/Diagrama_Epica_2.5_Resolucion_Identidad_Omnicanal.html",
+      topics:["t-id-omnicanal","t-resolver-identidad","t-preferencias","t-interfaz-personal"],
+      hus:[{id:"HU 2.5.1",label:"Resolución identidad"},{id:"HU 2.5.2",label:"Identificación progresiva"},{id:"HU 2.5.3",label:"Respeta preferencias"},{id:"HU 2.5.4",label:"Privacidad UI"}] },
+    { id:"2.6",  label:"Épica 2.6",  name:"Motor de Recomendación",                 color:"#1A237E",
+      href:"../Epica_2.6_Motor_Recomendacion/Diagrama_Epica_2.6_Motor_Recomendacion.html",
+      topics:["t-personalizacion","t-productos-destacados"],
+      hus:[{id:"HU 2.6.1",label:"Modelo Top-N"},{id:"HU 2.6.2",label:"Parametrización sin redeploy"},{id:"HU 2.6.3",label:"Elegibilidad y membresía"}] },
+    { id:"2.7",  label:"Épica 2.7",  name:"Reglas de Exclusión",                    color:"#B71C1C",
+      href:"../Epica_2.7_Reglas_Exclusion/Diagrama_Epica_2.7_Reglas_Exclusion.html",
+      topics:["t-personalizacion","t-evitar-repetidas"],
+      hus:[{id:"HU 2.7.1",label:"Servicios ya consumidos"},{id:"HU 2.7.2",label:"Descarte explícito"}] },
+    { id:"2.8",  label:"Épica 2.8",  name:"UI Recomendador Tipo Catálogo",           color:"#0277BD",
+      href:"../Epica_2.8_UI_Recomendador_Catalogo/Diagrama_Epica_2.8_UI_Recomendador_Catalogo.html",
+      topics:["t-reglas-carrusel","t-exp-visual"],
+      hus:[{id:"HU 2.8.1",label:"Carruseles"},{id:"HU 2.8.2",label:"Filtros y Sorpréndeme"}] },
+    { id:"2.9",  label:"Épica 2.9",  name:"Lógica Explicativa",                     color:"#4527A0",
+      href:"../Epica_2.9_Logica_Explicativa/Diagrama_Epica_2.9_Logica_Explicativa.html",
+      topics:["t-logica-explicativa","t-trazabilidad"],
+      hus:[{id:"HU 2.9.1",label:"Explicación por recomendación"},{id:"HU 2.9.2",label:"Reporte de segmentos"}] },
+    { id:"2.10", label:"Épica 2.10", name:"Prueba Social",                           color:"#F57F17",
+      href:"../Epica_2.10_Prueba_Social/Diagrama_Epica_2.10_Prueba_Social.html",
+      topics:["t-comentarios"],
+      hus:[{id:"HU 2.10.1",label:"Reseñas y calificaciones"},{id:"HU 2.10.2",label:"Moderación de contenido"}] },
+    { id:"2.11", label:"Épica 2.11", name:"Integración con Formularios",             color:"#00796B",
+      href:"../Epica_2.11_Integracion_Formularios/Diagrama_Epica_2.11_Integracion_Formularios.html",
+      topics:["t-redireccion","t-formularios","t-registrar-resultado"],
+      hus:[{id:"HU 2.11.1",label:"Redirección formulario"},{id:"HU 2.11.2",label:"Resultado inscripción"},{id:"HU 2.11.3",label:"Atribución conversión"}] },
+    { id:"2.12", label:"Épica 2.12", name:"Micro-frontend Recomendador",             color:"#37474F",
+      href:"../Epica_2.12_Microfrontend_Recomendador/Diagrama_Epica_2.12_Microfrontend_Recomendador.html",
+      topics:["t-frontend-integrable"],
+      hus:[{id:"HU 2.12.1",label:"Web Component"},{id:"HU 2.12.2",label:"Navegación con asistente"}] },
+    { id:"2.13", label:"Épica 2.13", name:"Catálogo y Promoción de Servicios",       color:"#AD1457",
+      href:"../Epica_2.13_Catalogo_Promocion_Servicios/Diagrama_Epica_2.13_Catalogo_Promocion_Servicios.html",
+      topics:["t-clasificacion","t-promocion","t-notificaciones"],
+      hus:[{id:"HU 2.13.1",label:"Clasificación servicios"},{id:"HU 2.13.2",label:"Notificación disponibilidad"}] },
+    { id:"2.14", label:"Épica 2.14", name:"Backoffice y Reglas de Negocio",          color:"#4E342E",
+      href:"../Epica_2.14_Backoffice_Reglas_Negocio/Diagrama_Epica_2.14_Backoffice_Reglas_Negocio.html",
+      topics:["t-modulo-admin-reglas","t-registro-nav"],
+      hus:[{id:"HU 2.14.1",label:"Panel de reglas"},{id:"HU 2.14.2",label:"Registro de clics"}] },
+    { id:"2.16", label:"Épica 2.16", name:"Aprendizaje Continuo",                    color:"#1B5E20",
+      href:"../Epica_2.16_Aprendizaje_Continuo/Diagrama_Epica_2.16_Aprendizaje_Continuo.html",
+      topics:["t-adaptacion-continua"],
+      hus:[{id:"HU 2.16.1",label:"Captura de feedback"},{id:"HU 2.16.2",label:"Ajuste de modelo"}] },
+  ];
+
+  // ── Compute topic → epics map ──────────────────────────────────
+  const topicToEpics = {};
+  EPICS.forEach(e => e.topics.forEach(t => {
+    if (!topicToEpics[t]) topicToEpics[t] = [];
+    topicToEpics[t].push(e.id);
+  }));
+
+  // ── Compute links (shared topics between epic pairs) ──────────
+  const LINKS = [];
+  const seen = new Set();
+  Object.entries(topicToEpics).forEach(([topic, ids]) => {
+    if (ids.length < 2) return;
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        const key = [ids[i], ids[j]].sort().join('|');
+        const existing = LINKS.find(l => l.key === key);
+        if (existing) { existing.topics.push(topic); }
+        else { LINKS.push({ source: ids[i], target: ids[j], key, topics: [topic] }); seen.add(key); }
+      }
+    }
+  });
+
+  // ── Helper: topic pill HTML ───────────────────────────────────
+  function topicPill(t) {
+    return `<span class="topic-pill" style="background:${TOPIC_COLORS[t]||'#999'}">${TOPIC_LABELS[t]||t}</span>`;
+  }
+
+  // ── Helper: get related epics for a given epic ────────────────
+  function getRelated(epicId) {
+    return LINKS
+      .filter(l => l.source === epicId || l.target === epicId)
+      .map(l => ({
+        epic: EPICS.find(e => e.id === (l.source === epicId ? l.target : l.source)),
+        topics: l.topics
+      }))
+      .filter(r => r.epic);
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  TAB 2 — Temas Compartidos
+  // ═══════════════════════════════════════════════════════════════
+  function buildTemasView() {
+    const container = document.getElementById('temas-container');
+    const isolated  = document.getElementById('temas-isolated');
+
+    const shared = Object.entries(topicToEpics).filter(([, ids]) => ids.length >= 2);
+
+    shared.forEach(([topic, ids]) => {
+      const color = TOPIC_COLORS[topic] || '#666';
+      const label = TOPIC_LABELS[topic] || topic;
+      const relEpics = ids.map(id => EPICS.find(e => e.id === id)).filter(Boolean);
+
+      const col = document.createElement('div');
+      col.className = 'col-md-6 col-xl-4';
+      col.innerHTML = `
+        <div class="card h-100 shadow-sm" style="border-top:4px solid ${color}">
+          <div class="card-body">
+            <span class="badge mb-2 px-3 py-1" style="background:${color};font-size:11px;">${label}</span>
+            <p class="text-muted small mb-3">${relEpics.length} épicas comparten este tema</p>
+            ${relEpics.map((e, idx) => `
+              ${idx > 0 ? '<hr class="my-2">' : ''}
+              <div>
+                <a href="${e.href}" class="fw-bold text-decoration-none d-block mb-1" style="color:${e.color};font-size:12.5px;">
+                  ${e.label}: ${e.name}
+                </a>
+                <div class="d-flex flex-wrap gap-1">
+                  ${e.hus.map(hu => `<span class="badge" style="background:#f1f3f6;color:#444;font-size:10px;">${hu.id}: ${hu.label}</span>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      container.appendChild(col);
+    });
+
+    // Isolated epics (unique topics only)
+    const isolatedEpics = EPICS.filter(e =>
+      !e.topics.some(t => topicToEpics[t] && topicToEpics[t].length >= 2)
+    );
+    if (isolatedEpics.length) {
+      const col = document.createElement('div');
+      col.className = 'col-12 mt-2';
+      col.innerHTML = `
+        <div class="card shadow-sm" style="border-top:4px solid #bbb">
+          <div class="card-body">
+            <h6 class="fw-semibold text-muted mb-3">
+              Épicas con temas únicos — sin conexión directa con otras épicas por tema
+            </h6>
+            <div class="d-flex flex-wrap gap-2">
+              ${isolatedEpics.map(e => `
+                <a href="${e.href}" class="badge text-decoration-none px-3 py-2"
+                   style="background:${e.color};font-size:11px;">${e.label}: ${e.name}</a>
+              `).join('')}
+            </div>
+          </div>
+        </div>`;
+      isolated.appendChild(col);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  TAB 3 — Tabla de Asociaciones
+  // ═══════════════════════════════════════════════════════════════
+  function buildHUView() {
+    const rows = EPICS.map(e => {
+      const related = getRelated(e.id);
+      return `
+        <tr>
+          <td style="min-width:155px;">
+            <a href="${e.href}" class="fw-bold text-decoration-none d-block" style="color:${e.color};font-size:12px;">${e.label}</a>
+            <span class="text-muted" style="font-size:10.5px;">${e.name}</span>
+          </td>
+          <td style="min-width:200px;">
+            <div class="d-flex flex-wrap gap-1">
+              ${e.hus.map(hu =>
+                `<span class="badge py-1" style="background:#f1f3f6;color:#333;font-size:10px;">${hu.id}: ${hu.label}</span>`
+              ).join('')}
+            </div>
+          </td>
+          <td style="min-width:180px;">
+            ${e.topics.map(topicPill).join('')}
+          </td>
+          <td style="min-width:160px;">
+            ${related.length
+              ? related.map(r => `
+                  <div class="mb-1">
+                    <a href="${r.epic.href}" class="badge text-decoration-none py-1 d-block text-start"
+                       style="background:${r.epic.color};font-size:10px;max-width:200px;white-space:normal;">
+                       ${r.epic.label}: ${r.epic.name}
+                    </a>
+                    <div>${r.topics.map(t => `<span style="font-size:8.5px;color:${TOPIC_COLORS[t]};font-weight:600;">${TOPIC_LABELS[t]}</span>`).join(', ')}</div>
+                  </div>
+                `).join('')
+              : '<span class="text-muted small">—</span>'}
+          </td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('hu-container').innerHTML = `
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle" style="font-size:11.5px;">
+          <thead class="table-dark">
+            <tr>
+              <th>Épica</th>
+              <th>Historias de Usuario</th>
+              <th>Temas</th>
+              <th>Épicas Relacionadas</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  TAB 1 — D3 Force Graph
+  // ═══════════════════════════════════════════════════════════════
+  function buildGraph() {
+    const container = document.getElementById('graph-container');
+    const W = container.clientWidth  || 700;
+    const H = container.clientHeight || 520;
+
+    // Clear previous render
+    const svgEl = document.getElementById('graph-svg');
+    while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+
+    const svg = d3.select('#graph-svg').attr('viewBox', `0 0 ${W} ${H}`);
+
+    // Zoom & pan
+    const zoomBehavior = d3.zoom().scaleExtent([0.25, 4])
+      .on('zoom', e => g.attr('transform', e.transform));
+    svg.call(zoomBehavior);
+
+    const g = svg.append('g');
+
+    // Deep-copy data so simulation doesn't mutate originals
+    const nodes = EPICS.map(e => ({ ...e }));
+    const links = LINKS.map(l => ({ ...l }));
+
+    // ── Simulation ────────────────────────────────────────────
+    const sim = d3.forceSimulation(nodes)
+      .force('link',      d3.forceLink(links).id(d => d.id).distance(140).strength(0.7))
+      .force('charge',    d3.forceManyBody().strength(-380))
+      .force('center',    d3.forceCenter(W / 2, H / 2))
+      .force('collision', d3.forceCollide(44));
+
+    // ── Links ─────────────────────────────────────────────────
+    const linkLines = g.append('g').selectAll('line')
+      .data(links).join('line')
+      .attr('class', 'link-line')
+      .attr('stroke', d => TOPIC_COLORS[d.topics[0]] || '#aaa')
+      .attr('stroke-width', d => 1.8 + d.topics.length * 0.6)
+      .attr('stroke-dasharray', d => d.topics.length > 1 ? '7,3' : null);
+
+    linkLines.append('title').text(d =>
+      d.topics.map(t => TOPIC_LABELS[t]).join(' + ')
+    );
+
+    // ── Link labels ───────────────────────────────────────────
+    const linkLabels = g.append('g').selectAll('text')
+      .data(links).join('text')
+      .attr('class', 'link-label')
+      .text(d => d.topics.map(t => TOPIC_LABELS[t]).join(' + '));
+
+    // ── Node groups ───────────────────────────────────────────
+    const nodeGroups = g.append('g').selectAll('g')
+      .data(nodes).join('g')
+      .call(d3.drag()
+        .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+        .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
+        .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+    nodeGroups.append('circle')
+      .attr('class', 'node-circle')
+      .attr('r', 32)
+      .attr('fill', d => d.color);
+
+    nodeGroups.append('text')
+      .attr('class', 'node-label-main')
+      .attr('dy', '-0.5em')
+      .text(d => d.id);
+
+    nodeGroups.append('text')
+      .attr('class', 'node-label-sub')
+      .attr('dy', '1.1em')
+      .text(d => {
+        const w = d.name.split(' ');
+        return w.slice(0, 2).join(' ') + (w.length > 2 ? '…' : '');
+      });
+
+    nodeGroups.append('title').text(d => `${d.label}: ${d.name}`);
+
+    // ── Tick ──────────────────────────────────────────────────
+    sim.on('tick', () => {
+      linkLines
+        .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      linkLabels
+        .attr('x', d => (d.source.x + d.target.x) / 2)
+        .attr('y', d => (d.source.y + d.target.y) / 2 - 5);
+      nodeGroups.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    // ── Click → detail panel ──────────────────────────────────
+    nodeGroups.on('click', function(event, d) {
+      nodeGroups.selectAll('circle').classed('selected', false);
+      d3.select(this).select('circle').classed('selected', true);
+      renderDetail(d);
+    });
+
+    // ── Reset button ──────────────────────────────────────────
+    document.getElementById('btn-reset').onclick = () => {
+      svg.transition().duration(600).call(zoomBehavior.transform, d3.zoomIdentity);
+      sim.alpha(0.8).restart();
+      nodeGroups.selectAll('circle').classed('selected', false);
+      document.getElementById('detail-placeholder').style.display = '';
+      document.getElementById('detail-content').style.display = 'none';
+    };
+  }
+
+  // ── Detail panel renderer ──────────────────────────────────────
+  function renderDetail(d) {
+    const related = getRelated(d.id);
+    document.getElementById('detail-placeholder').style.display = 'none';
+    const content = document.getElementById('detail-content');
+    content.style.display = 'block';
+    content.innerHTML = `
+      <div class="d-flex align-items-start gap-2 mb-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white flex-shrink-0"
+             style="width:46px;height:46px;background:${d.color};font-size:10.5px;text-align:center;line-height:1.2;">${d.id}</div>
+        <div>
+          <div class="fw-bold" style="color:${d.color};font-size:13px;">${d.label}</div>
+          <div class="text-muted small">${d.name}</div>
+          <a href="${d.href}" class="btn btn-sm text-white mt-1 px-2 py-0" style="background:${d.color};font-size:11px;">
+            Ver diagrama →
+          </a>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="text-muted fw-semibold mb-1" style="font-size:11px;">HISTORIAS DE USUARIO (${d.hus.length})</div>
+        ${d.hus.map(hu =>
+          `<span class="badge me-1 mb-1 py-1" style="background:#f1f3f6;color:#333;font-size:10.5px;">${hu.id}: ${hu.label}</span>`
+        ).join('')}
+      </div>
+
+      <div class="mb-3">
+        <div class="text-muted fw-semibold mb-1" style="font-size:11px;">TEMAS</div>
+        ${d.topics.map(topicPill).join('')}
+      </div>
+
+      <div>
+        <div class="text-muted fw-semibold mb-2" style="font-size:11px;">
+          ÉPICAS RELACIONADAS ${related.length ? `(${related.length})` : '— ninguna'}
+        </div>
+        ${related.length
+          ? related.map(r => `
+              <div class="related-epic-card" style="border-left-color:${r.epic.color}">
+                <a href="${r.epic.href}" class="fw-semibold text-decoration-none d-block"
+                   style="color:${r.epic.color};font-size:11.5px;">${r.epic.label}: ${r.epic.name}</a>
+                <div class="mt-1">${r.topics.map(topicPill).join('')}</div>
+                <div class="mt-1 d-flex flex-wrap gap-1">
+                  ${r.epic.hus.map(hu =>
+                    `<span class="badge" style="background:#eef;color:#444;font-size:9.5px;">${hu.id}</span>`
+                  ).join('')}
+                </div>
+              </div>
+            `).join('')
+          : `<p class="text-muted small">Esta épica no comparte temas con otras épicas.</p>`}
+      </div>`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function () {
+    buildTemasView();
+    buildHUView();
+
+    function tryBuildGraph() {
+      if (typeof d3 !== 'undefined') { buildGraph(); }
+      else { setTimeout(tryBuildGraph, 80); }
+    }
+    tryBuildGraph();
+
+    // Rebuild graph on tab show (ensures correct container dimensions)
+    const redBtn = document.getElementById('tab-red-btn');
+    if (redBtn) {
+      redBtn.addEventListener('shown.bs.tab', function () {
+        if (typeof d3 !== 'undefined') buildGraph();
+      });
+    }
+  });
+  </script>
+
+</body>
+</html>
