@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
   buildTablaView();
   buildJourneyView();
   buildIntegratedFlowView();
+  buildAdminJourneyView();
+  buildAdminFlowView();
 
   // D3 puede no estar listo aún (carga asíncrona desde CDN)
   function tryGraph() {
@@ -18,15 +20,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (typeof d3 !== 'undefined') buildGraph();
   });
 
-  // Dibujar flechas SVG cuando se activa el Flujo Integrado
+  // Dibujar flechas SVG cuando se activa el Flujo Integrado (usuario)
   document.getElementById('tab-flow-btn').addEventListener('shown.bs.tab', function () {
     requestAnimationFrame(() => setTimeout(drawFlowSvgArrows, 60));
   });
 
-  // Redibujar flechas al redimensionar ventana si la tab está activa
+  // Dibujar flechas SVG cuando se activa el Flujo Integrado Admin
+  document.getElementById('tab-admin-flow-btn').addEventListener('shown.bs.tab', function () {
+    requestAnimationFrame(() => setTimeout(drawAdminFlowSvgArrows, 60));
+  });
+
+  // Redibujar flechas al redimensionar ventana según la tab activa
   window.addEventListener('resize', function () {
     if (document.getElementById('tab-flow')?.classList.contains('active')) {
       drawFlowSvgArrows();
+    }
+    if (document.getElementById('tab-admin-flow')?.classList.contains('active')) {
+      drawAdminFlowSvgArrows();
     }
   });
 });

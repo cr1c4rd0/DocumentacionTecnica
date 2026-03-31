@@ -220,3 +220,81 @@ const USER_JOURNEY = [
 // ── Índice de fase por HU (derivado de USER_JOURNEY) ──────────
 const HU_PHASE = {};
 USER_JOURNEY.forEach(p => p.hus.forEach(id => { HU_PHASE[id] = p.phase; }));
+
+// ── Recorrido del Administrador ───────────────────────────────
+// Nota: HU 2.10.12 referenciada en el enunciado corresponde a 2.10.2
+// (Moderación de contenido, única HU de Épica 2.10 asociada a reputación/cumplimiento).
+const ADMIN_JOURNEY = [
+  {
+    phase: 1, icon: "📊", color: "#4527A0",
+    label: "Monitoreo y Análisis del Sistema",
+    roles: [
+      { hu: "2.9.2",  role: "usuario de negocio (líder/analista responsable del Recomendador)" },
+      { hu: "2.11.3", role: "usuario de negocio responsable del Recomendador de Servicios" },
+    ],
+    adminAction: "El administrador revisa reportes de segmentos y métricas de conversión",
+    hus: ["2.9.2", "2.11.3"],
+    steps: [
+      "El líder/analista accede al reporte de segmentos para entender qué grupos de usuarios reciben qué recomendaciones (2.9.2).",
+      "El responsable del Recomendador analiza la atribución de conversiones: qué recomendaciones generaron inscripciones reales (2.11.3).",
+    ],
+  },
+  {
+    phase: 2, icon: "⚙️", color: "#E65100",
+    label: "Configuración de Reglas y Parámetros",
+    roles: [
+      { hu: "2.4.1",  role: "administradora/or de negocio de la CCB" },
+      { hu: "2.14.1", role: "administrador del Recomendador (equipo de negocio CCB, sin perfil técnico profundo)" },
+      { hu: "2.6.2",  role: "área de negocio que administra el portafolio y los criterios de recomendación" },
+    ],
+    adminAction: "El administrador define reglas de negocio y ajusta parámetros del motor",
+    hus: ["2.4.1", "2.14.1", "2.6.2"],
+    steps: [
+      "El administrador de negocio define o actualiza las reglas que rigen qué servicios se recomiendan y cuáles se excluyen (2.4.1).",
+      "Desde el backoffice, el admin aplica umbrales, pesos y criterios del motor sin necesitar un redeploy técnico (2.14.1).",
+      "Los cambios de parámetros se propagan en tiempo real al motor de recomendación; el área de negocio puede ajustar el portafolio sin dependencia de TI (2.6.2).",
+    ],
+  },
+  {
+    phase: 3, icon: "🎯", color: "#2E7D32",
+    label: "Gestión del Portafolio y Promoción",
+    roles: [
+      { hu: "2.3.2", role: "administrador/a de negocio de la CCB" },
+    ],
+    adminAction: "El administrador destaca servicios estratégicos en el recomendador",
+    hus: ["2.3.2"],
+    steps: [
+      "El administrador de negocio selecciona servicios estratégicos para destacarlos e inyectarlos con mayor prioridad en la lista del motor Top-N (2.3.2).",
+    ],
+  },
+  {
+    phase: 4, icon: "💡", color: "#6A1B9A",
+    label: "Revisión de Explicabilidad",
+    roles: [
+      { hu: "2.2.1", role: "administrador/a de negocio de la CCB" },
+      { hu: "2.9.1", role: "administrador del Recomendador CCB (o analista autorizado)" },
+    ],
+    adminAction: "El administrador valida las explicaciones del sistema y la lógica interna",
+    hus: ["2.2.1", "2.9.1"],
+    steps: [
+      "Desde el panel de administración, el admin visualiza por qué el motor generó cada recomendación y puede auditar la lógica (2.2.1).",
+      "El analista autorizado valida la lógica explicativa del recomendador para verificar coherencia con las reglas de negocio configuradas (2.9.1).",
+    ],
+  },
+  {
+    phase: 5, icon: "🛡️", color: "#0277BD",
+    label: "Moderación y Cumplimiento",
+    roles: [
+      { hu: "2.10.2", role: "CCB (equipo responsable de reputación y cumplimiento del Recomendador)" },
+    ],
+    adminAction: "El equipo de reputación modera el contenido generado por usuarios",
+    hus: ["2.10.2"],
+    steps: [
+      "El equipo responsable de reputación revisa y modera las reseñas y calificaciones publicadas por usuarios, asegurando calidad y cumplimiento de políticas (2.10.2).",
+    ],
+  },
+];
+
+// ── Índice de fase-admin por HU ───────────────────────────────
+const HU_PHASE_ADMIN = {};
+ADMIN_JOURNEY.forEach(p => p.hus.forEach(id => { HU_PHASE_ADMIN[id] = p.phase; }));
